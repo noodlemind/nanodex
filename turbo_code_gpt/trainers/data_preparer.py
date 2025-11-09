@@ -72,6 +72,8 @@ class DataPreparer:
         - Explain code
         - Answer questions about code
         - Understand code structure
+        - Identify modules responsible for errors
+        - Debug and troubleshoot issues
         
         Args:
             code_samples: List of code samples
@@ -104,6 +106,31 @@ class DataPreparer:
                     'instruction': f"Describe the structure of this {sample['language']} file:",
                     'input': sample['content'],
                     'output': f"This {sample['language']} file ({sample['file_path']}) contains {sample['lines']} lines of code."
+                })
+            
+            # 4. Module responsibility example (for error debugging)
+            examples.append({
+                'instruction': f"Which module or file would be responsible for handling errors related to the functionality in {sample['file_path']}?",
+                'input': sample['content'],
+                'output': f"The {sample['file_path']} module would be responsible for errors related to its implemented functionality. "
+                         f"This {sample['language']} file handles specific operations, so any errors in this area would likely originate here."
+            })
+            
+            # 5. Error source identification example
+            examples.append({
+                'instruction': f"If I see an error mentioning functions or classes from this code, which file should I check?",
+                'input': f"File: {sample['file_path']}\n\n{sample['content']}",
+                'output': f"You should check {sample['file_path']}. This file contains the implementation and would be the primary location to investigate for errors related to this functionality."
+            })
+            
+            # 6. Debugging assistance example
+            if sample['lines'] > 5:
+                examples.append({
+                    'instruction': f"I'm seeing an error related to this codebase. Which module would be responsible?",
+                    'input': f"The error seems related to functionality in:\n\n{sample['content'][:500]}...",
+                    'output': f"Based on the code, the {sample['file_path']} module would be responsible. "
+                             f"This {sample['language']} file implements the relevant functionality. "
+                             f"Check this file for potential issues in the implementation."
                 })
         
         return examples

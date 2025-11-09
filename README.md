@@ -10,6 +10,8 @@ A model training and transformation program that helps you fine-tune and train o
 - 🔧 **Efficient Fine-tuning**: Uses LoRA (Low-Rank Adaptation) for efficient training with minimal resources
 - 💾 **4-bit/8-bit Quantization**: Train large models on consumer hardware
 - 🤖 **Chatbot Ready**: Export fine-tuned models for integration with chatbot frameworks
+- 🐛 **Error Debugging**: Train models to identify which modules are responsible for specific errors
+- 🔍 **Code Understanding**: Models learn to explain your specific codebase architecture and implementation
 
 ## Supported Models
 
@@ -168,6 +170,28 @@ inputs = tokenizer(prompt, return_tensors="pt")
 outputs = model.generate(**inputs, max_length=512)
 response = tokenizer.decode(outputs[0], skip_special_tokens=True)
 ```
+
+### Error Debugging and Module Identification
+
+The model is trained to help debug errors and identify responsible modules:
+
+```python
+# Ask about error sources
+prompt = """### Instruction:
+I'm seeing this error: "AttributeError: 'NoneType' object has no attribute 'process'"
+Which module would be responsible for this?
+
+### Response:
+"""
+
+inputs = tokenizer(prompt, return_tensors="pt")
+outputs = model.generate(**inputs, max_length=512)
+response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(response)
+# Output: "Based on the error, check the data processing module at src/processor.py..."
+```
+
+**See [ERROR_DEBUGGING_GUIDE.md](ERROR_DEBUGGING_GUIDE.md) for detailed examples and best practices.**
 
 ## Project Structure
 
