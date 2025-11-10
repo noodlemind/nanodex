@@ -1,10 +1,10 @@
 # Architecture Overview
 
-System design and component structure of Turbo Code GPT.
+System design and component structure of nanodex.
 
 ## System Overview
 
-Turbo Code GPT follows a pipeline architecture with five main stages:
+nanodex follows a pipeline architecture with five main stages:
 
 ```
 Configuration → Analysis → Preparation → Training → Export
@@ -71,7 +71,7 @@ Configuration → Analysis → Preparation → Training → Export
 
 ### 1. Configuration Layer
 
-**Location:** `turbo_code_gpt/utils/config.py`
+**Location:** `nanodex/utils/config.py`
 
 **Purpose:** Centralized configuration management
 
@@ -82,7 +82,7 @@ Configuration → Analysis → Preparation → Training → Export
 
 **Usage:**
 ```python
-from turbo_code_gpt.utils import Config
+from nanodex.utils import Config
 
 config = Config("config.yaml")
 model_config = config.get_model_config()
@@ -90,7 +90,7 @@ model_config = config.get_model_config()
 
 ### 2. Code Analysis
 
-**Location:** `turbo_code_gpt/analyzers/code_analyzer.py`
+**Location:** `nanodex/analyzers/code_analyzer.py`
 
 **Purpose:** Extract and understand the target codebase
 
@@ -114,7 +114,7 @@ Repository → Filter Extensions → Detect Language → Extract Content → Cod
 
 ### 3. Data Preparation
 
-**Location:** `turbo_code_gpt/trainers/data_preparer.py`
+**Location:** `nanodex/trainers/data_preparer.py`
 
 **Purpose:** Transform code samples into training data
 
@@ -138,7 +138,7 @@ Repository → Filter Extensions → Detect Language → Extract Content → Cod
 
 ### 4. Model Loading
 
-**Location:** `turbo_code_gpt/models/model_loader.py`
+**Location:** `nanodex/models/model_loader.py`
 
 **Purpose:** Load and configure models for training
 
@@ -169,7 +169,7 @@ LoraConfig(
 
 ### 5. Training
 
-**Location:** `turbo_code_gpt/trainers/model_trainer.py`
+**Location:** `nanodex/trainers/model_trainer.py`
 
 **Purpose:** Fine-tune models on prepared data
 
@@ -252,10 +252,10 @@ Dataset → Tokenize → Format → Train → Validate → Save
 ## Project Structure
 
 ```
-turbo-code-gpt/
+nanodex/
 ├── config.yaml                 # Configuration
 ├── main.py                     # Main CLI
-├── turbo_code_gpt/            # Main package
+├── nanodex/            # Main package
 │   ├── analyzers/             # Code analysis
 │   │   └── code_analyzer.py
 │   ├── models/                # Model loading

@@ -9,6 +9,7 @@ from typing import List, Dict, Tuple
 import logging
 from datasets import Dataset
 import random
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ class DataPreparer:
     def __init__(self, config: Dict):
         """
         Initialize data preparer.
-        
+
         Args:
             config: Data configuration dictionary
         """
@@ -27,23 +28,48 @@ class DataPreparer:
         self.train_split = config.get('train_split', 0.9)
         self.validation_split = config.get('validation_split', 0.1)
         self.context_window = config.get('context_window', 4096)
-        
+
+        # Set random seed for reproducibility
+        self.random_seed = config.get('random_seed', 42)
+        random.seed(self.random_seed)
+        np.random.seed(self.random_seed)
+        logger.info(f"Random seed set to {self.random_seed} for reproducibility")
+
         self.output_dir.mkdir(parents=True, exist_ok=True)
     
     def prepare_data(self, code_samples: List[Dict[str, str]]) -> Tuple[Dataset, Dataset]:
         """
         Prepare training and validation datasets.
-        
+
         Args:
             code_samples: List of code samples from the analyzer
-            
+
         Returns:
             Tuple of (train_dataset, validation_dataset)
+
+        Raises:
+            ValueError: If code_samples is empty or invalid
         """
+        # Validate input
+        if not code_samples or len(code_samples) == 0:
+            raise ValueError(
+                "No code samples provided! Cannot generate training data from empty codebase. "
+                "Please check your repository path and ensure it contains code files "
+                "matching the configured include_extensions."
+            )
+
         logger.info(f"Preparing data from {len(code_samples)} code samples")
-        
+
         # Create training examples
         training_examples = self._create_training_examples(code_samples)
+
+        # Validate generated examples
+        if not training_examples or len(training_examples) == 0:
+            raise ValueError(
+                "No training examples were generated from the code samples! "
+                "This could mean the code files are empty or don't contain "
+                "extractable content. Please check your codebase."
+            )
         
         # Split into train and validation
         random.shuffle(training_examples)

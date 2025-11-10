@@ -1,10 +1,17 @@
-# Turbo Code GPT
+# nanodex
 
-Train custom AI models that understand your specific codebase. Create specialized chatbots that can answer questions about your code, help with debugging, and explain your architecture.
+**Fine-tune coding models on your codebase with RAG support.**
+
+Train custom AI models that understand your specific codebase. Create specialized assistants that can answer questions about your code, help with debugging, and explain your architecture.
+
+**Inspired by nanoGPT and nanochat** - bringing the "nano" philosophy to code understanding: simple, hackable, and efficient.
+
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 🎯 What Is This?
 
-Turbo Code GPT fine-tunes large language models (like DeepSeek Coder, CodeLlama) on your codebase to create AI assistants that know YOUR code.
+nanodex fine-tunes large language models (like DeepSeek Coder, CodeLlama) on your codebase to create AI assistants that know YOUR code.
 
 **Key Insight:** The model learns during training and works standalone after deployment - no code access needed!
 
@@ -12,21 +19,24 @@ Turbo Code GPT fine-tunes large language models (like DeepSeek Coder, CodeLlama)
 
 ## ✨ Features
 
-- 🚀 **Easy to Use** - Simple YAML configuration and automated pipeline
+- 🚀 **Modern CLI** - Beautiful Click-based interface with Rich formatting
 - 🎯 **State-of-the-Art Models** - DeepSeek Coder, CodeLlama, StarCoder2 support
 - 💾 **Memory Efficient** - LoRA fine-tuning with 4-bit quantization
+- 🔍 **RAG Infrastructure** - Semantic code search with FAISS indexing
+- 💬 **Interactive Chat** - Conversational interface with context-aware responses
 - 🤖 **Production Ready** - Deploy standalone models without code access
 - 🐛 **Debug Assistant** - Models help identify error sources in your code
-- 🔍 **Code Understanding** - Learn your architecture, patterns, and structure
+- 📊 **Comprehensive Evaluation** - Multiple metrics (BLEU, F1, exact match)
 
 ## 🚀 Quick Start
 
 ### 1. Installation
 
 ```bash
-git clone https://github.com/noodlemind/turbo-code-gpt.git
-cd turbo-code-gpt
+git clone https://github.com/noodlemind/nanodex.git
+cd nanodex
 pip install -r requirements.txt
+pip install -e .
 ```
 
 ### 2. Configure
@@ -42,10 +52,20 @@ repository:
     - ".js"
 ```
 
-### 3. Train
+### 3. Generate Data & Train
 
 ```bash
-python main.py
+# Interactive setup wizard
+nanodex init
+
+# Generate training data (free mode - no API costs)
+nanodex data generate --mode free
+
+# Build RAG index for semantic search
+nanodex rag index
+
+# Train your model
+nanodex train
 ```
 
 **Time:** 2-8 hours depending on your codebase size and hardware.
@@ -53,6 +73,13 @@ python main.py
 ### 4. Use Your Model
 
 ```bash
+# Interactive chat
+nanodex chat
+
+# Semantic code search
+nanodex rag search "authentication logic"
+
+# Or use programmatically
 python examples/inference_example.py
 ```
 
@@ -66,7 +93,7 @@ Ask questions like:
 **Complete documentation is available in the [`docs/`](docs/) directory:**
 
 - **[Getting Started](docs/getting-started.md)** - Installation and first model
-- **[How It Works](docs/how-it-works.md)** - Understanding the training pipeline  
+- **[How It Works](docs/how-it-works.md)** - Understanding the training pipeline
 - **[Training vs Deployment](docs/training-vs-deployment.md)** - ⭐ Critical concept!
 - **[Architecture](docs/architecture.md)** - System design and components
 
@@ -88,6 +115,7 @@ Ask questions like:
 - **Debug Assistant** - Identify which modules cause specific errors
 - **Documentation** - Automated code explanation and documentation
 - **Architecture Questions** - Explain how systems and modules interact
+- **Semantic Search** - Find code by meaning, not just keywords
 
 ## 🎯 Example
 
@@ -99,43 +127,74 @@ After training on your codebase:
 
 The model knows YOUR codebase!
 
-## 🔧 Requirements
+## 🛠️ Key Commands
 
-- Python 3.8+
-- CUDA-capable GPU (recommended, 16GB+ VRAM) or CPU
-- 50GB+ disk space
+```bash
+# Setup & Configuration
+nanodex init              # Interactive setup wizard
+nanodex analyze           # Analyze your codebase
 
-## 📝 Configuration Example
+# Data Generation
+nanodex data generate     # Generate training data
+nanodex data stats        # Show dataset statistics
 
-```yaml
-model:
-  huggingface:
-    model_name: "deepseek-ai/deepseek-coder-6.7b-base"
-    use_4bit: true
+# Training
+nanodex train             # Train model
+nanodex train --resume    # Resume from checkpoint
 
-repository:
-  path: "."
-  include_extensions: [".py", ".js", ".ts"]
-  exclude_dirs: ["node_modules", "__pycache__"]
+# RAG & Search
+nanodex rag index         # Build semantic search index
+nanodex rag search QUERY  # Search for code
+nanodex rag query "..."   # Ask questions
 
-training:
-  num_epochs: 3
-  batch_size: 4
-  max_seq_length: 2048
+# Interactive Chat
+nanodex chat              # Start chat session
+nanodex chat --model PATH # Chat with specific model
 ```
 
-See [Configuration Reference](docs/guides/configuration.md) for all options.
+## 📊 Data Generation Modes
+
+- **Free Mode** ($0) - Extract from codebase only, no API calls
+- **Hybrid Mode** (Low cost) - Mix codebase + synthetic examples
+- **Full Mode** (Higher quality) - API-powered with OpenAI/Claude
+
+## 🔧 Hardware Requirements
+
+### Minimum (with 4-bit quantization)
+- 16GB RAM
+- 8GB GPU VRAM (NVIDIA with CUDA)
+- 50GB disk space
+
+### Recommended
+- 32GB RAM
+- 16GB+ GPU VRAM (RTX 3090, A100)
+- 100GB NVMe SSD
+
+**CPU-only mode is supported** but will be slower.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Areas for improvement:
+- Additional data generation strategies
+- More evaluation metrics
+- UI/web interface
+- Additional model support
+- Performance optimizations
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is open source and available under the MIT License.
 
 ## 🙏 Acknowledgments
 
-- HuggingFace for the Transformers library
-- Ollama for local model inference
-- DeepSeek, Meta, and others for open-source coding models 
+Built with ❤️ by developers, for developers.
+
+- **Inspiration**: nanoGPT, nanochat - for the "nano" philosophy
+- **HuggingFace** - Transformers library and model hub
+- **DeepSeek, Meta, BigCode** - Open-source coding models
+- **Click, Rich** - Excellent Python CLI libraries
+- **FAISS** - Efficient vector similarity search
+
+---
+
+**[→ Get Started with the Full Documentation](docs/README.md)**

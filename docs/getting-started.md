@@ -1,6 +1,6 @@
-# Getting Started with Turbo Code GPT
+# Getting Started with nanodex
 
-This guide will help you set up Turbo Code GPT and train your first model.
+This guide will help you set up nanodex and train your first model.
 
 ## Prerequisites
 
@@ -14,8 +14,8 @@ This guide will help you set up Turbo Code GPT and train your first model.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/noodlemind/turbo-code-gpt.git
-cd turbo-code-gpt
+git clone https://github.com/noodlemind/nanodex.git
+cd nanodex
 ```
 
 ### 2. Create Virtual Environment (Recommended)

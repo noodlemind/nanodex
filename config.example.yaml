@@ -1,0 +1,256 @@
+# Configuration for model training and fine-tuning
+# This example shows all available options for flexible training modes
+
+# =============================================================================
+# TRAINING MODE SELECTION
+# =============================================================================
+# Choose your training approach:
+# - "fine_tune": Fine-tune existing model on your codebase (recommended)
+# - "train_from_scratch": Train base model from scratch (nanochat-style)
+training_mode: "fine_tune"
+
+# =============================================================================
+# DATA GENERATION STRATEGY
+# =============================================================================
+data_generation:
+  # Mode selection: "free", "hybrid", "synthetic_only"
+  # - free: Use only self-supervised learning from codebase (zero API cost)
+  # - hybrid: Combine self-supervised + paid API synthetic data (best quality/cost)
+  # - synthetic_only: Use only paid API for data generation (highest quality)
+  mode: "hybrid"
+
+  # Self-supervised learning (FREE - extract from codebase)
+  self_supervised:
+    enabled: true  # Always recommended!
+
+    # What to extract from code
+    use_docstrings: true          # Extract docstrings as explanations
+    use_fill_in_middle: true      # Predict masked code (DeepSeek approach)
+    use_tests: true               # Learn from test files
+    use_git_history: true         # Use commit messages as context
+    use_type_hints: true          # Extract type annotations
+    use_dependencies: true        # Learn import relationships
+    use_static_analysis: true     # Run mypy/pylint for error examples
+
+    # Quality filters
+    min_docstring_length: 20      # Skip trivial docstrings
+    min_function_lines: 3         # Skip one-liners
+    max_complexity: 20            # Skip overly complex code
+
+  # Synthetic data generation (PAID - use GPT-4/Claude)
+  synthetic_data:
+    enabled: false  # Set to true when ready to use paid APIs
+
+    # Provider: "openai", "anthropic", "together", "anyscale"
+    provider: "openai"
+    model: "gpt-4o-mini"  # Options: gpt-4o, gpt-4o-mini, gpt-3.5-turbo
+    # For Anthropic: claude-3-5-sonnet-20241022, claude-3-haiku-20240307
+
+    # API key (set via environment variable for security)
+    api_key_env: "OPENAI_API_KEY"  # or ANTHROPIC_API_KEY
+
+    # Budget control
+    max_cost_usd: 50              # Hard cap on API spending
+    examples_per_file: 5          # How many synthetic examples per file
+
+    # Quality control
+    diversity_temperature: 0.9    # Higher = more diverse responses
+    use_few_shot: true            # Use examples to guide generation
+
+    # Question types to generate
+    question_types:
+      - "explanation"             # What does this code do?
+      - "debugging"               # How to debug errors?
+      - "relationships"           # How do components interact?
+      - "edge_cases"              # What could go wrong?
+      - "optimization"            # How to improve performance?
+
+# =============================================================================
+# MODEL CONFIGURATION
+# =============================================================================
+model_source: "huggingface"
+
+model:
+  huggingface:
+    model_name: "deepseek-ai/deepseek-coder-6.7b-base"
+    # Alternatives:
+    # - "codellama/CodeLlama-7b-hf"
+    # - "bigcode/starcoder2-7b"
+    # - "Salesforce/codegen-2B-mono"
+
+    use_4bit: true
+    use_8bit: false
+    trust_remote_code: false
+
+  ollama:
+    model_name: "deepseek-coder:6.7b"
+    base_url: "http://localhost:11434"
+
+# =============================================================================
+# REPOSITORY ANALYSIS
+# =============================================================================
+repository:
+  path: "."
+
+  # Deep parsing options
+  deep_parsing:
+    enabled: true               # Use AST + tree-sitter for detailed analysis
+    extract_functions: true     # Parse function signatures and bodies
+    extract_classes: true       # Parse class definitions
+    extract_imports: true       # Track dependencies
+    extract_docstrings: true    # Extract documentation
+    calculate_complexity: true  # Calculate cyclomatic complexity
+
+  include_extensions:
+    - ".py"
+    - ".js"
+    - ".ts"
+    - ".java"
+    - ".cpp"
+    - ".c"
+    - ".go"
+    - ".rs"
+    - ".rb"
+    - ".php"
+
+  exclude_dirs:
+    - "node_modules"
+    - "venv"
+    - ".git"
+    - "__pycache__"
+    - "build"
+    - "dist"
+    - "data"
+    - "models"
+
+  exclude_patterns:
+    - "*.min.js"
+    - "*.generated.*"
+    - "*_pb2.py"  # Protocol buffers
+
+  max_file_size: 1048576  # 1MB
+
+# =============================================================================
+# TRAINING CONFIGURATION
+# =============================================================================
+training:
+  output_dir: "./models/fine-tuned"
+
+  # Training hyperparameters
+  num_epochs: 3
+  batch_size: 4
+  learning_rate: 2.0e-5
+  max_seq_length: 2048
+  gradient_accumulation_steps: 4
+  warmup_steps: 100
+
+  # Logging and checkpointing
+  logging_steps: 10
+  save_steps: 500
+  save_total_limit: 3           # Keep last 3 checkpoints
+  eval_steps: 500
+  eval_strategy: "steps"
+
+  # Optimization
+  fp16: true                    # Mixed precision training
+  optim: "paged_adamw_8bit"
+  lr_scheduler_type: "cosine"
+
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 3
+    metric: "eval_loss"
+
+  # LoRA configuration
+  lora:
+    r: 16
+    lora_alpha: 32
+    lora_dropout: 0.05
+    target_modules:
+      - "q_proj"
+      - "v_proj"
+      - "k_proj"
+      - "o_proj"
+
+# =============================================================================
+# DATA PREPARATION
+# =============================================================================
+data:
+  output_dir: "./data/processed"
+  train_split: 0.9
+  validation_split: 0.1
+  context_window: 4096
+
+  # Deduplication
+  deduplicate: true
+  similarity_threshold: 0.95
+
+  # Seed for reproducibility
+  random_seed: 42
+
+# =============================================================================
+# RAG (Retrieval-Augmented Generation)
+# =============================================================================
+rag:
+  enabled: true                 # Build RAG index for inference
+  index_path: "./models/rag_index"
+
+  # Embedding model
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+
+  # Retrieval settings
+  top_k: 5                      # How many code samples to retrieve
+  chunk_size: 512               # Size of code chunks
+  chunk_overlap: 50             # Overlap between chunks
+
+  # Vector store: "faiss", "chroma", "qdrant"
+  vector_store: "faiss"
+
+# =============================================================================
+# PRETRAINING (for train_from_scratch mode)
+# =============================================================================
+pretraining:
+  enabled: false                # Only for train_from_scratch mode
+
+  # Public corpus
+  corpus:
+    source: "fineweb-edu"       # Options: fineweb-edu, stack, github-code
+    tokens: 10_000_000_000      # 10B tokens
+    download_path: "./data/pretrain"
+
+  # Synthetic conversations (using paid API)
+  synthetic_conversations:
+    enabled: false
+    count: 500_000              # Number of conversations to generate
+    provider: "openai"
+    model: "gpt-4o-mini"
+    topics_file: "./data/conversation_topics.txt"
+
+# =============================================================================
+# EVALUATION
+# =============================================================================
+evaluation:
+  enabled: true
+
+  # Metrics to track
+  metrics:
+    - "perplexity"
+    - "code_completion_accuracy"
+    - "function_name_recall"
+    - "dependency_tracking"
+
+  # Test sets
+  holdout_ratio: 0.1            # Reserve 10% for testing
+
+  # Generate report
+  generate_report: true
+  report_path: "./evaluation_report.md"
+
+# =============================================================================
+# EXPORT SETTINGS
+# =============================================================================
+export:
+  output_dir: "./models/exported"
+  format: "gguf"  # Options: "gguf", "onnx", "pytorch"
+  quantization: "q4_k_m"

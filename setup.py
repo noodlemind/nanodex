@@ -1,4 +1,4 @@
-"""Setup script for Turbo Code GPT."""
+"""Setup script for nanodex."""
 
 from setuptools import setup, find_packages
 from pathlib import Path
@@ -8,13 +8,13 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
 setup(
-    name="turbo-code-gpt",
-    version="0.1.0",
+    name="nanodex",
+    version="0.2.0",
     author="NoodleMind",
-    description="Fine-tune open source models on your codebase",
+    description="Fine-tune open source coding models on your codebase with RAG",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/noodlemind/turbo-code-gpt",
+    url="https://github.com/noodlemind/nanodex",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -44,10 +44,15 @@ setup(
         "pyyaml>=6.0",
         "python-dotenv>=1.0.0",
         "requests>=2.31.0",
+        "click>=8.1.0",
+        "rich>=13.0.0",
+        "pydantic>=2.0.0",
+        "faiss-cpu>=1.7.0",
+        "sentence-transformers>=2.2.0",
     ],
     entry_points={
         "console_scripts": [
-            "turbo-code-gpt=main:main",
+            "nanodex=nanodex.__main__:main",
         ],
     },
 )

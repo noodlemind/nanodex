@@ -1,6 +1,6 @@
-# Turbo Code GPT Documentation
+# nanodex Documentation
 
-Welcome to the Turbo Code GPT documentation! This guide will help you train and deploy custom AI models that understand your specific codebase.
+Welcome to the nanodex documentation! This guide will help you train and deploy custom AI models that understand your specific codebase.
 
 ## 📚 Documentation Structure
 
@@ -25,9 +25,9 @@ Welcome to the Turbo Code GPT documentation! This guide will help you train and 
 - **[API Reference](reference/api.md)** - Python API documentation
 - **[CLI Reference](reference/cli.md)** - Command-line options
 
-## 🎯 What is Turbo Code GPT?
+## 🎯 What is nanodex?
 
-Turbo Code GPT is a tool for fine-tuning large language models on your codebase, creating specialized AI assistants that understand your specific code.
+nanodex is a tool for fine-tuning large language models on your codebase, creating specialized AI assistants that understand your specific code.
 
 ### Key Features
 - 🚀 **Easy Training** - Simple configuration and automated pipeline

@@ -1,4 +1,11 @@
 # Configuration for model training and fine-tuning
+#
+# This configuration file is validated using Pydantic schemas for type safety and validation.
+# If any required fields are missing or have invalid values, you'll get detailed error messages
+# explaining what needs to be fixed.
+#
+# See turbo_code_gpt/utils/schemas.py for complete validation rules.
+# See config.example.yaml for a comprehensive configuration template.
 
 # Model source: 'ollama' or 'huggingface'
 model_source: "huggingface"
@@ -47,6 +54,15 @@ repository:
     - "dist"
   max_file_size: 1048576  # 1MB in bytes
 
+  # Deep parsing configuration (extracts functions, classes, imports, etc.)
+  deep_parsing:
+    enabled: true  # Enable detailed code structure extraction
+    extract_functions: true
+    extract_classes: true
+    extract_imports: true
+    extract_docstrings: true
+    calculate_complexity: true
+
 # Training configuration
 training:
   output_dir: "./models/fine-tuned"
@@ -76,6 +92,7 @@ data:
   train_split: 0.9
   validation_split: 0.1
   context_window: 4096
+  random_seed: 42  # For reproducible train/val splits
   
 # Export settings
 export:

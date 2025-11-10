@@ -1,1 +1,1 @@
-"""Example scripts for using Turbo Code GPT."""
+"""Example scripts for using nanodex."""

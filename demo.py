@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Demo script showing how to use Turbo Code GPT on a small example codebase.
+Demo script showing how to use nanodex on a small example codebase.
 This creates a minimal example and runs through the analysis phase.
 
 Note: This demo only shows the analysis phase. Full training requires
@@ -16,8 +16,8 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from turbo_code_gpt.utils import Config
-from turbo_code_gpt.analyzers import CodeAnalyzer
+from nanodex.utils import Config
+from nanodex.analyzers import CodeAnalyzer
 
 
 def create_sample_codebase(base_dir: Path):
@@ -78,7 +78,7 @@ module.exports = { formatDate, capitalizeString };
 def run_demo():
     """Run the demonstration."""
     print("=" * 70)
-    print("Turbo Code GPT - Demo")
+    print("nanodex - Demo")
     print("=" * 70)
     print()
     print("NOTE: This demo shows code analysis only.")

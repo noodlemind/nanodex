@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Main CLI for Turbo Code GPT.
+Main CLI for nanodex.
 
 This script orchestrates the entire pipeline:
 1. Analyze code repository
@@ -14,10 +14,10 @@ import logging
 import sys
 from pathlib import Path
 
-from turbo_code_gpt.utils import Config
-from turbo_code_gpt.analyzers import CodeAnalyzer
-from turbo_code_gpt.trainers import DataPreparer, ModelTrainer
-from turbo_code_gpt.models import ModelLoader
+from nanodex.utils import Config
+from nanodex.analyzers import CodeAnalyzer
+from nanodex.trainers import DataPreparer, ModelTrainer
+from nanodex.models import ModelLoader
 
 # Setup logging
 logging.basicConfig(
@@ -121,7 +121,7 @@ def train_model(config: Config, train_dataset, val_dataset):
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description='Turbo Code GPT - Fine-tune models on your codebase'
+        description='nanodex - Fine-tune models on your codebase'
     )
     parser.add_argument(
         '--config',

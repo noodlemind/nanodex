@@ -1,4 +1,4 @@
-# How Turbo Code GPT Works
+# How nanodex Works
 
 This document explains the complete workflow and how your fine-tuned model gets produced.
 

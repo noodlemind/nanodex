@@ -82,9 +82,9 @@ def check_imports():
     
     try:
         # These should work without installing dependencies
-        import turbo_code_gpt
-        from turbo_code_gpt.utils import Config
-        from turbo_code_gpt.analyzers import CodeAnalyzer
+        import nanodex
+        from nanodex.utils import Config
+        from nanodex.analyzers import CodeAnalyzer
         
         print("✅ Basic imports successful")
         print(f"   Package version: {turbo_code_gpt.__version__}")
@@ -124,7 +124,7 @@ def check_readme():
 def main():
     """Run all validation checks."""
     print("=" * 60)
-    print("Turbo Code GPT - Project Validation")
+    print("nanodex - Project Validation")
     print("=" * 60)
     
     checks = [

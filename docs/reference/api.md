@@ -1,13 +1,13 @@
 # API Reference
 
-Python API documentation for Turbo Code GPT.
+Python API documentation for nanodex.
 
 ## Configuration
 
 ### Config Class
 
 ```python
-from turbo_code_gpt.utils import Config
+from nanodex.utils import Config
 
 config = Config("config.yaml")
 ```
@@ -46,7 +46,7 @@ repo_config = config.get_repository_config()
 ### CodeAnalyzer Class
 
 ```python
-from turbo_code_gpt.analyzers import CodeAnalyzer
+from nanodex.analyzers import CodeAnalyzer
 
 analyzer = CodeAnalyzer(
     repo_path="/path/to/code",
@@ -80,7 +80,7 @@ stats = analyzer.get_statistics()
 ### DataPreparer Class
 
 ```python
-from turbo_code_gpt.trainers import DataPreparer
+from nanodex.trainers import DataPreparer
 
 preparer = DataPreparer(
     code_samples=samples,
@@ -112,7 +112,7 @@ preparer.save_datasets("./data/processed")
 ### ModelLoader Class
 
 ```python
-from turbo_code_gpt.models import ModelLoader
+from nanodex.models import ModelLoader
 
 loader = ModelLoader(
     model_config=model_config,
@@ -145,7 +145,7 @@ model = loader.apply_lora(model)
 ### ModelTrainer Class
 
 ```python
-from turbo_code_gpt.trainers import ModelTrainer
+from nanodex.trainers import ModelTrainer
 
 trainer = ModelTrainer(
     model=model,
@@ -177,10 +177,10 @@ trainer.save_model("./models/fine-tuned")
 ## Complete Example
 
 ```python
-from turbo_code_gpt.utils import Config
-from turbo_code_gpt.analyzers import CodeAnalyzer
-from turbo_code_gpt.trainers import DataPreparer, ModelTrainer
-from turbo_code_gpt.models import ModelLoader
+from nanodex.utils import Config
+from nanodex.analyzers import CodeAnalyzer
+from nanodex.trainers import DataPreparer, ModelTrainer
+from nanodex.models import ModelLoader
 
 # 1. Load configuration
 config = Config("config.yaml")

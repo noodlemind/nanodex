@@ -1,6 +1,6 @@
 # CLI Reference
 
-Command-line interface reference for Turbo Code GPT.
+Command-line interface reference for nanodex.
 
 ## Main Command
 
