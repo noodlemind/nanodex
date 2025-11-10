@@ -1,67 +1,138 @@
 """
-Model trainer for fine-tuning code models.
+Model trainer for fine-tuning code models with enhanced features.
 """
 
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, Any
 import torch
+import json
+from datetime import datetime
 from transformers import (
     TrainingArguments,
     Trainer,
-    DataCollatorForLanguageModeling
+    DataCollatorForLanguageModeling,
+    TrainerCallback,
+    EarlyStoppingCallback,
 )
 from datasets import Dataset
 
 logger = logging.getLogger(__name__)
 
 
+class ProgressCallback(TrainerCallback):
+    """Custom callback for enhanced progress tracking."""
+
+    def __init__(self):
+        super().__init__()
+        self.start_time = None
+        self.best_loss = float('inf')
+
+    def on_train_begin(self, args, state, control, **kwargs):
+        """Called at the beginning of training."""
+        self.start_time = datetime.now()
+        logger.info(f"Training started at {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+
+    def on_log(self, args, state, control, logs=None, **kwargs):
+        """Called after logging."""
+        if logs:
+            # Log training progress
+            if 'loss' in logs:
+                current_loss = logs['loss']
+                if current_loss < self.best_loss:
+                    self.best_loss = current_loss
+                    logger.info(f"✓ New best training loss: {current_loss:.4f}")
+
+            if 'eval_loss' in logs:
+                logger.info(f"Evaluation loss: {logs['eval_loss']:.4f}")
+
+    def on_train_end(self, args, state, control, **kwargs):
+        """Called at the end of training."""
+        if self.start_time:
+            duration = datetime.now() - self.start_time
+            logger.info(f"Training completed in {duration}")
+            logger.info(f"Best training loss: {self.best_loss:.4f}")
+
+
 class ModelTrainer:
-    """Fine-tunes models on code data."""
-    
+    """Enhanced model trainer with checkpoint recovery and early stopping."""
+
     def __init__(self, model, tokenizer, config: dict):
         """
         Initialize model trainer.
-        
+
         Args:
             model: The model to train
             tokenizer: The tokenizer
-            config: Training configuration dictionary
+            config: Training configuration dictionary with enhanced options:
+                - enable_early_stopping: Enable early stopping (default: False)
+                - early_stopping_patience: Patience for early stopping (default: 3)
+                - early_stopping_threshold: Threshold for early stopping (default: 0.0)
+                - save_best_model: Save best model based on eval loss (default: True)
+                - resume_from_checkpoint: Path to checkpoint to resume from (default: None)
         """
         self.model = model
         self.tokenizer = tokenizer
         self.config = config
+        self.training_metadata = {}
     
-    def train(self, train_dataset: Dataset, val_dataset: Optional[Dataset] = None):
+    def train(
+        self,
+        train_dataset: Dataset,
+        val_dataset: Optional[Dataset] = None,
+        resume_from_checkpoint: Optional[str] = None
+    ):
         """
-        Train the model on the provided datasets.
+        Train the model on the provided datasets with enhanced features.
 
         Args:
             train_dataset: Training dataset
             val_dataset: Optional validation dataset
+            resume_from_checkpoint: Optional path to checkpoint to resume from
+
+        Returns:
+            Trainer object with training history
 
         Raises:
             ValueError: If datasets are invalid or empty
         """
-        logger.info("Starting model training")
+        logger.info("=" * 60)
+        logger.info("Starting Enhanced Model Training")
+        logger.info("=" * 60)
 
         # Validate datasets before expensive operations
         self._validate_datasets(train_dataset, val_dataset)
 
         # Prepare datasets
+        logger.info("Preparing datasets...")
         train_dataset = self._prepare_dataset(train_dataset)
         if val_dataset:
             val_dataset = self._prepare_dataset(val_dataset)
-        
+
         # Create training arguments
         training_args = self._create_training_args()
-        
+
         # Create data collator
         data_collator = DataCollatorForLanguageModeling(
             tokenizer=self.tokenizer,
             mlm=False
         )
-        
+
+        # Create callbacks
+        callbacks = [ProgressCallback()]
+
+        # Add early stopping if enabled
+        if self.config.get('enable_early_stopping', False) and val_dataset:
+            patience = self.config.get('early_stopping_patience', 3)
+            threshold = self.config.get('early_stopping_threshold', 0.0)
+            logger.info(f"Early stopping enabled: patience={patience}, threshold={threshold}")
+            callbacks.append(
+                EarlyStoppingCallback(
+                    early_stopping_patience=patience,
+                    early_stopping_threshold=threshold
+                )
+            )
+
         # Create trainer
         trainer = Trainer(
             model=self.model,
@@ -69,18 +140,40 @@ class ModelTrainer:
             train_dataset=train_dataset,
             eval_dataset=val_dataset,
             data_collator=data_collator,
+            callbacks=callbacks,
         )
-        
-        # Train
+
+        # Train with checkpoint recovery
         logger.info("Beginning training...")
-        trainer.train()
-        
+
+        # Check for checkpoint to resume from
+        checkpoint_path = resume_from_checkpoint or self.config.get('resume_from_checkpoint')
+        if checkpoint_path:
+            checkpoint_path = str(Path(checkpoint_path).resolve())
+            if Path(checkpoint_path).exists():
+                logger.info(f"Resuming training from checkpoint: {checkpoint_path}")
+            else:
+                logger.warning(f"Checkpoint not found: {checkpoint_path}. Starting from scratch.")
+                checkpoint_path = None
+
+        # Train
+        train_result = trainer.train(resume_from_checkpoint=checkpoint_path)
+
+        # Save training metadata
+        self._save_training_metadata(trainer, train_result)
+
         # Save model
         output_dir = Path(self.config.get('output_dir', './models/fine-tuned'))
+        logger.info(f"Saving model to {output_dir}")
         trainer.save_model(str(output_dir))
         self.tokenizer.save_pretrained(str(output_dir))
-        
-        logger.info(f"Model saved to {output_dir}")
+
+        # Save training history
+        self._save_training_history(trainer, output_dir)
+
+        logger.info("=" * 60)
+        logger.info(f"Training completed! Model saved to {output_dir}")
+        logger.info("=" * 60)
 
         return trainer
 
@@ -184,13 +277,20 @@ class ModelTrainer:
     
     def _create_training_args(self) -> TrainingArguments:
         """
-        Create training arguments.
-        
+        Create enhanced training arguments.
+
         Returns:
-            TrainingArguments object
+            TrainingArguments object with best practices
         """
         output_dir = self.config.get('output_dir', './models/fine-tuned')
-        
+
+        # Determine evaluation strategy
+        eval_strategy = "no"
+        eval_steps = None
+        if self.config.get('enable_evaluation', True):
+            eval_strategy = "steps"
+            eval_steps = self.config.get('eval_steps', 500)
+
         return TrainingArguments(
             output_dir=output_dir,
             num_train_epochs=self.config.get('num_epochs', 3),
@@ -201,11 +301,91 @@ class ModelTrainer:
             warmup_steps=self.config.get('warmup_steps', 100),
             logging_steps=self.config.get('logging_steps', 10),
             save_steps=self.config.get('save_steps', 500),
-            eval_strategy="steps" if self.config.get('eval_steps') else "no",
-            eval_steps=self.config.get('eval_steps', 500),
-            save_total_limit=2,
+            eval_strategy=eval_strategy,
+            eval_steps=eval_steps,
+            save_total_limit=self.config.get('save_total_limit', 3),
+            load_best_model_at_end=self.config.get('save_best_model', True) and eval_strategy != "no",
+            metric_for_best_model="eval_loss",
+            greater_is_better=False,
             fp16=torch.cuda.is_available(),
             optim="paged_adamw_8bit",
-            lr_scheduler_type="cosine",
+            lr_scheduler_type=self.config.get('lr_scheduler_type', 'cosine'),
             report_to="none",
+            logging_dir=f"{output_dir}/logs",
+            save_safetensors=True,
+            dataloader_num_workers=self.config.get('num_workers', 0),
         )
+
+    def _save_training_metadata(self, trainer: Trainer, train_result):
+        """
+        Save training metadata for reproducibility.
+
+        Args:
+            trainer: Trainer object
+            train_result: Training result object
+        """
+        metadata = {
+            'timestamp': datetime.now().isoformat(),
+            'config': self.config,
+            'train_samples': train_result.metrics.get('train_samples', 0),
+            'train_runtime': train_result.metrics.get('train_runtime', 0),
+            'train_steps_per_second': train_result.metrics.get('train_steps_per_second', 0),
+            'total_flos': train_result.metrics.get('total_flos', 0),
+            'train_loss': train_result.metrics.get('train_loss', 0),
+            'epoch': train_result.metrics.get('epoch', 0),
+        }
+
+        # Save to output directory
+        output_dir = Path(self.config.get('output_dir', './models/fine-tuned'))
+        metadata_file = output_dir / 'training_metadata.json'
+
+        with open(metadata_file, 'w') as f:
+            json.dump(metadata, f, indent=2)
+
+        logger.info(f"Training metadata saved to {metadata_file}")
+
+    def _save_training_history(self, trainer: Trainer, output_dir: Path):
+        """
+        Save training history (loss, eval metrics over time).
+
+        Args:
+            trainer: Trainer object
+            output_dir: Output directory
+        """
+        if hasattr(trainer.state, 'log_history'):
+            history_file = output_dir / 'training_history.json'
+            with open(history_file, 'w') as f:
+                json.dump(trainer.state.log_history, f, indent=2)
+            logger.info(f"Training history saved to {history_file}")
+
+    def get_latest_checkpoint(self, output_dir: Optional[str] = None) -> Optional[str]:
+        """
+        Get the path to the latest checkpoint.
+
+        Args:
+            output_dir: Output directory (default: from config)
+
+        Returns:
+            Path to latest checkpoint or None
+        """
+        if output_dir is None:
+            output_dir = self.config.get('output_dir', './models/fine-tuned')
+
+        output_path = Path(output_dir)
+
+        if not output_path.exists():
+            return None
+
+        # Find checkpoint directories
+        checkpoints = list(output_path.glob('checkpoint-*'))
+
+        if not checkpoints:
+            return None
+
+        # Sort by step number
+        checkpoints.sort(key=lambda x: int(x.name.split('-')[1]))
+
+        latest = checkpoints[-1]
+        logger.info(f"Found latest checkpoint: {latest}")
+
+        return str(latest)
