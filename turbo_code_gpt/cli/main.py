@@ -31,7 +31,7 @@ def cli(ctx):
     🚀 Turbo Code GPT - Fine-tune LLMs on your codebase
 
     A flexible system for creating specialized coding assistants by fine-tuning
-    open-source models on your codebase.
+    open-source models on your codebase with RAG support.
 
     \b
     Quick Start:
@@ -39,7 +39,8 @@ def cli(ctx):
       turbo-code-gpt analyze       # Analyze your codebase
       turbo-code-gpt data generate # Generate training data
       turbo-code-gpt train         # Fine-tune the model
-      turbo-code-gpt chat          # Chat with your model
+      turbo-code-gpt rag index     # Build RAG index
+      turbo-code-gpt rag search    # Semantic code search
 
     \b
     Learn more:
@@ -116,12 +117,14 @@ from .init import init_cmd
 from .analyze import analyze_cmd
 from .data_gen import data_cmd
 from .train import train_cmd
+from .rag import rag_cmd
 
 # Register commands
 cli.add_command(init_cmd, name='init')
 cli.add_command(analyze_cmd, name='analyze')
 cli.add_command(data_cmd, name='data')
 cli.add_command(train_cmd, name='train')
+cli.add_command(rag_cmd, name='rag')
 
 
 if __name__ == '__main__':

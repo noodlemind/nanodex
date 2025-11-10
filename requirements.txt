@@ -32,6 +32,10 @@ click>=8.1.0
 rich>=13.0.0
 questionary>=2.0.0
 
+# RAG (Retrieval-Augmented Generation)
+sentence-transformers>=2.2.0
+faiss-cpu>=1.7.4
+
 # Optional: Synthetic data generation (only needed for hybrid/full modes)
 # Uncomment if you want to use paid API features:
 # openai>=1.0.0
