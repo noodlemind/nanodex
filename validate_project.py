@@ -17,7 +17,8 @@ def check_structure():
         "requirements.txt",
         "setup.py",
         "README.md",
-        "GETTING_STARTED.md",
+        "docs/README.md",
+        "docs/getting-started.md",
         "LICENSE",
         "turbo_code_gpt/__init__.py",
         "turbo_code_gpt/utils/__init__.py",
@@ -103,10 +104,8 @@ def check_readme():
         
         required_sections = [
             'Features',
-            'Supported Models',
-            'Installation',
             'Quick Start',
-            'Configuration',
+            'Documentation',
         ]
         
         missing = [s for s in required_sections if s not in content]
