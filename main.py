@@ -98,7 +98,8 @@ def train_model(config: Config, train_dataset, val_dataset):
         training_config = config.get_training_config()
         
         # Load model
-        loader = ModelLoader(model_config, training_config)
+        trust_remote_code = model_config.get('trust_remote_code', False)
+        loader = ModelLoader(model_config, training_config, trust_remote_code=trust_remote_code)
         model, tokenizer = loader.load_huggingface_model()
         
         # Apply LoRA
