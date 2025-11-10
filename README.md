@@ -1,274 +1,338 @@
-# Turbo Code GPT
+# 🚀 Turbo Code GPT
 
-A model training and transformation program that helps you fine-tune and train open source models to become experts on any given codebase. This enables the creation of specialized chatbots that can answer questions about your code and its behavior.
+A comprehensive system for fine-tuning open-source LLMs on your codebase with RAG (Retrieval-Augmented Generation) support. Create specialized AI coding assistants that understand your specific codebase architecture, patterns, and conventions.
 
-## 🎯 How It Works
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Training Phase:** The program analyzes your codebase and trains a model to learn about your code structure, patterns, and architecture.
+## ✨ Features
 
-**Deployment Phase:** The fine-tuned model works **completely standalone** - it doesn't need access to your codebase anymore. All knowledge is embedded in the model weights, so it can answer questions from memory.
+### 🎯 Core Capabilities
+- **Multiple Training Modes**: Free (data-only), Hybrid (synthetic), Full (API-powered)
+- **Modern CLI**: Beautiful Click-based interface with Rich formatting
+- **RAG Infrastructure**: Semantic code search with FAISS vector indexing
+- **Interactive Chat**: Conversational interface with context-aware responses
+- **Production Training**: Checkpoint recovery, early stopping, best model selection
+- **Comprehensive Evaluation**: Multiple metrics (BLEU, F1, exact match, edit distance)
 
-**Result:** A self-contained AI expert on YOUR specific codebase!
+### 🤖 Supported Models
+- **HuggingFace**: DeepSeek Coder, CodeLlama, StarCoder2, CodeGen
+- **Efficient Fine-tuning**: LoRA (Low-Rank Adaptation)
+- **Quantization**: 4-bit/8-bit for consumer hardware
 
-**📖 Read [TRAINING_VS_DEPLOYMENT.md](TRAINING_VS_DEPLOYMENT.md) to understand how the model learns during training and works without code access after deployment.**
+### 🔍 RAG Features
+- **Semantic Search**: Find code by meaning, not just keywords
+- **Smart Chunking**: Function/class/file-level code segmentation
+- **Fast Retrieval**: FAISS-powered similarity search (<100ms)
+- **Context Assembly**: Automatically retrieve relevant code for queries
 
-## Features
+### 💻 Developer Experience
+- **Setup Wizard**: Interactive configuration with `turbo-code-gpt init`
+- **Validation**: Pydantic-powered config validation
+- **Rich Output**: Beautiful tables, progress bars, and panels
+- **Session Persistence**: Save and resume chat conversations
 
-- 🚀 **Multiple Model Sources**: Support for both HuggingFace and Ollama models
-- 🎯 **Latest GPT-OSS Models**: Pre-configured to use DeepSeek Coder, CodeLlama, StarCoder2, and other state-of-the-art coding models
-- 📊 **Automated Code Analysis**: Automatically analyzes your codebase and extracts relevant context
-- 🔧 **Efficient Fine-tuning**: Uses LoRA (Low-Rank Adaptation) for efficient training with minimal resources
-- 💾 **4-bit/8-bit Quantization**: Train large models on consumer hardware
-- 🤖 **Chatbot Ready**: Export fine-tuned models for integration with chatbot frameworks
-- 🐛 **Error Debugging**: Train models to identify which modules are responsible for specific errors
-- 🔍 **Code Understanding**: Models learn to explain your specific codebase architecture and implementation
+## 📦 Installation
 
-## Supported Models
+### Prerequisites
+- Python 3.8 or higher
+- CUDA-compatible GPU (recommended, CPU-only supported)
+- 16GB+ RAM (32GB recommended)
 
-### HuggingFace Models
-- DeepSeek Coder (6.7B, 33B) - Recommended for code understanding
-- CodeLlama (7B, 13B, 34B)
-- StarCoder2 (7B, 15B)
-- CodeGen (2B, 6B)
+### Install from Source
 
-### Ollama Models
-- deepseek-coder
-- codellama
-- starcoder2
-
-## Installation
-
-1. Clone the repository:
 ```bash
+# Clone repository
 git clone https://github.com/noodlemind/turbo-code-gpt.git
 cd turbo-code-gpt
-```
 
-2. Install dependencies:
-```bash
+# Install dependencies
 pip install -r requirements.txt
+
+# Install package
+pip install -e .
 ```
 
-3. (Optional) For Ollama support, install Ollama:
+### Verify Installation
+
 ```bash
-# Linux/Mac
-curl -fsSL https://ollama.com/install.sh | sh
-
-# Or visit https://ollama.com for other installation methods
+turbo-code-gpt --version
+turbo-code-gpt --help
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
-### 1. Configure Your Project
+### 1. Initialize Configuration
 
-Edit `config.yaml` to specify your model preferences and codebase:
+Run the interactive setup wizard:
+
+```bash
+turbo-code-gpt init
+```
+
+This will guide you through:
+- Selecting data generation mode (free/hybrid/full)
+- Choosing a base model
+- Configuring training parameters
+- Setting repository paths and filters
+
+### 2. Analyze Your Codebase
+
+Analyze your codebase to understand its structure:
+
+```bash
+turbo-code-gpt analyze
+```
+
+This shows:
+- Total files and lines
+- Language distribution
+- File size statistics
+- Code complexity metrics
+
+### 3. Generate Training Data
+
+Generate training examples from your code:
+
+```bash
+# Free mode (codebase-only, no API calls)
+turbo-code-gpt data generate --mode free
+
+# Hybrid mode (mixed synthetic + codebase)
+turbo-code-gpt data generate --mode hybrid --count 100
+
+# Full mode (API-powered, requires OpenAI key)
+turbo-code-gpt data generate --mode full --count 500
+```
+
+### 4. Build RAG Index
+
+Create a semantic search index:
+
+```bash
+turbo-code-gpt rag index
+```
+
+This enables:
+- Fast semantic code search
+- Context-aware Q&A
+- RAG-augmented generation
+
+### 5. Train Your Model
+
+Fine-tune the model on your codebase:
+
+```bash
+turbo-code-gpt train
+```
+
+Features:
+- Automatic checkpoint recovery
+- Early stopping
+- Best model selection
+- Training metadata export
+
+### 6. Start Chatting!
+
+Launch the interactive chat interface:
+
+```bash
+turbo-code-gpt chat
+```
+
+Or search your codebase semantically:
+
+```bash
+turbo-code-gpt rag search "authentication logic"
+turbo-code-gpt rag query "How does error handling work?"
+```
+
+## 📖 Usage Guide
+
+### Configuration
+
+Your `config.yaml` configures everything. Example:
 
 ```yaml
-# Choose model source: 'huggingface' or 'ollama'
+# Model selection
 model_source: "huggingface"
 
-# Configure repository to analyze
-repository:
-  path: "."  # Path to your codebase
-  include_extensions:
-    - ".py"
-    - ".js"
-    - ".ts"
-    # Add more as needed
-```
-
-### 2. Run the Training Pipeline
-
-```bash
-# Full pipeline: analyze, prepare data, and train
-python main.py
-
-# Or run steps individually:
-python main.py --analyze-only    # Just analyze the codebase
-python main.py --prepare-only    # Analyze and prepare data
-```
-
-### 3. Use Your Fine-tuned Model
-
-After training completes, your model will be saved in `./models/fine-tuned/`
-
-```bash
-# Run inference example
-python examples/inference_example.py --model-path ./models/fine-tuned
-```
-
-## Configuration
-
-The `config.yaml` file allows you to customize:
-
-- **Model Selection**: Choose between HuggingFace and Ollama models
-- **Training Parameters**: Batch size, learning rate, epochs, etc.
-- **LoRA Configuration**: Fine-tuning efficiency settings
-- **Data Processing**: Context window, train/validation split
-- **Repository Filters**: File types and directories to include/exclude
-
-Example configuration:
-
-```yaml
 model:
   huggingface:
     model_name: "deepseek-ai/deepseek-coder-6.7b-base"
-    use_4bit: true  # Enable 4-bit quantization for reduced memory
+    use_4bit: true
+    device: "auto"
 
+# Data generation
+data_generation:
+  mode: "free"  # or "hybrid" or "full"
+  synthetic_count: 0
+  openai_api_key: ""  # Only for full mode
+
+# Training configuration
 training:
   num_epochs: 3
   batch_size: 4
   learning_rate: 2.0e-5
-  max_seq_length: 2048
-  
+  enable_early_stopping: true
+  early_stopping_patience: 3
+  save_best_model: true
+
   lora:
     r: 16
     lora_alpha: 32
     lora_dropout: 0.05
+
+# Repository configuration
+repository:
+  path: "."
+  include_extensions:
+    - ".py"
+    - ".js"
+    - ".ts"
+  exclude_dirs:
+    - "node_modules"
+    - ".git"
+    - "__pycache__"
 ```
 
-## Usage Examples
+### CLI Commands Reference
 
-### Using with HuggingFace Models
-
-```python
-from turbo_code_gpt.utils import Config
-from turbo_code_gpt.models import ModelLoader
-
-config = Config("config.yaml")
-model_config = config.get_model_config()
-training_config = config.get_training_config()
-
-loader = ModelLoader(model_config, training_config)
-model, tokenizer = loader.load_huggingface_model()
-model = loader.apply_lora(model)
+#### Configuration
+```bash
+turbo-code-gpt init              # Interactive setup wizard
+turbo-code-gpt config-show       # Display current configuration
+turbo-code-gpt config-validate   # Validate configuration file
 ```
 
-### Using with Ollama
+#### Analysis & Data
+```bash
+turbo-code-gpt analyze           # Analyze codebase
+turbo-code-gpt data generate     # Generate training data
+turbo-code-gpt data stats        # Show dataset statistics
+turbo-code-gpt data validate     # Validate training data
+```
+
+#### Training
+```bash
+turbo-code-gpt train             # Train model
+turbo-code-gpt train --resume    # Resume from checkpoint
+```
+
+#### RAG (Retrieval-Augmented Generation)
+```bash
+turbo-code-gpt rag index         # Build semantic search index
+turbo-code-gpt rag search QUERY  # Search for code
+turbo-code-gpt rag query QUESTION # Ask questions
+turbo-code-gpt rag stats         # Show index statistics
+```
+
+#### Chat
+```bash
+turbo-code-gpt chat              # Interactive chat
+turbo-code-gpt chat --model PATH # Chat with specific model
+turbo-code-gpt chat --session FILE # Resume session
+```
+
+### Data Generation Modes
+
+#### Free Mode (No API Required)
+- **Cost**: $0
+- **Quality**: Basic
+- **Use Case**: Testing, small codebases
 
 ```bash
-# 1. Prepare your data using Turbo Code GPT
-python main.py --prepare-only
-
-# 2. Create a Modelfile
-python examples/ollama_example.py
-
-# 3. Create custom Ollama model
-ollama create my-code-expert -f Modelfile
-
-# 4. Use it
-ollama run my-code-expert
+turbo-code-gpt data generate --mode free
 ```
 
-### Building a Chatbot
+Generates training examples from:
+- Function/class docstrings
+- Code structure analysis
+- Pattern matching
 
-The fine-tuned model uses an instruction format:
+#### Hybrid Mode (Mixed)
+- **Cost**: Low ($0.01-0.10 depending on count)
+- **Quality**: Good
+- **Use Case**: Medium codebases, budget-conscious
 
-```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-model = AutoModelForCausalLM.from_pretrained("./models/fine-tuned")
-tokenizer = AutoTokenizer.from_pretrained("./models/fine-tuned")
-
-prompt = """### Instruction:
-Explain what the CodeAnalyzer class does in this codebase.
-
-### Response:
-"""
-
-inputs = tokenizer(prompt, return_tensors="pt")
-outputs = model.generate(**inputs, max_length=512)
-response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+```bash
+turbo-code-gpt data generate --mode hybrid --count 200
 ```
 
-### Error Debugging and Module Identification
+Combines:
+- Free mode examples
+- Synthetic examples (LLM-generated)
 
-The model is trained to help debug errors and identify responsible modules:
+#### Full Mode (API-Powered)
+- **Cost**: Higher ($0.10-1.00 depending on count)
+- **Quality**: Best
+- **Use Case**: Production, large codebases
 
-```python
-# Ask about error sources
-prompt = """### Instruction:
-I'm seeing this error: "AttributeError: 'NoneType' object has no attribute 'process'"
-Which module would be responsible for this?
-
-### Response:
-"""
-
-inputs = tokenizer(prompt, return_tensors="pt")
-outputs = model.generate(**inputs, max_length=512)
-response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-print(response)
-# Output: "Based on the error, check the data processing module at src/processor.py..."
+```bash
+turbo-code-gpt data generate --mode full --count 500
 ```
 
-**See [ERROR_DEBUGGING_GUIDE.md](ERROR_DEBUGGING_GUIDE.md) for detailed examples and best practices.**
+Generates high-quality examples using OpenAI API.
 
-## Project Structure
+### RAG Search Examples
 
-```
-turbo-code-gpt/
-├── config.yaml                 # Configuration file
-├── main.py                     # Main CLI script
-├── requirements.txt            # Python dependencies
-├── turbo_code_gpt/            # Main package
-│   ├── analyzers/             # Code analysis modules
-│   │   └── code_analyzer.py   # Repository analyzer
-│   ├── models/                # Model loading and management
-│   │   └── model_loader.py    # HuggingFace model loader
-│   ├── trainers/              # Training modules
-│   │   ├── data_preparer.py   # Data preparation
-│   │   └── model_trainer.py   # Model fine-tuning
-│   └── utils/                 # Utilities
-│       └── config.py          # Configuration management
-└── examples/                   # Example scripts
-    ├── inference_example.py   # Inference demo
-    └── ollama_example.py      # Ollama integration
+#### Semantic Search
+Find code by meaning, not keywords:
+
+```bash
+# Find authentication code
+turbo-code-gpt rag search "user login and authentication"
+
+# Find error handling
+turbo-code-gpt rag search "exception handling and logging"
+
+# Find specific patterns
+turbo-code-gpt rag search "database connection pooling"
 ```
 
-## Hardware Requirements
+#### Q&A
+Ask natural language questions:
 
-### Minimum (with 4-bit quantization)
-- 16GB RAM
-- 8GB GPU VRAM (NVIDIA GPU with CUDA support)
-- 50GB disk space
+```bash
+turbo-code-gpt rag query "How does the caching system work?"
+turbo-code-gpt rag query "Where are API endpoints defined?"
+turbo-code-gpt rag query "What libraries are used for testing?"
+```
 
-### Recommended
-- 32GB RAM
-- 16GB+ GPU VRAM
-- 100GB disk space
+#### Filtered Search
+```bash
+# Search only functions
+turbo-code-gpt rag search "parse JSON" --type function
 
-### CPU-only Mode
-Training is possible but will be significantly slower. Use smaller models (2B-7B parameters).
+# Search only Python code
+turbo-code-gpt rag search "async processing" --language python
 
-## Troubleshooting
+# Get more results
+turbo-code-gpt rag search "database query" -k 10
+```
 
-### Out of Memory Errors
-1. Reduce batch size in `config.yaml`
-2. Enable 4-bit quantization
-3. Reduce `max_seq_length`
-4. Use a smaller base model
+### Chat Interface
 
-### Slow Training
-1. Enable GPU acceleration (ensure CUDA is installed)
-2. Increase `gradient_accumulation_steps`
-3. Use a smaller model or dataset
+The chat interface provides an interactive experience:
 
-### Model Quality Issues
-1. Increase training epochs
-2. Adjust learning rate
-3. Include more diverse code samples
-4. Fine-tune LoRA parameters (r, alpha)
+```bash
+turbo-code-gpt chat
+```
 
-## Contributing
+**Features:**
+- Multi-turn conversations
+- Conversation history
+- RAG-powered context retrieval
+- Session save/load
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+**Chat Commands:**
+- `/help` - Show available commands
+- `/history` - View conversation history
+- `/clear` - Clear history
+- `/stats` - Session statistics
+- `/save` - Save session
+- `/exit` - Quit chat
 
-## License
-
-This project is open source and available under the MIT License.
-
-## Acknowledgments
-
-- HuggingFace for the Transformers library
-- Ollama for local model inference
-- DeepSeek, Meta, and other organizations for open-source coding models 
+**Example Session:**
+```
+You: Explain how authentication works in this codebase

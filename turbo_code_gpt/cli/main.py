@@ -41,6 +41,7 @@ def cli(ctx):
       turbo-code-gpt train         # Fine-tune the model
       turbo-code-gpt rag index     # Build RAG index
       turbo-code-gpt rag search    # Semantic code search
+      turbo-code-gpt chat          # Interactive chat interface
 
     \b
     Learn more:
@@ -118,6 +119,7 @@ from .analyze import analyze_cmd
 from .data_gen import data_cmd
 from .train import train_cmd
 from .rag import rag_cmd
+from .chat import chat_cmd
 
 # Register commands
 cli.add_command(init_cmd, name='init')
@@ -125,6 +127,7 @@ cli.add_command(analyze_cmd, name='analyze')
 cli.add_command(data_cmd, name='data')
 cli.add_command(train_cmd, name='train')
 cli.add_command(rag_cmd, name='rag')
+cli.add_command(chat_cmd, name='chat')
 
 
 if __name__ == '__main__':
