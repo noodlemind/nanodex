@@ -1,274 +1,141 @@
 # Turbo Code GPT
 
-A model training and transformation program that helps you fine-tune and train open source models to become experts on any given codebase. This enables the creation of specialized chatbots that can answer questions about your code and its behavior.
+Train custom AI models that understand your specific codebase. Create specialized chatbots that can answer questions about your code, help with debugging, and explain your architecture.
 
-## 🎯 How It Works
+## 🎯 What Is This?
 
-**Training Phase:** The program analyzes your codebase and trains a model to learn about your code structure, patterns, and architecture.
+Turbo Code GPT fine-tunes large language models (like DeepSeek Coder, CodeLlama) on your codebase to create AI assistants that know YOUR code.
 
-**Deployment Phase:** The fine-tuned model works **completely standalone** - it doesn't need access to your codebase anymore. All knowledge is embedded in the model weights, so it can answer questions from memory.
+**Key Insight:** The model learns during training and works standalone after deployment - no code access needed!
 
-**Result:** A self-contained AI expert on YOUR specific codebase!
+📖 **[Read the Full Documentation →](docs/README.md)**
 
-**📖 Read [TRAINING_VS_DEPLOYMENT.md](TRAINING_VS_DEPLOYMENT.md) to understand how the model learns during training and works without code access after deployment.**
+## ✨ Features
 
-## Features
+- 🚀 **Easy to Use** - Simple YAML configuration and automated pipeline
+- 🎯 **State-of-the-Art Models** - DeepSeek Coder, CodeLlama, StarCoder2 support
+- 💾 **Memory Efficient** - LoRA fine-tuning with 4-bit quantization
+- 🤖 **Production Ready** - Deploy standalone models without code access
+- 🐛 **Debug Assistant** - Models help identify error sources in your code
+- 🔍 **Code Understanding** - Learn your architecture, patterns, and structure
 
-- 🚀 **Multiple Model Sources**: Support for both HuggingFace and Ollama models
-- 🎯 **Latest GPT-OSS Models**: Pre-configured to use DeepSeek Coder, CodeLlama, StarCoder2, and other state-of-the-art coding models
-- 📊 **Automated Code Analysis**: Automatically analyzes your codebase and extracts relevant context
-- 🔧 **Efficient Fine-tuning**: Uses LoRA (Low-Rank Adaptation) for efficient training with minimal resources
-- 💾 **4-bit/8-bit Quantization**: Train large models on consumer hardware
-- 🤖 **Chatbot Ready**: Export fine-tuned models for integration with chatbot frameworks
-- 🐛 **Error Debugging**: Train models to identify which modules are responsible for specific errors
-- 🔍 **Code Understanding**: Models learn to explain your specific codebase architecture and implementation
+## 🚀 Quick Start
 
-## Supported Models
+### 1. Installation
 
-### HuggingFace Models
-- DeepSeek Coder (6.7B, 33B) - Recommended for code understanding
-- CodeLlama (7B, 13B, 34B)
-- StarCoder2 (7B, 15B)
-- CodeGen (2B, 6B)
-
-### Ollama Models
-- deepseek-coder
-- codellama
-- starcoder2
-
-## Installation
-
-1. Clone the repository:
 ```bash
 git clone https://github.com/noodlemind/turbo-code-gpt.git
 cd turbo-code-gpt
-```
-
-2. Install dependencies:
-```bash
 pip install -r requirements.txt
 ```
 
-3. (Optional) For Ollama support, install Ollama:
-```bash
-# Linux/Mac
-curl -fsSL https://ollama.com/install.sh | sh
+### 2. Configure
 
-# Or visit https://ollama.com for other installation methods
-```
-
-## Quick Start
-
-### 1. Configure Your Project
-
-Edit `config.yaml` to specify your model preferences and codebase:
+Edit `config.yaml`:
 
 ```yaml
-# Choose model source: 'huggingface' or 'ollama'
 model_source: "huggingface"
-
-# Configure repository to analyze
 repository:
-  path: "."  # Path to your codebase
+  path: "/path/to/your/codebase"  # Your code here
   include_extensions:
     - ".py"
     - ".js"
-    - ".ts"
-    # Add more as needed
 ```
 
-### 2. Run the Training Pipeline
+### 3. Train
 
 ```bash
-# Full pipeline: analyze, prepare data, and train
 python main.py
-
-# Or run steps individually:
-python main.py --analyze-only    # Just analyze the codebase
-python main.py --prepare-only    # Analyze and prepare data
 ```
 
-### 3. Use Your Fine-tuned Model
+**Time:** 2-8 hours depending on your codebase size and hardware.
 
-After training completes, your model will be saved in `./models/fine-tuned/`
+### 4. Use Your Model
 
 ```bash
-# Run inference example
-python examples/inference_example.py --model-path ./models/fine-tuned
+python examples/inference_example.py
 ```
 
-## Configuration
+Ask questions like:
+- "How does the authentication system work?"
+- "Which module handles payment processing?"
+- "What causes this error?"
 
-The `config.yaml` file allows you to customize:
+## 📖 Documentation
 
-- **Model Selection**: Choose between HuggingFace and Ollama models
-- **Training Parameters**: Batch size, learning rate, epochs, etc.
-- **LoRA Configuration**: Fine-tuning efficiency settings
-- **Data Processing**: Context window, train/validation split
-- **Repository Filters**: File types and directories to include/exclude
+**Complete documentation is available in the [`docs/`](docs/) directory:**
 
-Example configuration:
+- **[Getting Started](docs/getting-started.md)** - Installation and first model
+- **[How It Works](docs/how-it-works.md)** - Understanding the training pipeline  
+- **[Training vs Deployment](docs/training-vs-deployment.md)** - ⭐ Critical concept!
+- **[Architecture](docs/architecture.md)** - System design and components
+
+### User Guides
+- **[Training Guide](docs/guides/training.md)** - Complete training reference
+- **[Deployment Guide](docs/guides/deployment.md)** - Deploy your models
+- **[Error Debugging](docs/guides/debugging.md)** - Use models for debugging
+- **[Configuration Reference](docs/guides/configuration.md)** - All config options
+
+### Reference
+- **[Troubleshooting](docs/reference/troubleshooting.md)** - Common issues and solutions
+- **[API Reference](docs/reference/api.md)** - Python API
+- **[CLI Reference](docs/reference/cli.md)** - Command-line options
+
+## 💡 Use Cases
+
+- **Codebase Chatbots** - Answer questions about your specific code
+- **Onboarding Tool** - Help new developers understand the codebase
+- **Debug Assistant** - Identify which modules cause specific errors
+- **Documentation** - Automated code explanation and documentation
+- **Architecture Questions** - Explain how systems and modules interact
+
+## 🎯 Example
+
+After training on your codebase:
+
+**You ask:** "I'm seeing 'AttributeError: repository is None' - which module?"
+
+**Model responds:** "This error is in auth/manager.py. The UserManager class expects a repository to be injected during initialization. Check where UserManager is instantiated and ensure the repository dependency is provided."
+
+The model knows YOUR codebase!
+
+## 🔧 Requirements
+
+- Python 3.8+
+- CUDA-capable GPU (recommended, 16GB+ VRAM) or CPU
+- 50GB+ disk space
+
+## 📝 Configuration Example
 
 ```yaml
 model:
   huggingface:
     model_name: "deepseek-ai/deepseek-coder-6.7b-base"
-    use_4bit: true  # Enable 4-bit quantization for reduced memory
+    use_4bit: true
+
+repository:
+  path: "."
+  include_extensions: [".py", ".js", ".ts"]
+  exclude_dirs: ["node_modules", "__pycache__"]
 
 training:
   num_epochs: 3
   batch_size: 4
-  learning_rate: 2.0e-5
   max_seq_length: 2048
-  
-  lora:
-    r: 16
-    lora_alpha: 32
-    lora_dropout: 0.05
 ```
 
-## Usage Examples
+See [Configuration Reference](docs/guides/configuration.md) for all options.
 
-### Using with HuggingFace Models
-
-```python
-from turbo_code_gpt.utils import Config
-from turbo_code_gpt.models import ModelLoader
-
-config = Config("config.yaml")
-model_config = config.get_model_config()
-training_config = config.get_training_config()
-
-loader = ModelLoader(model_config, training_config)
-model, tokenizer = loader.load_huggingface_model()
-model = loader.apply_lora(model)
-```
-
-### Using with Ollama
-
-```bash
-# 1. Prepare your data using Turbo Code GPT
-python main.py --prepare-only
-
-# 2. Create a Modelfile
-python examples/ollama_example.py
-
-# 3. Create custom Ollama model
-ollama create my-code-expert -f Modelfile
-
-# 4. Use it
-ollama run my-code-expert
-```
-
-### Building a Chatbot
-
-The fine-tuned model uses an instruction format:
-
-```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-model = AutoModelForCausalLM.from_pretrained("./models/fine-tuned")
-tokenizer = AutoTokenizer.from_pretrained("./models/fine-tuned")
-
-prompt = """### Instruction:
-Explain what the CodeAnalyzer class does in this codebase.
-
-### Response:
-"""
-
-inputs = tokenizer(prompt, return_tensors="pt")
-outputs = model.generate(**inputs, max_length=512)
-response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-```
-
-### Error Debugging and Module Identification
-
-The model is trained to help debug errors and identify responsible modules:
-
-```python
-# Ask about error sources
-prompt = """### Instruction:
-I'm seeing this error: "AttributeError: 'NoneType' object has no attribute 'process'"
-Which module would be responsible for this?
-
-### Response:
-"""
-
-inputs = tokenizer(prompt, return_tensors="pt")
-outputs = model.generate(**inputs, max_length=512)
-response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-print(response)
-# Output: "Based on the error, check the data processing module at src/processor.py..."
-```
-
-**See [ERROR_DEBUGGING_GUIDE.md](ERROR_DEBUGGING_GUIDE.md) for detailed examples and best practices.**
-
-## Project Structure
-
-```
-turbo-code-gpt/
-├── config.yaml                 # Configuration file
-├── main.py                     # Main CLI script
-├── requirements.txt            # Python dependencies
-├── turbo_code_gpt/            # Main package
-│   ├── analyzers/             # Code analysis modules
-│   │   └── code_analyzer.py   # Repository analyzer
-│   ├── models/                # Model loading and management
-│   │   └── model_loader.py    # HuggingFace model loader
-│   ├── trainers/              # Training modules
-│   │   ├── data_preparer.py   # Data preparation
-│   │   └── model_trainer.py   # Model fine-tuning
-│   └── utils/                 # Utilities
-│       └── config.py          # Configuration management
-└── examples/                   # Example scripts
-    ├── inference_example.py   # Inference demo
-    └── ollama_example.py      # Ollama integration
-```
-
-## Hardware Requirements
-
-### Minimum (with 4-bit quantization)
-- 16GB RAM
-- 8GB GPU VRAM (NVIDIA GPU with CUDA support)
-- 50GB disk space
-
-### Recommended
-- 32GB RAM
-- 16GB+ GPU VRAM
-- 100GB disk space
-
-### CPU-only Mode
-Training is possible but will be significantly slower. Use smaller models (2B-7B parameters).
-
-## Troubleshooting
-
-### Out of Memory Errors
-1. Reduce batch size in `config.yaml`
-2. Enable 4-bit quantization
-3. Reduce `max_seq_length`
-4. Use a smaller base model
-
-### Slow Training
-1. Enable GPU acceleration (ensure CUDA is installed)
-2. Increase `gradient_accumulation_steps`
-3. Use a smaller model or dataset
-
-### Model Quality Issues
-1. Increase training epochs
-2. Adjust learning rate
-3. Include more diverse code samples
-4. Fine-tune LoRA parameters (r, alpha)
-
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## License
+## 📄 License
 
-This project is open source and available under the MIT License.
+This project is licensed under the MIT License.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - HuggingFace for the Transformers library
 - Ollama for local model inference
-- DeepSeek, Meta, and other organizations for open-source coding models 
+- DeepSeek, Meta, and others for open-source coding models 
