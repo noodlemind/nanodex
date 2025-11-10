@@ -9,7 +9,7 @@ from pathlib import Path
 # Add the project to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from turbo_code_gpt.utils import Config
+from nanodex.utils import Config
 
 def test_config_loading():
     """Test configuration loading with Pydantic validation."""

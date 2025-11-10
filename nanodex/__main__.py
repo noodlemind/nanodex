@@ -1,11 +1,11 @@
 """
-Main entry point for Turbo Code GPT CLI.
+Main entry point for nanodex CLI.
 
-This module makes turbo_code_gpt runnable as a module:
-    python -m turbo_code_gpt
+This module makes nanodex runnable as a module:
+    python -m nanodex
 
 And provides the entry point for the installed command:
-    turbo-code-gpt
+    nanodex
 """
 
 import sys
@@ -15,7 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Import the modern Click-based CLI
-from turbo_code_gpt.cli import cli
+from nanodex.cli import cli
 
 
 def main():

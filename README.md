@@ -1,6 +1,8 @@
-# 🚀 Turbo Code GPT
+# 🚀 nanodex
 
-A comprehensive system for fine-tuning open-source LLMs on your codebase with RAG (Retrieval-Augmented Generation) support. Create specialized AI coding assistants that understand your specific codebase architecture, patterns, and conventions.
+A minimal yet powerful system for fine-tuning open-source coding models on your codebase with RAG (Retrieval-Augmented Generation) support. Create specialized AI coding assistants that understand your specific codebase architecture, patterns, and conventions.
+
+**Inspired by nanoGPT and nanochat**, nanodex brings the "nano" philosophy to code understanding: simple, hackable, and efficient.
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -27,7 +29,7 @@ A comprehensive system for fine-tuning open-source LLMs on your codebase with RA
 - **Context Assembly**: Automatically retrieve relevant code for queries
 
 ### 💻 Developer Experience
-- **Setup Wizard**: Interactive configuration with `turbo-code-gpt init`
+- **Setup Wizard**: Interactive configuration with `nanodex init`
 - **Validation**: Pydantic-powered config validation
 - **Rich Output**: Beautiful tables, progress bars, and panels
 - **Session Persistence**: Save and resume chat conversations
@@ -43,8 +45,8 @@ A comprehensive system for fine-tuning open-source LLMs on your codebase with RA
 
 ```bash
 # Clone repository
-git clone https://github.com/noodlemind/turbo-code-gpt.git
-cd turbo-code-gpt
+git clone https://github.com/noodlemind/nanodex.git
+cd nanodex
 
 # Install dependencies
 pip install -r requirements.txt
@@ -56,8 +58,8 @@ pip install -e .
 ### Verify Installation
 
 ```bash
-turbo-code-gpt --version
-turbo-code-gpt --help
+nanodex --version
+nanodex --help
 ```
 
 ## 🚀 Quick Start
@@ -67,7 +69,7 @@ turbo-code-gpt --help
 Run the interactive setup wizard:
 
 ```bash
-turbo-code-gpt init
+nanodex init
 ```
 
 This will guide you through:
@@ -81,7 +83,7 @@ This will guide you through:
 Analyze your codebase to understand its structure:
 
 ```bash
-turbo-code-gpt analyze
+nanodex analyze
 ```
 
 This shows:
@@ -96,13 +98,13 @@ Generate training examples from your code:
 
 ```bash
 # Free mode (codebase-only, no API calls)
-turbo-code-gpt data generate --mode free
+nanodex data generate --mode free
 
 # Hybrid mode (mixed synthetic + codebase)
-turbo-code-gpt data generate --mode hybrid --count 100
+nanodex data generate --mode hybrid --count 100
 
 # Full mode (API-powered, requires OpenAI key)
-turbo-code-gpt data generate --mode full --count 500
+nanodex data generate --mode full --count 500
 ```
 
 ### 4. Build RAG Index
@@ -110,7 +112,7 @@ turbo-code-gpt data generate --mode full --count 500
 Create a semantic search index:
 
 ```bash
-turbo-code-gpt rag index
+nanodex rag index
 ```
 
 This enables:
@@ -123,7 +125,7 @@ This enables:
 Fine-tune the model on your codebase:
 
 ```bash
-turbo-code-gpt train
+nanodex train
 ```
 
 Features:
@@ -137,14 +139,14 @@ Features:
 Launch the interactive chat interface:
 
 ```bash
-turbo-code-gpt chat
+nanodex chat
 ```
 
 Or search your codebase semantically:
 
 ```bash
-turbo-code-gpt rag search "authentication logic"
-turbo-code-gpt rag query "How does error handling work?"
+nanodex rag search "authentication logic"
+nanodex rag query "How does error handling work?"
 ```
 
 ## 📖 Usage Guide
@@ -200,38 +202,38 @@ repository:
 
 #### Configuration
 ```bash
-turbo-code-gpt init              # Interactive setup wizard
-turbo-code-gpt config-show       # Display current configuration
-turbo-code-gpt config-validate   # Validate configuration file
+nanodex init              # Interactive setup wizard
+nanodex config-show       # Display current configuration
+nanodex config-validate   # Validate configuration file
 ```
 
 #### Analysis & Data
 ```bash
-turbo-code-gpt analyze           # Analyze codebase
-turbo-code-gpt data generate     # Generate training data
-turbo-code-gpt data stats        # Show dataset statistics
-turbo-code-gpt data validate     # Validate training data
+nanodex analyze           # Analyze codebase
+nanodex data generate     # Generate training data
+nanodex data stats        # Show dataset statistics
+nanodex data validate     # Validate training data
 ```
 
 #### Training
 ```bash
-turbo-code-gpt train             # Train model
-turbo-code-gpt train --resume    # Resume from checkpoint
+nanodex train             # Train model
+nanodex train --resume    # Resume from checkpoint
 ```
 
 #### RAG (Retrieval-Augmented Generation)
 ```bash
-turbo-code-gpt rag index         # Build semantic search index
-turbo-code-gpt rag search QUERY  # Search for code
-turbo-code-gpt rag query QUESTION # Ask questions
-turbo-code-gpt rag stats         # Show index statistics
+nanodex rag index         # Build semantic search index
+nanodex rag search QUERY  # Search for code
+nanodex rag query QUESTION # Ask questions
+nanodex rag stats         # Show index statistics
 ```
 
 #### Chat
 ```bash
-turbo-code-gpt chat              # Interactive chat
-turbo-code-gpt chat --model PATH # Chat with specific model
-turbo-code-gpt chat --session FILE # Resume session
+nanodex chat              # Interactive chat
+nanodex chat --model PATH # Chat with specific model
+nanodex chat --session FILE # Resume session
 ```
 
 ### Data Generation Modes
@@ -242,7 +244,7 @@ turbo-code-gpt chat --session FILE # Resume session
 - **Use Case**: Testing, small codebases
 
 ```bash
-turbo-code-gpt data generate --mode free
+nanodex data generate --mode free
 ```
 
 Generates training examples from:
@@ -256,7 +258,7 @@ Generates training examples from:
 - **Use Case**: Medium codebases, budget-conscious
 
 ```bash
-turbo-code-gpt data generate --mode hybrid --count 200
+nanodex data generate --mode hybrid --count 200
 ```
 
 Combines:
@@ -269,7 +271,7 @@ Combines:
 - **Use Case**: Production, large codebases
 
 ```bash
-turbo-code-gpt data generate --mode full --count 500
+nanodex data generate --mode full --count 500
 ```
 
 Generates high-quality examples using OpenAI API.
@@ -281,34 +283,34 @@ Find code by meaning, not keywords:
 
 ```bash
 # Find authentication code
-turbo-code-gpt rag search "user login and authentication"
+nanodex rag search "user login and authentication"
 
 # Find error handling
-turbo-code-gpt rag search "exception handling and logging"
+nanodex rag search "exception handling and logging"
 
 # Find specific patterns
-turbo-code-gpt rag search "database connection pooling"
+nanodex rag search "database connection pooling"
 ```
 
 #### Q&A
 Ask natural language questions:
 
 ```bash
-turbo-code-gpt rag query "How does the caching system work?"
-turbo-code-gpt rag query "Where are API endpoints defined?"
-turbo-code-gpt rag query "What libraries are used for testing?"
+nanodex rag query "How does the caching system work?"
+nanodex rag query "Where are API endpoints defined?"
+nanodex rag query "What libraries are used for testing?"
 ```
 
 #### Filtered Search
 ```bash
 # Search only functions
-turbo-code-gpt rag search "parse JSON" --type function
+nanodex rag search "parse JSON" --type function
 
 # Search only Python code
-turbo-code-gpt rag search "async processing" --language python
+nanodex rag search "async processing" --language python
 
 # Get more results
-turbo-code-gpt rag search "database query" -k 10
+nanodex rag search "database query" -k 10
 ```
 
 ### Chat Interface
@@ -316,7 +318,7 @@ turbo-code-gpt rag search "database query" -k 10
 The chat interface provides an interactive experience:
 
 ```bash
-turbo-code-gpt chat
+nanodex chat
 ```
 
 **Features:**
@@ -654,14 +656,14 @@ training:
 
 ```bash
 # Generate more training data
-turbo-code-gpt data generate --mode hybrid --count 500
+nanodex data generate --mode hybrid --count 500
 
 # Increase training epochs
 training:
   num_epochs: 5
 
 # Build RAG index for better context
-turbo-code-gpt rag index
+nanodex rag index
 
 # Adjust learning rate
 training:
@@ -711,8 +713,8 @@ This project is open source and available under the MIT License.
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/noodlemind/turbo-code-gpt/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/noodlemind/turbo-code-gpt/discussions)
+- **Issues**: [GitHub Issues](https://github.com/noodlemind/nanodex/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/noodlemind/nanodex/discussions)
 - **Documentation**: See `/docs` folder
 
 ---

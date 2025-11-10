@@ -1,5 +1,5 @@
 """
-Tests for Turbo Code GPT modules.
+Tests for nanodex modules.
 """
 
 import unittest
@@ -13,8 +13,8 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from turbo_code_gpt.utils import Config
-from turbo_code_gpt.analyzers import CodeAnalyzer
+from nanodex.utils import Config
+from nanodex.analyzers import CodeAnalyzer
 
 
 class TestConfig(unittest.TestCase):

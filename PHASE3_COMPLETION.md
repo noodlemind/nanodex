@@ -171,14 +171,14 @@ load(path)                            # Load retriever
 
 ### 7. RAG CLI Commands (`cli/rag.py`) ✅
 
-#### Command: `turbo-code-gpt rag index`
+#### Command: `nanodex rag index`
 **Purpose**: Build RAG index from codebase.
 
 ```bash
-turbo-code-gpt rag index
-turbo-code-gpt rag index --embedding-model sentence-transformers/all-MiniLM-L6-v2
-turbo-code-gpt rag index --chunk-strategy hybrid
-turbo-code-gpt rag index --output ./models/rag_index
+nanodex rag index
+nanodex rag index --embedding-model sentence-transformers/all-MiniLM-L6-v2
+nanodex rag index --chunk-strategy hybrid
+nanodex rag index --output ./models/rag_index
 ```
 
 **Process**:
@@ -194,14 +194,14 @@ turbo-code-gpt rag index --output ./models/rag_index
 - Chunk types distribution
 - Average chunk size
 
-#### Command: `turbo-code-gpt rag search`
+#### Command: `nanodex rag search`
 **Purpose**: Semantic code search with natural language.
 
 ```bash
-turbo-code-gpt rag search "authentication logic"
-turbo-code-gpt rag search "parse JSON" -k 10
-turbo-code-gpt rag search "database connection" --type function
-turbo-code-gpt rag search "error handling" --language python
+nanodex rag search "authentication logic"
+nanodex rag search "parse JSON" -k 10
+nanodex rag search "database connection" --type function
+nanodex rag search "error handling" --language python
 ```
 
 **Features**:
@@ -218,12 +218,12 @@ turbo-code-gpt rag search "error handling" --language python
 - Relevance score
 - Code preview (first 300 chars)
 
-#### Command: `turbo-code-gpt rag query`
+#### Command: `nanodex rag query`
 **Purpose**: Ask questions about your codebase.
 
 ```bash
-turbo-code-gpt rag query "How does authentication work?"
-turbo-code-gpt rag query "Where is database connection handled?" --show-context
+nanodex rag query "How does authentication work?"
+nanodex rag query "Where is database connection handled?" --show-context
 ```
 
 **Features**:
@@ -237,12 +237,12 @@ turbo-code-gpt rag query "Where is database connection handled?" --show-context
 - Retrieved context chunks (if --show-context)
 - Note if no model available
 
-#### Command: `turbo-code-gpt rag stats`
+#### Command: `nanodex rag stats`
 **Purpose**: Show RAG index statistics.
 
 ```bash
-turbo-code-gpt rag stats
-turbo-code-gpt rag stats --index ./models/rag_index
+nanodex rag stats
+nanodex rag stats --index ./models/rag_index
 ```
 
 **Shows**:
@@ -290,7 +290,7 @@ faiss-cpu>=1.7.4              # Fast similarity search
 ## File Structure
 
 ```
-turbo_code_gpt/
+nanodex/
 ├── rag/
 │   ├── __init__.py          # Module exports
 │   ├── embedder.py          # CodeEmbedder (260 lines)
@@ -357,19 +357,19 @@ Answer + Context
 
 ```bash
 # 1. Build RAG index
-turbo-code-gpt rag index
+nanodex rag index
 # Output: Indexed 150 files → 450 chunks → Saved to ./models/rag_index
 
 # 2. Search for code
-turbo-code-gpt rag search "authentication logic" -k 5
+nanodex rag search "authentication logic" -k 5
 # Output: 5 results with relevance scores and code previews
 
 # 3. Ask questions
-turbo-code-gpt rag query "How does login work?" --show-context
+nanodex rag query "How does login work?" --show-context
 # Output: Answer + retrieved context chunks
 
 # 4. View statistics
-turbo-code-gpt rag stats
+nanodex rag stats
 # Output: Tables showing chunk distribution, languages, etc.
 ```
 
@@ -377,13 +377,13 @@ turbo-code-gpt rag stats
 
 ```bash
 # Search with filters
-turbo-code-gpt rag search "error handling" --type function --language python
+nanodex rag search "error handling" --type function --language python
 
 # Find similar code
-turbo-code-gpt rag search "def process_data" -k 10
+nanodex rag search "def process_data" -k 10
 
 # Search specific index
-turbo-code-gpt rag search "API endpoint" --index ./custom_index
+nanodex rag search "API endpoint" --index ./custom_index
 ```
 
 ## Benefits Achieved

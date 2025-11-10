@@ -16,8 +16,8 @@ Phase 1 has been successfully completed with all critical fixes and foundation w
 **Commit:** `aad5cf1` - Fix critical issues and improve validation
 
 #### 1.1.1: Fix setup.py Entry Point ✅
-- Fixed broken entry point: `turbo-code-gpt=turbo_code_gpt.__main__:main`
-- Created `turbo_code_gpt/__main__.py` with proper main() function
+- Fixed broken entry point: `nanodex=nanodex.__main__:main`
+- Created `nanodex/__main__.py` with proper main() function
 - Added --version flag
 - Package now installs correctly via pip
 
@@ -45,7 +45,7 @@ Phase 1 has been successfully completed with all critical fixes and foundation w
 **Commit:** `886f872` - Add deep parsing and Pydantic validation
 
 #### 1.2.1: Implement Python AST Parser ✅
-**New File:** `turbo_code_gpt/analyzers/ast_parser.py` (400+ lines)
+**New File:** `nanodex/analyzers/ast_parser.py` (400+ lines)
 
 Extracts:
 - Functions with signatures, docstrings, arguments, return types, decorators
@@ -68,7 +68,7 @@ Features:
 - Dependencies already in requirements.txt
 
 #### 1.2.3: Build Dependency Graph ✅
-**New File:** `turbo_code_gpt/analyzers/dependency_graph.py` (300+ lines)
+**New File:** `nanodex/analyzers/dependency_graph.py` (300+ lines)
 
 Features:
 - Builds import dependency graphs
@@ -87,7 +87,7 @@ Methods:
 - `concatenate_with_deps()` - Create repo-level examples
 
 #### 1.2.4: Enhance CodeAnalyzer ✅
-**Modified:** `turbo_code_gpt/analyzers/code_analyzer.py`
+**Modified:** `nanodex/analyzers/code_analyzer.py`
 
 Enhancements:
 - Integrated PythonASTParser
@@ -105,7 +105,7 @@ Configuration:
 **Commit:** `886f872` - Add deep parsing and Pydantic validation
 
 #### 1.3.1: Implement Pydantic Validation ✅
-**New File:** `turbo_code_gpt/utils/schemas.py` (450+ lines)
+**New File:** `nanodex/utils/schemas.py` (450+ lines)
 
 Pydantic Models:
 - `HuggingFaceModelConfig` - HuggingFace model settings
@@ -140,7 +140,7 @@ Features:
 - Validate on assignment
 
 #### 1.3.2: Update Config Class ✅
-**Modified:** `turbo_code_gpt/utils/config.py`
+**Modified:** `nanodex/utils/config.py`
 
 Changes:
 - Added Pydantic import and validation
@@ -190,20 +190,20 @@ Changes:
 ## Files Changed
 
 ### New Files (4)
-1. `turbo_code_gpt/analyzers/ast_parser.py` - Python AST parser
-2. `turbo_code_gpt/analyzers/dependency_graph.py` - Dependency analysis
-3. `turbo_code_gpt/utils/schemas.py` - Pydantic validation schemas
+1. `nanodex/analyzers/ast_parser.py` - Python AST parser
+2. `nanodex/analyzers/dependency_graph.py` - Dependency analysis
+3. `nanodex/utils/schemas.py` - Pydantic validation schemas
 4. `test_pydantic_config.py` - Configuration validation test
 
 ### Modified Files (8)
 1. `setup.py` - Fixed entry point
 2. `config.yaml` - Added random_seed, deep_parsing, validation header
 3. `requirements.txt` - Added pydantic
-4. `turbo_code_gpt/__main__.py` - Created proper entry point
-5. `turbo_code_gpt/analyzers/code_analyzer.py` - Integrated deep parsing
-6. `turbo_code_gpt/utils/config.py` - Added Pydantic validation
-7. `turbo_code_gpt/trainers/data_preparer.py` - Added random seed
-8. `turbo_code_gpt/trainers/model_trainer.py` - Added dataset validation
+4. `nanodex/__main__.py` - Created proper entry point
+5. `nanodex/analyzers/code_analyzer.py` - Integrated deep parsing
+6. `nanodex/utils/config.py` - Added Pydantic validation
+7. `nanodex/trainers/data_preparer.py` - Added random seed
+8. `nanodex/trainers/model_trainer.py` - Added dataset validation
 
 ## Code Statistics
 
@@ -262,7 +262,7 @@ Changes:
 Phase 2 will focus on:
 - Self-supervised data generation (docstrings, FIM, tests, git)
 - Optional synthetic data generation (API integration)
-- Interactive CLI setup wizard (`turbo-code-gpt init`)
+- Interactive CLI setup wizard (`nanodex init`)
 - Analysis and data generation commands
 - Budget tracking for API costs
 

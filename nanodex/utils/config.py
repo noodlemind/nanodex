@@ -1,5 +1,5 @@
 """
-Configuration management for Turbo Code GPT.
+Configuration management for nanodex.
 """
 
 import yaml

@@ -39,9 +39,9 @@ def train_cmd(config, data, resume):
 
     \b
     Example:
-        turbo-code-gpt train
-        turbo-code-gpt train --data ./data/training_examples.json
-        turbo-code-gpt train --resume ./models/fine-tuned/checkpoint-500
+        nanodex train
+        nanodex train --data ./data/training_examples.json
+        nanodex train --resume ./models/fine-tuned/checkpoint-500
     """
     try:
         console.print("\n[bold cyan]Starting Training Pipeline...[/bold cyan]\n")
@@ -100,7 +100,7 @@ def train_cmd(config, data, resume):
         else:
             # Generate from codebase
             console.print("  [yellow]No data file specified, will analyze codebase...[/yellow]")
-            console.print("  [dim]Tip: Use 'turbo-code-gpt data generate' to pre-generate data[/dim]\n")
+            console.print("  [dim]Tip: Use 'nanodex data generate' to pre-generate data[/dim]\n")
 
             from ..analyzers import CodeAnalyzer
 
@@ -174,8 +174,8 @@ def train_cmd(config, data, resume):
             f"[bold green]✓ Training Complete![/bold green]\n\n"
             f"Model saved to: [cyan]{training_config['output_dir']}[/cyan]\n\n"
             "[bold]Next steps:[/bold]\n"
-            "1. turbo-code-gpt export          # Export to GGUF/ONNX\n"
-            "2. turbo-code-gpt chat            # Chat with your model",
+            "1. nanodex export          # Export to GGUF/ONNX\n"
+            "2. nanodex chat            # Chat with your model",
             title="Success",
             border_style="green"
         ))

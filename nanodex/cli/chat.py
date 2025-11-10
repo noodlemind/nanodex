@@ -36,9 +36,9 @@ def chat_cmd(index, model, session, no_rag, temperature):
 
     \\b
     Example:
-        turbo-code-gpt chat
-        turbo-code-gpt chat --model ./models/fine-tuned
-        turbo-code-gpt chat --session my_session.json
+        nanodex chat
+        nanodex chat --model ./models/fine-tuned
+        nanodex chat --session my_session.json
 
     \\b
     Commands during chat:
@@ -54,7 +54,7 @@ def chat_cmd(index, model, session, no_rag, temperature):
         # Welcome message
         console.print()
         console.print(Panel.fit(
-            "[bold cyan]💬 Turbo Code GPT - Interactive Chat[/bold cyan]\n\n"
+            "[bold cyan]💬 nanodex - Interactive Chat[/bold cyan]\n\n"
             "Ask questions about your codebase, request code explanations,\n"
             "or get coding help with AI-powered responses.\n\n"
             "[dim]Type /help for commands or /exit to quit[/dim]",
@@ -73,7 +73,7 @@ def chat_cmd(index, model, session, no_rag, temperature):
         index_path = Path(index)
         if not index_path.exists():
             console.print(f"[yellow]⚠ RAG index not found at {index}[/yellow]")
-            console.print("[dim]Build an index first with: turbo-code-gpt rag index[/dim]\n")
+            console.print("[dim]Build an index first with: nanodex rag index[/dim]\n")
 
             if not click.confirm("Continue without RAG?"):
                 return
@@ -109,7 +109,7 @@ def chat_cmd(index, model, session, no_rag, temperature):
                 console.print("[dim]Continuing without model (RAG search only)[/dim]\n")
         else:
             console.print("[dim]💡 No model specified. Using RAG search only.[/dim]")
-            console.print("[dim]   Train a model with: turbo-code-gpt train[/dim]\n")
+            console.print("[dim]   Train a model with: nanodex train[/dim]\n")
 
         # Create inference engine
         rag_inference = RAGInference(

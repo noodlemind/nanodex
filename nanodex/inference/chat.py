@@ -308,15 +308,15 @@ class ChatSession:
                 "I found this relevant code from your codebase:\n\n"
                 f"{retrieved_context}\n\n"
                 "Note: No fine-tuned model is loaded. Train a model with "
-                "'turbo-code-gpt train' for full AI-powered responses."
+                "'nanodex train' for full AI-powered responses."
             )
         else:
             return (
                 "I don't have a fine-tuned model loaded to generate responses. "
                 "You can:\n"
-                "1. Train a model: turbo-code-gpt train\n"
-                "2. Use RAG search: turbo-code-gpt rag search \"your query\"\n"
-                "3. Build RAG index: turbo-code-gpt rag index"
+                "1. Train a model: nanodex train\n"
+                "2. Use RAG search: nanodex rag search \"your query\"\n"
+                "3. Build RAG index: nanodex rag index"
             )
 
     def get_stats(self) -> Dict:

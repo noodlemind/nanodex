@@ -31,17 +31,17 @@ typer          # Alternative: Type-hint based CLI (optional)
 **Time: 6-8 hours**
 
 **New files:**
-- `turbo_code_gpt/cli/__init__.py`
-- `turbo_code_gpt/cli/main.py` - Main CLI entry point
-- `turbo_code_gpt/cli/utils.py` - Shared CLI utilities
-- `turbo_code_gpt/cli/console.py` - Rich console setup
-- `turbo_code_gpt/__main__.py` - Package entry point
+- `nanodex/cli/__init__.py`
+- `nanodex/cli/main.py` - Main CLI entry point
+- `nanodex/cli/utils.py` - Shared CLI utilities
+- `nanodex/cli/console.py` - Rich console setup
+- `nanodex/__main__.py` - Package entry point
 
 **Commands to implement:**
-- `turbo-code-gpt --help` - Show help
-- `turbo-code-gpt --version` - Show version
-- `turbo-code-gpt config show` - Display config
-- `turbo-code-gpt config validate` - Validate config
+- `nanodex --help` - Show help
+- `nanodex --version` - Show version
+- `nanodex config show` - Display config
+- `nanodex config validate` - Validate config
 
 **Deliverable:**
 - Working CLI framework
@@ -54,13 +54,13 @@ typer          # Alternative: Type-hint based CLI (optional)
 **Time: 8-10 hours**
 
 **New files:**
-- `turbo_code_gpt/cli/commands/init.py` - Interactive wizard
-- `turbo_code_gpt/cli/commands/config.py` - Config management
-- `turbo_code_gpt/cli/wizards/setup_wizard.py` - Setup flow
-- `turbo_code_gpt/cli/wizards/mode_selector.py` - Mode selection
+- `nanodex/cli/commands/init.py` - Interactive wizard
+- `nanodex/cli/commands/config.py` - Config management
+- `nanodex/cli/wizards/setup_wizard.py` - Setup flow
+- `nanodex/cli/wizards/mode_selector.py` - Mode selection
 
 **Commands to implement:**
-- `turbo-code-gpt init` - Full interactive setup
+- `nanodex init` - Full interactive setup
   - Codebase path selection
   - Mode selection (free/hybrid/full/rag-only)
   - Model selection with recommendations
@@ -69,14 +69,14 @@ typer          # Alternative: Type-hint based CLI (optional)
   - Hardware detection
   - Config generation
 
-- `turbo-code-gpt config set <key> <value>` - Set config values
-- `turbo-code-gpt config edit` - Open in editor
-- `turbo-code-gpt models list` - List available models
-- `turbo-code-gpt models info <model>` - Model details
+- `nanodex config set <key> <value>` - Set config values
+- `nanodex config edit` - Open in editor
+- `nanodex models list` - List available models
+- `nanodex models info <model>` - Model details
 
 **User Experience:**
 ```bash
-$ turbo-code-gpt init
+$ nanodex init
 
 🚀 Welcome to Turbo-Code-GPT!
 
@@ -103,9 +103,9 @@ Let's set up your codebase-specific AI assistant.
 ✓ Configuration saved to config.yaml
 
 📝 Next steps:
-  1. turbo-code-gpt analyze - Analyze your codebase
-  2. turbo-code-gpt data generate - Generate training data
-  3. turbo-code-gpt train - Start training
+  1. nanodex analyze - Analyze your codebase
+  2. nanodex data generate - Generate training data
+  3. nanodex train - Start training
 
 Ready to analyze your codebase? [Y/n]:
 ```
@@ -122,22 +122,22 @@ Ready to analyze your codebase? [Y/n]:
 **Time: 6-8 hours**
 
 **New files:**
-- `turbo_code_gpt/cli/commands/analyze.py`
-- `turbo_code_gpt/cli/commands/data.py`
-- `turbo_code_gpt/cli/formatters/analysis_formatter.py`
-- `turbo_code_gpt/cli/formatters/data_formatter.py`
+- `nanodex/cli/commands/analyze.py`
+- `nanodex/cli/commands/data.py`
+- `nanodex/cli/formatters/analysis_formatter.py`
+- `nanodex/cli/formatters/data_formatter.py`
 
 **Commands:**
-- `turbo-code-gpt analyze repo` - Full repository analysis
-- `turbo-code-gpt analyze dependencies` - Dependency graph
-- `turbo-code-gpt analyze stats` - Code statistics
-- `turbo-code-gpt data generate` - Generate training data
-- `turbo-code-gpt data preview` - Preview examples
-- `turbo-code-gpt data stats` - Data statistics
+- `nanodex analyze repo` - Full repository analysis
+- `nanodex analyze dependencies` - Dependency graph
+- `nanodex analyze stats` - Code statistics
+- `nanodex data generate` - Generate training data
+- `nanodex data preview` - Preview examples
+- `nanodex data stats` - Data statistics
 
 **Output example:**
 ```bash
-$ turbo-code-gpt analyze repo
+$ nanodex analyze repo
 
 Analyzing codebase... ━━━━━━━━━━━━━━━━━━ 127/127
 
@@ -174,17 +174,17 @@ Estimated training data:
 **Time: 8-10 hours**
 
 **New files:**
-- `turbo_code_gpt/cli/commands/train.py`
-- `turbo_code_gpt/cli/commands/evaluate.py`
-- `turbo_code_gpt/cli/formatters/training_formatter.py`
-- `turbo_code_gpt/cli/progress/training_progress.py`
+- `nanodex/cli/commands/train.py`
+- `nanodex/cli/commands/evaluate.py`
+- `nanodex/cli/formatters/training_formatter.py`
+- `nanodex/cli/progress/training_progress.py`
 
 **Commands:**
-- `turbo-code-gpt train start` - Start training
-- `turbo-code-gpt train resume` - Resume from checkpoint
-- `turbo-code-gpt train status` - Show current status
-- `turbo-code-gpt evaluate run` - Run evaluation
-- `turbo-code-gpt evaluate report` - Generate report
+- `nanodex train start` - Start training
+- `nanodex train resume` - Resume from checkpoint
+- `nanodex train status` - Show current status
+- `nanodex evaluate run` - Run evaluation
+- `nanodex evaluate report` - Generate report
 
 **Features:**
 - Real-time progress bars
@@ -195,7 +195,7 @@ Estimated training data:
 
 **Output example:**
 ```bash
-$ turbo-code-gpt train start
+$ nanodex train start
 
 🚀 Starting Training
 
@@ -226,21 +226,21 @@ Epoch 1/3
 **Time: 10-12 hours**
 
 **New files:**
-- `turbo_code_gpt/cli/commands/chat.py`
-- `turbo_code_gpt/cli/commands/ask.py`
-- `turbo_code_gpt/cli/commands/debug.py`
-- `turbo_code_gpt/cli/chat/session.py`
-- `turbo_code_gpt/cli/chat/rag_integration.py`
+- `nanodex/cli/commands/chat.py`
+- `nanodex/cli/commands/ask.py`
+- `nanodex/cli/commands/debug.py`
+- `nanodex/cli/chat/session.py`
+- `nanodex/cli/chat/rag_integration.py`
 
 **Commands:**
-- `turbo-code-gpt chat` - Interactive chat session
-- `turbo-code-gpt ask "<question>"` - One-shot question
-- `turbo-code-gpt debug locate "<error>"` - Find error source
-- `turbo-code-gpt debug explain "<error>"` - Explain error
+- `nanodex chat` - Interactive chat session
+- `nanodex ask "<question>"` - One-shot question
+- `nanodex debug locate "<error>"` - Find error source
+- `nanodex debug explain "<error>"` - Explain error
 
 **Chat experience:**
 ```bash
-$ turbo-code-gpt chat
+$ nanodex chat
 
 Loading model... ✓
 Loading RAG index... ✓
@@ -289,15 +289,15 @@ You: /exit
 
 **Debug experience:**
 ```bash
-$ turbo-code-gpt debug locate "TypeError: 'NoneType' object is not subscriptable"
+$ nanodex debug locate "TypeError: 'NoneType' object is not subscriptable"
 
 🔍 Analyzing error...
 
 Likely locations:
-  1. turbo_code_gpt/trainers/data_preparer.py:93
+  1. nanodex/trainers/data_preparer.py:93
      └─ Missing null check on examples['input']
 
-  2. turbo_code_gpt/analyzers/code_analyzer.py:76
+  2. nanodex/analyzers/code_analyzer.py:76
      └─ File read returned None
 
   3. main.py:157
@@ -323,10 +323,10 @@ Run with --verbose for detailed analysis
 **Time: 6-8 hours**
 
 **Commands:**
-- `turbo-code-gpt export gguf` - Export to GGUF
-- `turbo-code-gpt export onnx` - Export to ONNX
-- `turbo-code-gpt serve` - Start API server (future)
-- `turbo-code-gpt serve status` - Check server status
+- `nanodex export gguf` - Export to GGUF
+- `nanodex export onnx` - Export to ONNX
+- `nanodex serve` - Start API server (future)
+- `nanodex serve status` - Check server status
 
 ---
 
@@ -335,11 +335,11 @@ Run with --verbose for detailed analysis
 ### 1. CLI Structure
 
 ```python
-# turbo_code_gpt/cli/main.py
+# nanodex/cli/main.py
 
 import click
 from rich.console import Console
-from turbo_code_gpt import __version__
+from nanodex import __version__
 
 console = Console()
 
@@ -374,7 +374,7 @@ if __name__ == '__main__':
 ### 2. Console Utilities
 
 ```python
-# turbo_code_gpt/cli/console.py
+# nanodex/cli/console.py
 
 from rich.console import Console
 from rich.panel import Panel
@@ -420,7 +420,7 @@ def create_progress() -> Progress:
 ### 3. Interactive Wizards
 
 ```python
-# turbo_code_gpt/cli/wizards/setup_wizard.py
+# nanodex/cli/wizards/setup_wizard.py
 
 import questionary
 from pathlib import Path
@@ -508,7 +508,7 @@ def run_setup_wizard():
 
 entry_points={
     "console_scripts": [
-        "turbo-code-gpt=turbo_code_gpt.cli.main:cli",
+        "nanodex=nanodex.cli.main:cli",
     ],
 }
 ```
@@ -544,7 +544,7 @@ textual>=0.40.0  # For TUI (future)
 **Time: 40-54 hours (was 26-36)**
 
 **Added tasks:**
-2.4: Interactive setup wizard (`turbo-code-gpt init`)
+2.4: Interactive setup wizard (`nanodex init`)
 2.5: Model selection and management
 2.6: Analysis commands with beautiful output
 2.7: Data generation commands with progress
@@ -563,19 +563,19 @@ textual>=0.40.0  # For TUI (future)
 ## Success Metrics
 
 ### Phase 1 Success:
-✅ `turbo-code-gpt --help` shows beautiful help
-✅ `turbo-code-gpt config show` displays formatted config
+✅ `nanodex --help` shows beautiful help
+✅ `nanodex config show` displays formatted config
 ✅ CLI installs correctly via pip
 
 ### Phase 2 Success:
-✅ `turbo-code-gpt init` guides user through setup
+✅ `nanodex init` guides user through setup
 ✅ Config generated automatically with defaults
 ✅ Mode selection is intuitive
 ✅ API keys stored securely
 
 ### Phase 5 Success:
-✅ `turbo-code-gpt chat` provides interactive experience
-✅ `turbo-code-gpt debug locate` finds errors accurately
+✅ `nanodex chat` provides interactive experience
+✅ `nanodex debug locate` finds errors accurately
 ✅ RAG integration works seamlessly
 ✅ Beautiful, professional output throughout
 
@@ -585,35 +585,35 @@ textual>=0.40.0  # For TUI (future)
 
 ```bash
 # 1. Install
-pip install turbo-code-gpt
+pip install nanodex
 
 # 2. Interactive setup (first time)
-turbo-code-gpt init
+nanodex init
 # Guides through: path, mode, model, API keys, etc.
 
 # 3. Optional: Review config
-turbo-code-gpt config show
+nanodex config show
 
 # 4. Analyze codebase
-turbo-code-gpt analyze repo
+nanodex analyze repo
 
 # 5. Generate training data
-turbo-code-gpt data generate
+nanodex data generate
 # Shows progress, cost tracking, examples generated
 
 # 6. Train model
-turbo-code-gpt train start
+nanodex train start
 # Real-time progress, loss tracking, ETA
 
 # 7. Evaluate
-turbo-code-gpt evaluate run
+nanodex evaluate run
 
 # 8. Use it!
-turbo-code-gpt chat
+nanodex chat
 # OR
-turbo-code-gpt ask "How does authentication work?"
+nanodex ask "How does authentication work?"
 # OR
-turbo-code-gpt debug locate "AttributeError in line 42"
+nanodex debug locate "AttributeError in line 42"
 ```
 
 ---
@@ -624,7 +624,7 @@ The CLI is the primary interface, but also support library usage:
 
 ```python
 # Library usage (for advanced users)
-from turbo_code_gpt import TurboCodeGPT
+from nanodex import TurboCodeGPT
 
 tcg = TurboCodeGPT(config_path="config.yaml")
 tcg.analyze()

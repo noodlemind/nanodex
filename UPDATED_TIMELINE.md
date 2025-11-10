@@ -19,8 +19,8 @@ With the addition of a professional CLI (similar to GitHub Copilot CLI, Claude C
 
 **NEW CLI tasks:**
 - Create CLI framework with Click + Rich
-- Implement `turbo-code-gpt --help` and `--version`
-- Implement `turbo-code-gpt config show/validate/set`
+- Implement `nanodex --help` and `--version`
+- Implement `nanodex config show/validate/set`
 - Setup beautiful console output
 - Update setup.py with proper entry point
 
@@ -43,15 +43,15 @@ With the addition of a professional CLI (similar to GitHub Copilot CLI, Claude C
 - Data orchestration and quality filtering
 
 **NEW CLI tasks:**
-- Interactive `turbo-code-gpt init` wizard
+- Interactive `nanodex init` wizard
   - Mode selection (free/hybrid/full/rag-only)
   - Codebase path selection
   - Model selection with recommendations
   - API key configuration
   - Budget setup
-- `turbo-code-gpt models list/info`
-- `turbo-code-gpt analyze repo/dependencies/stats`
-- `turbo-code-gpt data generate/preview/stats`
+- `nanodex models list/info`
+- `nanodex analyze repo/dependencies/stats`
+- `nanodex data generate/preview/stats`
 - Beautiful progress bars and output
 
 **Deliverables:**
@@ -92,12 +92,12 @@ With the addition of a professional CLI (similar to GitHub Copilot CLI, Claude C
 - Report generation
 
 **NEW CLI tasks:**
-- `turbo-code-gpt train start/resume/status`
+- `nanodex train start/resume/status`
 - Real-time training progress with Rich
 - Loss visualization
 - ETA calculations
 - GPU utilization display
-- `turbo-code-gpt evaluate run/report`
+- `nanodex evaluate run/report`
 
 **Deliverables:**
 ✅ Training with checkpoints
@@ -118,13 +118,13 @@ With the addition of a professional CLI (similar to GitHub Copilot CLI, Claude C
 - Example workflows
 
 **NEW CLI tasks:**
-- `turbo-code-gpt chat` - Interactive chat
+- `nanodex chat` - Interactive chat
   - RAG-powered responses
   - Context tracking
   - Code-aware answers
-- `turbo-code-gpt ask "<question>"` - One-shot Q&A
-- `turbo-code-gpt debug locate/explain` - Debug assistance
-- `turbo-code-gpt export gguf/onnx` - Model export
+- `nanodex ask "<question>"` - One-shot Q&A
+- `nanodex debug locate/explain` - Debug assistance
+- `nanodex export gguf/onnx` - Model export
 - Chat session management
 - Beautiful conversation formatting
 
@@ -180,37 +180,37 @@ textual>=0.40.0  # For future TUI
 ## CLI Commands Summary
 
 ### Phase 1 Commands:
-- `turbo-code-gpt --help`
-- `turbo-code-gpt --version`
-- `turbo-code-gpt config show`
-- `turbo-code-gpt config validate`
-- `turbo-code-gpt config set <key> <value>`
+- `nanodex --help`
+- `nanodex --version`
+- `nanodex config show`
+- `nanodex config validate`
+- `nanodex config set <key> <value>`
 
 ### Phase 2 Commands:
-- `turbo-code-gpt init` ⭐ **Most important**
-- `turbo-code-gpt models list`
-- `turbo-code-gpt models info <model>`
-- `turbo-code-gpt analyze repo`
-- `turbo-code-gpt analyze dependencies`
-- `turbo-code-gpt analyze stats`
-- `turbo-code-gpt data generate`
-- `turbo-code-gpt data preview`
-- `turbo-code-gpt data stats`
+- `nanodex init` ⭐ **Most important**
+- `nanodex models list`
+- `nanodex models info <model>`
+- `nanodex analyze repo`
+- `nanodex analyze dependencies`
+- `nanodex analyze stats`
+- `nanodex data generate`
+- `nanodex data preview`
+- `nanodex data stats`
 
 ### Phase 4 Commands:
-- `turbo-code-gpt train start`
-- `turbo-code-gpt train resume`
-- `turbo-code-gpt train status`
-- `turbo-code-gpt evaluate run`
-- `turbo-code-gpt evaluate report`
+- `nanodex train start`
+- `nanodex train resume`
+- `nanodex train status`
+- `nanodex evaluate run`
+- `nanodex evaluate report`
 
 ### Phase 5 Commands:
-- `turbo-code-gpt chat` ⭐ **Interactive**
-- `turbo-code-gpt ask "<question>"`
-- `turbo-code-gpt debug locate "<error>"`
-- `turbo-code-gpt debug explain "<error>"`
-- `turbo-code-gpt export gguf`
-- `turbo-code-gpt export onnx`
+- `nanodex chat` ⭐ **Interactive**
+- `nanodex ask "<question>"`
+- `nanodex debug locate "<error>"`
+- `nanodex debug explain "<error>"`
+- `nanodex export gguf`
+- `nanodex export onnx`
 
 ---
 
@@ -218,10 +218,10 @@ textual>=0.40.0  # For future TUI
 
 ```bash
 # 1. Install
-$ pip install turbo-code-gpt
+$ pip install nanodex
 
 # 2. Initialize (first time - interactive wizard)
-$ turbo-code-gpt init
+$ nanodex init
 
   🚀 Welcome to Turbo-Code-GPT!
 
@@ -238,14 +238,14 @@ $ turbo-code-gpt init
   Ready to analyze your codebase? Yes
 
 # 3. Analyze (automatic or manual)
-$ turbo-code-gpt analyze repo
+$ nanodex analyze repo
 
   📊 Repository Analysis
   Found 127 files (18,456 lines)
   ✓ Quality score: 8.2/10
 
 # 4. Generate data
-$ turbo-code-gpt data generate
+$ nanodex data generate
 
   🔍 Analyzing codebase... ✓
   📊 Generating training data...
@@ -256,7 +256,7 @@ $ turbo-code-gpt data generate
   Total: 8,031 examples
 
 # 5. Train
-$ turbo-code-gpt train start
+$ nanodex train start
 
   🚀 Starting Training
 
@@ -269,7 +269,7 @@ $ turbo-code-gpt train start
   ✓ Training complete! (2:13:31)
 
 # 6. Use it!
-$ turbo-code-gpt chat
+$ nanodex chat
 
   🤖 Turbo-Code-GPT (my-project)
 
@@ -284,10 +284,10 @@ $ turbo-code-gpt chat
      [code example]
 
 # OR one-shot queries
-$ turbo-code-gpt ask "How does authentication work?"
+$ nanodex ask "How does authentication work?"
 
 # OR debug help
-$ turbo-code-gpt debug locate "TypeError on line 42"
+$ nanodex debug locate "TypeError on line 42"
 ```
 
 ---
@@ -296,14 +296,14 @@ $ turbo-code-gpt debug locate "TypeError on line 42"
 
 ### Sprint 1 (Week 1): Foundation
 **Deliverable:** Working CLI with basic commands
-- Users can run `turbo-code-gpt config show`
+- Users can run `nanodex config show`
 - Config validates properly
 - Code parsing works
 - Foundation is solid
 
 ### Sprint 2 (Week 2): Setup & Data
 **Deliverable:** Can generate training data
-- Users can run `turbo-code-gpt init`
+- Users can run `nanodex init`
 - Interactive setup works
 - Free mode data generation works
 - Hybrid mode with API works
@@ -316,7 +316,7 @@ $ turbo-code-gpt debug locate "TypeError on line 42"
 
 ### Sprint 4 (Week 4): Training
 **Deliverable:** Can train models
-- Users can run `turbo-code-gpt train`
+- Users can run `nanodex train`
 - Progress is beautiful
 - Checkpoints work
 - Evaluation works
@@ -334,7 +334,7 @@ $ turbo-code-gpt debug locate "TypeError on line 42"
 ## Success Criteria (UPDATED)
 
 ### Minimum Viable Product (Phases 1-2):
-✅ `turbo-code-gpt init` works perfectly
+✅ `nanodex init` works perfectly
 ✅ Can analyze codebase
 ✅ Can generate training data (free mode)
 ✅ Can generate with API (hybrid mode)
@@ -370,7 +370,7 @@ $ turbo-code-gpt debug locate "TypeError on line 42"
    - Recommendation: Support both, prefer environment variables
 
 4. **Chat history:** Save conversation history? Where?
-   - Recommendation: Save to `.turbo-code-gpt/history/`
+   - Recommendation: Save to `.nanodex/history/`
 
 5. **TUI (Textual):** Build terminal UI for training monitoring?
    - Recommendation: Phase 6 (future), use Rich progress for now

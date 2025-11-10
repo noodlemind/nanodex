@@ -105,8 +105,8 @@ def generate(config, output, limit):
 
         # Next steps
         console.print("\n[bold]Next steps:[/bold]")
-        console.print("  turbo-code-gpt data stats      # View detailed statistics")
-        console.print("  turbo-code-gpt train           # Start training\n")
+        console.print("  nanodex data stats      # View detailed statistics")
+        console.print("  nanodex train           # Start training\n")
 
     except Exception as e:
         console.print(f"\n[bold red]Error:[/bold red] {e}")
@@ -121,7 +121,7 @@ def stats(data_file):
 
     \b
     Example:
-        turbo-code-gpt data stats ./data/training_examples.json
+        nanodex data stats ./data/training_examples.json
     """
     try:
         console.print(f"\n[bold cyan]Analyzing {data_file}...[/bold cyan]\n")
@@ -184,7 +184,7 @@ def preview(data_file, limit):
 
     \b
     Example:
-        turbo-code-gpt data preview ./data/training_examples.json --limit 5
+        nanodex data preview ./data/training_examples.json --limit 5
     """
     try:
         # Load data

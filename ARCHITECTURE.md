@@ -2,7 +2,7 @@
 
 ## Overview
 
-Turbo Code GPT is a modular system for fine-tuning large language models on specific codebases. The architecture follows a pipeline approach with distinct stages.
+nanodex is a modular system for fine-tuning large language models on specific codebases. The architecture follows a pipeline approach with distinct stages.
 
 ## Architecture Diagram
 
@@ -77,7 +77,7 @@ Turbo Code GPT is a modular system for fine-tuning large language models on spec
 
 ## Component Details
 
-### 1. Configuration Layer (`turbo_code_gpt/utils/`)
+### 1. Configuration Layer (`nanodex/utils/`)
 
 **Purpose**: Centralized configuration management
 
@@ -91,7 +91,7 @@ Turbo Code GPT is a modular system for fine-tuning large language models on spec
 - Environment-specific settings
 - Validation on load
 
-### 2. Code Analysis (`turbo_code_gpt/analyzers/`)
+### 2. Code Analysis (`nanodex/analyzers/`)
 
 **Purpose**: Extract and understand the target codebase
 
@@ -114,7 +114,7 @@ Repository → Filter Extensions → Detect Language → Extract Content → Cod
 - Line count
 - Metadata
 
-### 3. Data Preparation (`turbo_code_gpt/trainers/data_preparer.py`)
+### 3. Data Preparation (`nanodex/trainers/data_preparer.py`)
 
 **Purpose**: Transform code samples into training data
 
@@ -141,7 +141,7 @@ Repository → Filter Extensions → Detect Language → Extract Content → Cod
 
 **Output**: HuggingFace Dataset objects (train/validation splits)
 
-### 4. Model Loading (`turbo_code_gpt/models/`)
+### 4. Model Loading (`nanodex/models/`)
 
 **Purpose**: Load and configure models for training
 
@@ -162,7 +162,7 @@ Repository → Filter Extensions → Detect Language → Extract Content → Cod
 - Dropout: Regularization
 - Target modules: Which layers to adapt
 
-### 5. Training (`turbo_code_gpt/trainers/model_trainer.py`)
+### 5. Training (`nanodex/trainers/model_trainer.py`)
 
 **Purpose**: Fine-tune models on prepared data
 

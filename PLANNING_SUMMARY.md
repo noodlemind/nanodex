@@ -82,8 +82,8 @@ Transform Turbo-Code-GPT into a professional, user-friendly tool with a CLI simi
 
 **Setup:**
 ```bash
-$ pip install turbo-code-gpt
-$ turbo-code-gpt init  # Interactive wizard!
+$ pip install nanodex
+$ nanodex init  # Interactive wizard!
 ```
 
 **Commands:**
@@ -185,7 +185,7 @@ $ turbo-code-gpt init  # Interactive wizard!
 ## 🎯 Success Metrics
 
 ### Phase 1 Complete:
-✅ `turbo-code-gpt --help` works
+✅ `nanodex --help` works
 ✅ CLI installs via pip
 ✅ Config validates properly
 ✅ Code parsing extracts functions/classes
@@ -193,7 +193,7 @@ $ turbo-code-gpt init  # Interactive wizard!
 ✅ Tests pass
 
 ### Phase 2 Complete:
-✅ `turbo-code-gpt init` provides amazing UX
+✅ `nanodex init` provides amazing UX
 ✅ Mode selection is intuitive
 ✅ Free mode generates quality data
 ✅ Hybrid mode integrates with APIs
@@ -215,9 +215,9 @@ $ turbo-code-gpt init  # Interactive wizard!
 
 ```bash
 # Day 1: Setup (5 minutes)
-$ pip install turbo-code-gpt
+$ pip install nanodex
 $ cd my-project
-$ turbo-code-gpt init
+$ nanodex init
 
   🚀 Welcome to Turbo-Code-GPT!
 
@@ -242,7 +242,7 @@ $ turbo-code-gpt init
   └─ Estimated examples: ~8,000
 
 # Day 1: Generate data (30 minutes)
-$ turbo-code-gpt data generate
+$ nanodex data generate
 
   Self-supervised: 2,847 examples ✓
   Synthetic (GPT-4): 5,184 examples ($37.44) ✓
@@ -250,7 +250,7 @@ $ turbo-code-gpt data generate
   Total: 8,031 examples ready!
 
 # Day 1: Train (3-4 hours)
-$ turbo-code-gpt train start
+$ nanodex train start
 
   Epoch 1/3 ━━━━━━━━━━━━━━━━ 45:23
   Epoch 2/3 ━━━━━━━━━━━━━━━━ 43:12
@@ -259,7 +259,7 @@ $ turbo-code-gpt train start
   ✓ Training complete! (2:13:31)
 
 # Day 2+: Use it!
-$ turbo-code-gpt chat
+$ nanodex chat
 
   🤖 Turbo-Code-GPT (my-project)
 
@@ -272,10 +272,10 @@ $ turbo-code-gpt chat
   🤖 [Code example from your actual codebase]
 
 # Or quick questions
-$ turbo-code-gpt ask "How does authentication work?"
+$ nanodex ask "How does authentication work?"
 
 # Or debug help
-$ turbo-code-gpt debug locate "TypeError in process_data"
+$ nanodex debug locate "TypeError in process_data"
 ```
 
 ---

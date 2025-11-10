@@ -13,8 +13,8 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from turbo_code_gpt.utils import Config
-from turbo_code_gpt.analyzers import CodeAnalyzer
+from nanodex.utils import Config
+from nanodex.analyzers import CodeAnalyzer
 
 
 def test_analyzer():
@@ -87,7 +87,7 @@ def test_config():
 def main():
     """Run all smoke tests."""
     print("=" * 60)
-    print("Turbo Code GPT - Smoke Test")
+    print("nanodex - Smoke Test")
     print("=" * 60)
     print()
     

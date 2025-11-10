@@ -325,8 +325,8 @@ training:
 ### Enhanced Training
 
 ```python
-from turbo_code_gpt.trainers import ModelTrainer
-from turbo_code_gpt.models import ModelLoader
+from nanodex.trainers import ModelTrainer
+from nanodex.models import ModelLoader
 
 # Load model
 loader = ModelLoader(model_config, training_config)
@@ -359,7 +359,7 @@ trainer.train(
 ### Evaluation
 
 ```python
-from turbo_code_gpt.evaluation import ModelEvaluator, CodeMetrics, ReportGenerator
+from nanodex.evaluation import ModelEvaluator, CodeMetrics, ReportGenerator
 
 # Create evaluator
 evaluator = ModelEvaluator(model, tokenizer)
@@ -399,7 +399,7 @@ ReportGenerator.compare_results(
 ### Custom Metrics
 
 ```python
-from turbo_code_gpt.evaluation import CodeMetrics
+from nanodex.evaluation import CodeMetrics
 
 metrics = CodeMetrics()
 

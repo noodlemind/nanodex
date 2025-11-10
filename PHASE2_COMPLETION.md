@@ -119,7 +119,7 @@ Anthropic:
 
 ### 4. Modern CLI Framework (Click + Rich)
 
-#### Main CLI (`turbo-code-gpt`) ✅
+#### Main CLI (`nanodex`) ✅
 - **Framework**: Click for command structure
 - **UI**: Rich for beautiful terminal output
 - **Version**: 0.2.0
@@ -127,7 +127,7 @@ Anthropic:
 
 #### Interactive Setup Wizard (`init`) ✅
 ```bash
-turbo-code-gpt init
+nanodex init
 ```
 
 **Features**:
@@ -154,7 +154,7 @@ turbo-code-gpt init
 
 #### Analysis Command (`analyze`) ✅
 ```bash
-turbo-code-gpt analyze [--config config.yaml] [--verbose]
+nanodex analyze [--config config.yaml] [--verbose]
 ```
 
 **Features**:
@@ -166,9 +166,9 @@ turbo-code-gpt analyze [--config config.yaml] [--verbose]
 
 #### Data Commands (`data`) ✅
 ```bash
-turbo-code-gpt data generate [options]
-turbo-code-gpt data stats FILE
-turbo-code-gpt data preview FILE [--limit N]
+nanodex data generate [options]
+nanodex data stats FILE
+nanodex data preview FILE [--limit N]
 ```
 
 **Features**:
@@ -188,7 +188,7 @@ turbo-code-gpt data preview FILE [--limit N]
 
 #### Training Command (`train`) ✅
 ```bash
-turbo-code-gpt train [options]
+nanodex train [options]
 ```
 
 **Features**:
@@ -202,9 +202,9 @@ turbo-code-gpt train [options]
 
 #### Config Commands ✅
 ```bash
-turbo-code-gpt config show
-turbo-code-gpt config validate
-turbo-code-gpt config set KEY VALUE
+nanodex config show
+nanodex config validate
+nanodex config set KEY VALUE
 ```
 
 **Features**:
@@ -230,18 +230,18 @@ anthropic>=0.7.0    # Anthropic API
 ## Code Statistics
 
 ### New Files (10)
-1. `turbo_code_gpt/cli/__init__.py` - CLI exports
-2. `turbo_code_gpt/cli/main.py` - Main CLI with Click
-3. `turbo_code_gpt/cli/init.py` - Interactive wizard
-4. `turbo_code_gpt/cli/analyze.py` - Analysis command
-5. `turbo_code_gpt/cli/data_gen.py` - Data commands
-6. `turbo_code_gpt/cli/train.py` - Training command
-7. `turbo_code_gpt/data_generators/self_supervised.py` - Free generators
-8. `turbo_code_gpt/data_generators/synthetic_api.py` - Paid generators
-9. `turbo_code_gpt/data_generators/orchestrator.py` - Orchestration
+1. `nanodex/cli/__init__.py` - CLI exports
+2. `nanodex/cli/main.py` - Main CLI with Click
+3. `nanodex/cli/init.py` - Interactive wizard
+4. `nanodex/cli/analyze.py` - Analysis command
+5. `nanodex/cli/data_gen.py` - Data commands
+6. `nanodex/cli/train.py` - Training command
+7. `nanodex/data_generators/self_supervised.py` - Free generators
+8. `nanodex/data_generators/synthetic_api.py` - Paid generators
+9. `nanodex/data_generators/orchestrator.py` - Orchestration
 
 ### Modified Files (2)
-1. `turbo_code_gpt/__main__.py` - Now uses Click CLI
+1. `nanodex/__main__.py` - Now uses Click CLI
 2. `requirements.txt` - Added CLI and optional dependencies
 
 ### Lines of Code
@@ -281,7 +281,7 @@ Training Examples (JSON)
 
 ### CLI Structure
 ```
-turbo-code-gpt (main)
+nanodex (main)
 ├── init          # Interactive wizard
 ├── analyze       # Codebase analysis
 ├── data          # Data generation
@@ -301,46 +301,46 @@ turbo-code-gpt (main)
 ### Complete Workflow (Free Mode)
 ```bash
 # 1. Interactive setup
-turbo-code-gpt init
+nanodex init
 # Select: Free Mode → Python files → DeepSeek model → 3 epochs
 
 # 2. Analyze codebase
-turbo-code-gpt analyze
+nanodex analyze
 # Shows: 150 files, 15,000 lines, language distribution
 
 # 3. Generate training data
-turbo-code-gpt data generate
+nanodex data generate
 # Progress bar → 450 examples generated (0 cost)
 
 # 4. Preview examples
-turbo-code-gpt data preview ./data/training_examples.json --limit 5
+nanodex data preview ./data/training_examples.json --limit 5
 
 # 5. View statistics
-turbo-code-gpt data stats ./data/training_examples.json
+nanodex data stats ./data/training_examples.json
 
 # 6. Fine-tune
-turbo-code-gpt train
+nanodex train
 # Model loads → LoRA applied → Training starts
 ```
 
 ### Hybrid Mode Workflow
 ```bash
 # 1. Setup with API
-turbo-code-gpt init
+nanodex init
 # Select: Hybrid → OpenAI → gpt-3.5-turbo → $5 budget
 
 # 2. Generate with API augmentation
-turbo-code-gpt data generate
+nanodex data generate
 # Estimate: $3.50 → Confirm → Generates 600 examples
 
 # 3. Train
-turbo-code-gpt train
+nanodex train
 ```
 
 ### Direct Training (Skip Data Generation)
 ```bash
 # Generate and train in one command
-turbo-code-gpt train
+nanodex train
 # Will analyze + generate + train in one pipeline
 ```
 
@@ -489,7 +489,7 @@ The system now provides:
 - 🔧 **Modular architecture** easy to extend
 
 Users can now:
-1. Run `turbo-code-gpt init` for interactive setup
+1. Run `nanodex init` for interactive setup
 2. Choose free/hybrid/full mode based on needs
 3. Generate high-quality training data
 4. Track costs in real-time

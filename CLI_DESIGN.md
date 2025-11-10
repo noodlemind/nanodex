@@ -6,7 +6,7 @@ A professional, user-friendly CLI similar to GitHub Copilot CLI, Claude Code, an
 
 ## User Experience Goals
 
-1. **Zero-config start** - `turbo-code-gpt init` sets everything up
+1. **Zero-config start** - `nanodex init` sets everything up
 2. **Interactive wizards** - Guide users through complex choices
 3. **Smart defaults** - Works out-of-box for common cases
 4. **Progressive disclosure** - Simple commands with advanced options
@@ -18,7 +18,7 @@ A professional, user-friendly CLI similar to GitHub Copilot CLI, Claude Code, an
 ## CLI Command Structure
 
 ```bash
-turbo-code-gpt
+nanodex
 ├── init              # Initialize project with interactive wizard
 ├── config            # Manage configuration
 │   ├── show          # Display current configuration
@@ -58,7 +58,7 @@ turbo-code-gpt
 
 ## Detailed Command Specifications
 
-### 1. `turbo-code-gpt init`
+### 1. `nanodex init`
 
 **Purpose:** Interactive setup wizard for new projects
 
@@ -118,9 +118,9 @@ Let's set up your codebase-specific AI assistant.
 ✓ Configuration saved to config.yaml
 
 📝 Next Steps:
-1. Review config: turbo-code-gpt config show
-2. Generate data: turbo-code-gpt data generate
-3. Start training: turbo-code-gpt train start
+1. Review config: nanodex config show
+2. Generate data: nanodex data generate
+3. Start training: nanodex train start
 
 Ready to continue? [Y/n]:
 ```
@@ -158,13 +158,13 @@ def init(non_interactive, mode, repo_path):
 
 ---
 
-### 2. `turbo-code-gpt config`
+### 2. `nanodex config`
 
 **Subcommands:**
 
 #### `config show`
 ```bash
-$ turbo-code-gpt config show
+$ nanodex config show
 
 📋 Current Configuration
 
@@ -199,17 +199,17 @@ Configuration file: ./config.yaml
 
 #### `config set`
 ```bash
-$ turbo-code-gpt config set data_generation.synthetic_data.max_cost_usd 100
+$ nanodex config set data_generation.synthetic_data.max_cost_usd 100
 ✓ Updated data_generation.synthetic_data.max_cost_usd = 100
 
-$ turbo-code-gpt config set model.huggingface.model_name "codellama/CodeLlama-7b-hf"
+$ nanodex config set model.huggingface.model_name "codellama/CodeLlama-7b-hf"
 ✓ Updated model.huggingface.model_name = "codellama/CodeLlama-7b-hf"
 ⚠️  You may need to re-download the model.
 ```
 
 #### `config validate`
 ```bash
-$ turbo-code-gpt config validate
+$ nanodex config validate
 Validating configuration...
 
 ✓ Model configuration is valid
@@ -224,10 +224,10 @@ Overall: Valid with warnings
 
 ---
 
-### 3. `turbo-code-gpt models`
+### 3. `nanodex models`
 
 ```bash
-$ turbo-code-gpt models list
+$ nanodex models list
 
 Available Base Models:
 
@@ -241,7 +241,7 @@ Code Models (Recommended):
 │ deepseek-coder-33b             │ 33B     │ 24GB       │ Advanced     │
 └────────────────────────────────┴─────────┴────────────┴──────────────┘
 
-$ turbo-code-gpt models info deepseek-coder-6.7b
+$ nanodex models info deepseek-coder-6.7b
 
 DeepSeek Coder 6.7B Base
 
@@ -266,15 +266,15 @@ Best For:
   ✓ Debugging assistance
   ✓ Code explanation
 
-Download: turbo-code-gpt models download deepseek-coder-6.7b
+Download: nanodex models download deepseek-coder-6.7b
 ```
 
 ---
 
-### 4. `turbo-code-gpt analyze`
+### 4. `nanodex analyze`
 
 ```bash
-$ turbo-code-gpt analyze repo
+$ nanodex analyze repo
 
 Analyzing codebase at /home/user/my-project...
 
@@ -317,7 +317,7 @@ Estimated Training:
   ├─ Hybrid mode: ~8,000 examples
   └─ Time: 2-4 hours
 
-$ turbo-code-gpt analyze dependencies
+$ nanodex analyze dependencies
 
 Dependency Graph for /home/user/my-project
 
@@ -337,15 +337,15 @@ Most imported files (hub files):
   2. models/model_loader.py (imported by 8 files)
   3. analyzers/code_analyzer.py (imported by 6 files)
 
-Export graph: turbo-code-gpt analyze dependencies --export deps.json
+Export graph: nanodex analyze dependencies --export deps.json
 ```
 
 ---
 
-### 5. `turbo-code-gpt data generate`
+### 5. `nanodex data generate`
 
 ```bash
-$ turbo-code-gpt data generate
+$ nanodex data generate
 
 🔍 Analyzing codebase...
 ✓ Found 127 files
@@ -383,15 +383,15 @@ Synthetic data generation:
   ├─ With context: 89.3%
   └─ Quality score: 8.9/10
 
-Preview: turbo-code-gpt data preview
+Preview: nanodex data preview
 ```
 
 ---
 
-### 6. `turbo-code-gpt train`
+### 6. `nanodex train`
 
 ```bash
-$ turbo-code-gpt train start
+$ nanodex train start
 
 🚀 Starting Training
 
@@ -433,16 +433,16 @@ Training:
 ✓ Indexed 127 files
 
 Next steps:
-  1. Evaluate: turbo-code-gpt evaluate run
-  2. Try it: turbo-code-gpt chat
+  1. Evaluate: nanodex evaluate run
+  2. Try it: nanodex chat
 ```
 
 ---
 
-### 7. `turbo-code-gpt chat`
+### 7. `nanodex chat`
 
 ```bash
-$ turbo-code-gpt chat
+$ nanodex chat
 
 Loading model... ✓
 Loading RAG index... ✓

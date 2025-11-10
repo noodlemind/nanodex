@@ -1,5 +1,5 @@
 """
-Interactive initialization wizard for Turbo Code GPT.
+Interactive initialization wizard for nanodex.
 """
 
 import click
@@ -42,7 +42,7 @@ def init_cmd(output):
 
     # Welcome banner
     console.print(Panel.fit(
-        "[bold cyan]Turbo Code GPT Setup Wizard[/bold cyan]\n\n"
+        "[bold cyan]nanodex Setup Wizard[/bold cyan]\n\n"
         "Let's configure your codebase-specific coding assistant!\n"
         "This wizard will help you choose the right settings.",
         border_style="cyan"
@@ -312,9 +312,9 @@ def init_cmd(output):
             f"Model: [cyan]{config.get('model', {}).get(model_source, {}).get('model_name', 'N/A')}[/cyan]\n"
             f"Repository: [cyan]{repo_path}[/cyan]\n\n"
             "[bold]Next steps:[/bold]\n"
-            "1. turbo-code-gpt analyze          # Analyze your codebase\n"
-            "2. turbo-code-gpt data generate    # Generate training data\n"
-            "3. turbo-code-gpt train            # Fine-tune the model",
+            "1. nanodex analyze          # Analyze your codebase\n"
+            "2. nanodex data generate    # Generate training data\n"
+            "3. nanodex train            # Fine-tune the model",
             title="Setup Complete",
             border_style="green"
         ))

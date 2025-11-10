@@ -40,16 +40,16 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 **Goal:** Fix critical issues and establish solid foundation
 
 ### 1.1 Fix Critical Bugs
-- [ ] Fix setup.py entry point (`turbo-code-gpt=main:main` → `turbo_code_gpt.__main__:main`)
+- [ ] Fix setup.py entry point (`nanodex=main:main` → `nanodex.__main__:main`)
 - [ ] Add random seed for reproducibility
 - [ ] Add validation before training (check non-empty datasets)
 - [ ] Fix path traversal security issue
 
 **Files to modify:**
 - `setup.py`
-- `turbo_code_gpt/trainers/data_preparer.py`
-- `turbo_code_gpt/trainers/model_trainer.py`
-- `turbo_code_gpt/utils/config.py`
+- `nanodex/trainers/data_preparer.py`
+- `nanodex/trainers/model_trainer.py`
+- `nanodex/utils/config.py`
 
 **Estimated time:** 4-6 hours
 
@@ -61,11 +61,11 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - [ ] Build dependency graph
 
 **New files:**
-- `turbo_code_gpt/analyzers/ast_parser.py`
-- `turbo_code_gpt/analyzers/dependency_graph.py`
+- `nanodex/analyzers/ast_parser.py`
+- `nanodex/analyzers/dependency_graph.py`
 
 **Files to enhance:**
-- `turbo_code_gpt/analyzers/code_analyzer.py`
+- `nanodex/analyzers/code_analyzer.py`
 
 **Estimated time:** 8-12 hours
 
@@ -77,7 +77,7 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - [ ] Add evaluation configuration
 
 **Files to modify:**
-- `turbo_code_gpt/utils/config.py`
+- `nanodex/utils/config.py`
 - `config.yaml` (update to new format)
 
 **Estimated time:** 4-6 hours
@@ -100,10 +100,10 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - [ ] Run static analysis (mypy/pylint) for error examples
 
 **New files:**
-- `turbo_code_gpt/data_generators/self_supervised.py`
-- `turbo_code_gpt/data_generators/fim_generator.py`
-- `turbo_code_gpt/data_generators/test_extractor.py`
-- `turbo_code_gpt/data_generators/git_history.py`
+- `nanodex/data_generators/self_supervised.py`
+- `nanodex/data_generators/fim_generator.py`
+- `nanodex/data_generators/test_extractor.py`
+- `nanodex/data_generators/git_history.py`
 
 **Estimated time:** 12-16 hours
 
@@ -116,8 +116,8 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - [ ] Few-shot examples for quality
 
 **New files:**
-- `turbo_code_gpt/data_generators/synthetic_api.py`
-- `turbo_code_gpt/data_generators/prompt_templates.py`
+- `nanodex/data_generators/synthetic_api.py`
+- `nanodex/data_generators/prompt_templates.py`
 
 **Estimated time:** 8-12 hours
 
@@ -129,11 +129,11 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - [ ] Deduplication
 
 **New files:**
-- `turbo_code_gpt/data_generators/orchestrator.py`
-- `turbo_code_gpt/data_generators/quality_filter.py`
+- `nanodex/data_generators/orchestrator.py`
+- `nanodex/data_generators/quality_filter.py`
 
 **Files to modify:**
-- `turbo_code_gpt/trainers/data_preparer.py`
+- `nanodex/trainers/data_preparer.py`
 
 **Estimated time:** 6-8 hours
 
@@ -153,10 +153,10 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - [ ] Index persistence
 
 **New files:**
-- `turbo_code_gpt/rag/__init__.py`
-- `turbo_code_gpt/rag/indexer.py`
-- `turbo_code_gpt/rag/embedder.py`
-- `turbo_code_gpt/rag/chunker.py`
+- `nanodex/rag/__init__.py`
+- `nanodex/rag/indexer.py`
+- `nanodex/rag/embedder.py`
+- `nanodex/rag/chunker.py`
 
 **Estimated time:** 8-10 hours
 
@@ -168,8 +168,8 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - [ ] Retrieval optimization
 
 **New files:**
-- `turbo_code_gpt/rag/retriever.py`
-- `turbo_code_gpt/rag/hybrid_search.py`
+- `nanodex/rag/retriever.py`
+- `nanodex/rag/hybrid_search.py`
 
 **Estimated time:** 6-8 hours
 
@@ -183,7 +183,7 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - `examples/inference_example.py`
 
 **New files:**
-- `turbo_code_gpt/inference/rag_inference.py`
+- `nanodex/inference/rag_inference.py`
 
 **Estimated time:** 6-8 hours
 
@@ -204,7 +204,7 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - [ ] Model versioning
 
 **Files to modify:**
-- `turbo_code_gpt/trainers/model_trainer.py`
+- `nanodex/trainers/model_trainer.py`
 - `main.py`
 
 **Estimated time:** 8-10 hours
@@ -218,10 +218,10 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - [ ] Report generation
 
 **New files:**
-- `turbo_code_gpt/evaluation/__init__.py`
-- `turbo_code_gpt/evaluation/evaluator.py`
-- `turbo_code_gpt/evaluation/metrics.py`
-- `turbo_code_gpt/evaluation/report_generator.py`
+- `nanodex/evaluation/__init__.py`
+- `nanodex/evaluation/evaluator.py`
+- `nanodex/evaluation/metrics.py`
+- `nanodex/evaluation/report_generator.py`
 
 **Estimated time:** 10-12 hours
 
@@ -233,8 +233,8 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - [ ] Multi-stage orchestration
 
 **New files:**
-- `turbo_code_gpt/trainers/scratch_trainer.py`
-- `turbo_code_gpt/trainers/pretraining.py`
+- `nanodex/trainers/scratch_trainer.py`
+- `nanodex/trainers/pretraining.py`
 
 **Estimated time:** 12-16 hours (optional, advanced feature)
 
@@ -257,9 +257,9 @@ Transform Turbo-Code-GPT into a flexible, production-ready system that allows us
 - `main.py`
 
 **New files:**
-- `turbo_code_gpt/__main__.py` (for proper package execution)
-- `turbo_code_gpt/cli/__init__.py`
-- `turbo_code_gpt/cli/commands.py`
+- `nanodex/__main__.py` (for proper package execution)
+- `nanodex/cli/__init__.py`
+- `nanodex/cli/commands.py`
 
 **Estimated time:** 8-10 hours
 

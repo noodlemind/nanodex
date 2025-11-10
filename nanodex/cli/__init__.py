@@ -1,5 +1,5 @@
 """
-Modern CLI for Turbo Code GPT using Click + Rich.
+Modern CLI for nanodex using Click + Rich.
 """
 
 from .main import cli

@@ -24,29 +24,32 @@ logging.basicConfig(
 
 
 @click.group()
-@click.version_option(version='0.2.0', prog_name='turbo-code-gpt')
+@click.version_option(version='0.2.0', prog_name='nanodex')
 @click.pass_context
 def cli(ctx):
     """
-    🚀 Turbo Code GPT - Fine-tune LLMs on your codebase
+    🚀 nanodex - Fine-tune coding models on your codebase
 
-    A flexible system for creating specialized coding assistants by fine-tuning
+    A minimal system for creating specialized coding assistants by fine-tuning
     open-source models on your codebase with RAG support.
+
+    Inspired by nanoGPT and nanochat, nanodex brings the "nano" philosophy
+    to code understanding and generation.
 
     \b
     Quick Start:
-      turbo-code-gpt init          # Interactive setup wizard
-      turbo-code-gpt analyze       # Analyze your codebase
-      turbo-code-gpt data generate # Generate training data
-      turbo-code-gpt train         # Fine-tune the model
-      turbo-code-gpt rag index     # Build RAG index
-      turbo-code-gpt rag search    # Semantic code search
-      turbo-code-gpt chat          # Interactive chat interface
+      nanodex init          # Interactive setup wizard
+      nanodex analyze       # Analyze your codebase
+      nanodex data generate # Generate training data
+      nanodex train         # Fine-tune the model
+      nanodex rag index     # Build RAG index
+      nanodex rag search    # Semantic code search
+      nanodex chat          # Interactive chat interface
 
     \b
     Learn more:
-      turbo-code-gpt --help
-      turbo-code-gpt COMMAND --help
+      nanodex --help
+      nanodex COMMAND --help
     """
     ctx.ensure_object(dict)
 

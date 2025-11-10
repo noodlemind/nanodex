@@ -26,9 +26,9 @@ def rag_cmd():
 
     \b
     Steps:
-    1. turbo-code-gpt rag index     # Index codebase
-    2. turbo-code-gpt rag search    # Search for code
-    3. turbo-code-gpt rag query     # Ask questions
+    1. nanodex rag index     # Index codebase
+    2. nanodex rag search    # Search for code
+    3. nanodex rag query     # Ask questions
     """
     pass
 
@@ -51,8 +51,8 @@ def index_cmd(config, output, embedding_model, chunk_strategy):
 
     \b
     Example:
-        turbo-code-gpt rag index
-        turbo-code-gpt rag index --embedding-model sentence-transformers/all-MiniLM-L6-v2
+        nanodex rag index
+        nanodex rag index --embedding-model sentence-transformers/all-MiniLM-L6-v2
     """
     try:
         console.print("\n[bold cyan]Building RAG Index...[/bold cyan]\n")
@@ -124,8 +124,8 @@ def index_cmd(config, output, embedding_model, chunk_strategy):
             f"Index saved to: [cyan]{output}[/cyan]\n"
             f"Chunks indexed: [cyan]{index_stats['num_chunks']}[/cyan]\n\n"
             "[bold]Next steps:[/bold]\n"
-            f"  turbo-code-gpt rag search \"your query\" --index {output}\n"
-            f"  turbo-code-gpt rag query \"your question\" --index {output}",
+            f"  nanodex rag search \"your query\" --index {output}\n"
+            f"  nanodex rag query \"your question\" --index {output}",
             title="Success",
             border_style="green"
         ))
@@ -151,9 +151,9 @@ def search_cmd(query, index, top_k, type, language):
 
     \b
     Examples:
-        turbo-code-gpt rag search "authentication logic"
-        turbo-code-gpt rag search "parse JSON" -k 10
-        turbo-code-gpt rag search "database connection" --type function
+        nanodex rag search "authentication logic"
+        nanodex rag search "parse JSON" -k 10
+        nanodex rag search "database connection" --type function
     """
     try:
         console.print(f"\n[bold cyan]Searching:[/bold cyan] {query}\n")
@@ -224,8 +224,8 @@ def query_cmd(question, index, top_k, show_context):
 
     \b
     Examples:
-        turbo-code-gpt rag query "How does authentication work?"
-        turbo-code-gpt rag query "Where is database connection handled?" --show-context
+        nanodex rag query "How does authentication work?"
+        nanodex rag query "Where is database connection handled?" --show-context
     """
     try:
         console.print(f"\n[bold cyan]Question:[/bold cyan] {question}\n")
@@ -283,7 +283,7 @@ def query_cmd(question, index, top_k, show_context):
         # Note about model
         if result['answer'].startswith("Context retrieved"):
             console.print("\n[yellow]Note:[/yellow] No fine-tuned model loaded. Only context retrieval shown.")
-            console.print("[dim]Train a model with 'turbo-code-gpt train' for full RAG inference.[/dim]\n")
+            console.print("[dim]Train a model with 'nanodex train' for full RAG inference.[/dim]\n")
 
     except Exception as e:
         console.print(f"\n[bold red]Error:[/bold red] {e}")
@@ -298,8 +298,8 @@ def stats_cmd(index):
 
     \b
     Example:
-        turbo-code-gpt rag stats
-        turbo-code-gpt rag stats --index ./my_index
+        nanodex rag stats
+        nanodex rag stats --index ./my_index
     """
     try:
         console.print(f"\n[bold cyan]RAG Index Statistics[/bold cyan]\n")

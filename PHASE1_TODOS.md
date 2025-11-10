@@ -11,21 +11,21 @@
 
 ### Task 1.1.1: Fix setup.py Entry Point ⭐⭐⭐
 **File:** `setup.py`
-**Current Issue:** Entry point `turbo-code-gpt=main:main` is broken
+**Current Issue:** Entry point `nanodex=main:main` is broken
 **Fix Required:**
 ```python
 # BEFORE (line 50):
-"turbo-code-gpt=main:main"
+"nanodex=main:main"
 
 # AFTER:
-"turbo-code-gpt=turbo_code_gpt.__main__:main"
+"nanodex=nanodex.__main__:main"
 ```
 
 **Additional Steps:**
-- [ ] Create `turbo_code_gpt/__main__.py` file
+- [ ] Create `nanodex/__main__.py` file
 - [ ] Move main() logic from `main.py` or import it
 - [ ] Test: `pip install -e .` should work
-- [ ] Test: `turbo-code-gpt --help` should work
+- [ ] Test: `nanodex --help` should work
 - [ ] Update README with installation instructions
 
 **Acceptance Criteria:**
@@ -36,7 +36,7 @@
 ---
 
 ### Task 1.1.2: Add Random Seed for Reproducibility ⭐⭐⭐
-**File:** `turbo_code_gpt/trainers/data_preparer.py`
+**File:** `nanodex/trainers/data_preparer.py`
 **Current Issue:** Line 49 - `random.shuffle(training_examples)` has no seed
 
 **Fix Required:**
@@ -65,7 +65,7 @@ random.shuffle(training_examples)  # Now reproducible!
 ---
 
 ### Task 1.1.3: Add Dataset Validation ⭐⭐⭐
-**File:** `turbo_code_gpt/trainers/model_trainer.py`
+**File:** `nanodex/trainers/model_trainer.py`
 **Current Issue:** No validation before expensive GPU training
 
 **Fix Required:**
@@ -109,7 +109,7 @@ def train(self, train_dataset, val_dataset):
 ---
 
 ### Task 1.1.4: Fix Path Traversal Security ⭐⭐
-**File:** `turbo_code_gpt/utils/config.py` and `turbo_code_gpt/analyzers/code_analyzer.py`
+**File:** `nanodex/utils/config.py` and `nanodex/analyzers/code_analyzer.py`
 **Current Issue:** No validation of repository path
 
 **Fix Required in config.py:**
@@ -151,7 +151,7 @@ def get_repository_config(self) -> Dict[str, Any]:
 ## 1.2 Enhanced Code Parsing (8-12 hours)
 
 ### Task 1.2.1: Create AST Parser for Python ⭐⭐⭐
-**New File:** `turbo_code_gpt/analyzers/ast_parser.py`
+**New File:** `nanodex/analyzers/ast_parser.py`
 
 **Implementation:**
 ```python
@@ -233,7 +233,7 @@ class PythonASTParser:
 ---
 
 ### Task 1.2.2: Integrate Tree-Sitter for Multi-Language ⭐⭐
-**New File:** `turbo_code_gpt/analyzers/tree_sitter_parser.py`
+**New File:** `nanodex/analyzers/tree_sitter_parser.py`
 
 **Steps:**
 - [ ] Install tree-sitter and language grammars
@@ -259,7 +259,7 @@ pip install tree-sitter-java tree-sitter-cpp
 ---
 
 ### Task 1.2.3: Build Dependency Graph ⭐⭐
-**New File:** `turbo_code_gpt/analyzers/dependency_graph.py`
+**New File:** `nanodex/analyzers/dependency_graph.py`
 
 **Implementation:**
 ```python
@@ -349,7 +349,7 @@ class DependencyGraph:
 ---
 
 ### Task 1.2.4: Enhance CodeAnalyzer ⭐⭐⭐
-**File to Modify:** `turbo_code_gpt/analyzers/code_analyzer.py`
+**File to Modify:** `nanodex/analyzers/code_analyzer.py`
 
 **Changes Required:**
 ```python
@@ -416,7 +416,7 @@ class CodeAnalyzer:
 ## 1.3 Configuration System Overhaul (4-6 hours)
 
 ### Task 1.3.1: Implement Pydantic Validation ⭐⭐⭐
-**File to Modify:** `turbo_code_gpt/utils/config.py`
+**File to Modify:** `nanodex/utils/config.py`
 
 **Implementation:**
 ```python

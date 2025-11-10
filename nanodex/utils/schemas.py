@@ -307,7 +307,7 @@ class ExportConfig(BaseModel):
 
 
 class TurboCodeGPTConfig(BaseModel):
-    """Complete Turbo Code GPT configuration schema."""
+    """Complete nanodex configuration schema."""
 
     model_source: Literal["huggingface", "ollama"] = Field(
         default="huggingface",

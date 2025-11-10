@@ -1,6 +1,6 @@
-# Getting Started with Turbo Code GPT
+# Getting Started with nanodex
 
-This guide will walk you through setting up and using Turbo Code GPT to fine-tune a model on your codebase.
+This guide will walk you through setting up and using nanodex to fine-tune a model on your codebase.
 
 ## Prerequisites
 
@@ -15,8 +15,8 @@ This guide will walk you through setting up and using Turbo Code GPT to fine-tun
 
 ```bash
 # Clone the repository
-git clone https://github.com/noodlemind/turbo-code-gpt.git
-cd turbo-code-gpt
+git clone https://github.com/noodlemind/nanodex.git
+cd nanodex
 
 # Create a virtual environment (recommended)
 python -m venv venv

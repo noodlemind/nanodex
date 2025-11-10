@@ -70,7 +70,7 @@ The session intelligently combines three types of context:
 
 ### 2. Chat CLI Command ✅
 
-#### Command: `turbo-code-gpt chat`
+#### Command: `nanodex chat`
 
 **Purpose**: Interactive command-line chat interface with RAG support.
 
@@ -84,12 +84,12 @@ The session intelligently combines three types of context:
 
 **Options**:
 ```bash
-turbo-code-gpt chat                        # Basic chat
-turbo-code-gpt chat --model PATH           # With fine-tuned model
-turbo-code-gpt chat --index PATH           # Custom RAG index
-turbo-code-gpt chat --session FILE         # Resume/save session
-turbo-code-gpt chat --no-rag               # Disable RAG
-turbo-code-gpt chat --temperature 0.8      # Adjust generation
+nanodex chat                        # Basic chat
+nanodex chat --model PATH           # With fine-tuned model
+nanodex chat --index PATH           # Custom RAG index
+nanodex chat --session FILE         # Resume/save session
+nanodex chat --no-rag               # Disable RAG
+nanodex chat --temperature 0.8      # Adjust generation
 ```
 
 **In-Chat Commands**:
@@ -110,7 +110,7 @@ turbo-code-gpt chat --temperature 0.8      # Adjust generation
 
 **Example Session**:
 ```
-💬 Turbo Code GPT - Interactive Chat
+💬 nanodex - Interactive Chat
 
 Ask questions about your codebase, request code explanations,
 or get coding help with AI-powered responses.
@@ -169,18 +169,18 @@ You: /stats
 
 **Updated Help Text**:
 ```bash
-turbo-code-gpt --help
+nanodex --help
 
-🚀 Turbo Code GPT - Fine-tune LLMs on your codebase
+🚀 nanodex - Fine-tune LLMs on your codebase
 
 Quick Start:
-  turbo-code-gpt init          # Interactive setup wizard
-  turbo-code-gpt analyze       # Analyze your codebase
-  turbo-code-gpt data generate # Generate training data
-  turbo-code-gpt train         # Fine-tune the model
-  turbo-code-gpt rag index     # Build RAG index
-  turbo-code-gpt rag search    # Semantic code search
-  turbo-code-gpt chat          # Interactive chat interface
+  nanodex init          # Interactive setup wizard
+  nanodex analyze       # Analyze your codebase
+  nanodex data generate # Generate training data
+  nanodex train         # Fine-tune the model
+  nanodex rag index     # Build RAG index
+  nanodex rag search    # Semantic code search
+  nanodex chat          # Interactive chat interface
 ```
 
 ### 4. Comprehensive README ✅
@@ -214,7 +214,7 @@ Quick Start:
 **Files Created/Modified**:
 
 ```
-turbo_code_gpt/
+nanodex/
 ├── inference/
 │   ├── __init__.py              # Updated exports
 │   ├── chat.py                  # New: ChatSession, ChatMessage (330 lines)
@@ -278,23 +278,23 @@ turbo_code_gpt/
 
 ```bash
 # Start chat with RAG only (no model required)
-turbo-code-gpt chat
+nanodex chat
 
 # Chat with fine-tuned model
-turbo-code-gpt chat --model ./models/fine-tuned
+nanodex chat --model ./models/fine-tuned
 
 # Resume previous session
-turbo-code-gpt chat --session my_session.json
+nanodex chat --session my_session.json
 
 # Adjust generation temperature
-turbo-code-gpt chat --temperature 0.9
+nanodex chat --temperature 0.9
 ```
 
 ### Programmatic Usage
 
 ```python
-from turbo_code_gpt.inference import RAGInference, ChatSession
-from turbo_code_gpt.rag import SemanticRetriever
+from nanodex.inference import RAGInference, ChatSession
+from nanodex.rag import SemanticRetriever
 
 # Load retriever
 retriever = SemanticRetriever()
@@ -563,7 +563,7 @@ Users can now:
 - **Time Invested**: ~80-100 hours equivalent
 - **Status**: Production-ready
 
-The Turbo Code GPT system is now a complete, production-ready platform for fine-tuning LLMs on codebases with RAG support and an interactive chat interface!
+The nanodex system is now a complete, production-ready platform for fine-tuning LLMs on codebases with RAG support and an interactive chat interface!
 
 ---
 
