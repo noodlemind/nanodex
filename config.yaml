@@ -1,0 +1,83 @@
+# Configuration for model training and fine-tuning
+
+# Model source: 'ollama' or 'huggingface'
+model_source: "huggingface"
+
+# Model configuration
+model:
+  # For HuggingFace models
+  huggingface:
+    model_name: "deepseek-ai/deepseek-coder-6.7b-base"  # GPT-OSS coding model
+    # Alternative options:
+    # - "codellama/CodeLlama-7b-hf"
+    # - "bigcode/starcoder2-7b"
+    # - "Salesforce/codegen-2B-mono"
+    use_4bit: true
+    use_8bit: false
+    
+  # For Ollama models
+  ollama:
+    model_name: "deepseek-coder:6.7b"
+    # Alternative options:
+    # - "codellama:7b"
+    # - "starcoder2:7b"
+    base_url: "http://localhost:11434"
+
+# Code repository settings
+repository:
+  path: "."  # Path to the codebase to analyze
+  include_extensions:
+    - ".py"
+    - ".js"
+    - ".ts"
+    - ".java"
+    - ".cpp"
+    - ".c"
+    - ".go"
+    - ".rs"
+    - ".rb"
+    - ".php"
+  exclude_dirs:
+    - "node_modules"
+    - "venv"
+    - ".git"
+    - "__pycache__"
+    - "build"
+    - "dist"
+  max_file_size: 1048576  # 1MB in bytes
+
+# Training configuration
+training:
+  output_dir: "./models/fine-tuned"
+  num_epochs: 3
+  batch_size: 4
+  learning_rate: 2.0e-5
+  max_seq_length: 2048
+  gradient_accumulation_steps: 4
+  warmup_steps: 100
+  logging_steps: 10
+  save_steps: 500
+  
+  # LoRA configuration for efficient fine-tuning
+  lora:
+    r: 16
+    lora_alpha: 32
+    lora_dropout: 0.05
+    target_modules:
+      - "q_proj"
+      - "v_proj"
+      - "k_proj"
+      - "o_proj"
+
+# Data preparation
+data:
+  output_dir: "./data/processed"
+  train_split: 0.9
+  validation_split: 0.1
+  context_window: 4096
+  
+# Export settings
+export:
+  output_dir: "./models/exported"
+  format: "gguf"  # Options: "gguf", "onnx", "pytorch"
+  quantization: "q4_k_m"  # For GGUF format
