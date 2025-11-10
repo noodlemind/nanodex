@@ -2,6 +2,18 @@
 
 This guide shows how to use your fine-tuned model to debug errors and identify which modules are responsible for issues in your codebase.
 
+## 🔑 Important: The Model Works Standalone
+
+**After training completes, the model NO LONGER needs access to your codebase.** 
+
+- ✅ During training: Model learns from your code
+- ✅ After training: Model remembers what it learned (embedded in weights)
+- ✅ In deployment: Model answers questions WITHOUT needing the code
+
+The model is **self-contained** - all knowledge about your codebase is stored in the model weights.
+
+**See [TRAINING_VS_DEPLOYMENT.md](TRAINING_VS_DEPLOYMENT.md) for a detailed explanation of how this works.**
+
 ## Example Use Cases
 
 ### 1. Identifying Error Source

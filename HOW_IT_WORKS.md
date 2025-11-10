@@ -132,6 +132,28 @@ This directory contains:
 └── special_tokens_map.json
 ```
 
+## 🔑 Critical Understanding: Standalone Model
+
+**After training, the model is SELF-CONTAINED and does NOT need your codebase!**
+
+### What Happens During Training:
+1. Model SEES your code during training examples
+2. Model LEARNS patterns, structures, file locations
+3. Knowledge gets EMBEDDED in the model weights (adapter_model.bin)
+
+### What Happens After Training:
+1. Model is deployed WITHOUT the codebase
+2. Users ask questions (NO code provided)
+3. Model answers using LEARNED knowledge from its weights
+
+**Example:**
+- During training: Model sees `auth/manager.py` code and learns "this handles authentication"
+- After deployment: User asks "Which module handles login?" → Model responds "auth/manager.py" (from memory!)
+
+The model is like an expert developer who studied your code and can answer questions from memory.
+
+**📖 See [TRAINING_VS_DEPLOYMENT.md](TRAINING_VS_DEPLOYMENT.md) for detailed explanation.**
+
 ## How to Run the Program
 
 ### Full Pipeline (All Steps)

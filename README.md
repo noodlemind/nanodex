@@ -2,6 +2,16 @@
 
 A model training and transformation program that helps you fine-tune and train open source models to become experts on any given codebase. This enables the creation of specialized chatbots that can answer questions about your code and its behavior.
 
+## 🎯 How It Works
+
+**Training Phase:** The program analyzes your codebase and trains a model to learn about your code structure, patterns, and architecture.
+
+**Deployment Phase:** The fine-tuned model works **completely standalone** - it doesn't need access to your codebase anymore. All knowledge is embedded in the model weights, so it can answer questions from memory.
+
+**Result:** A self-contained AI expert on YOUR specific codebase!
+
+**📖 Read [TRAINING_VS_DEPLOYMENT.md](TRAINING_VS_DEPLOYMENT.md) to understand how the model learns during training and works without code access after deployment.**
+
 ## Features
 
 - 🚀 **Multiple Model Sources**: Support for both HuggingFace and Ollama models
