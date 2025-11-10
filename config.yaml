@@ -76,6 +76,7 @@ data:
   train_split: 0.9
   validation_split: 0.1
   context_window: 4096
+  random_seed: 42  # For reproducible train/val splits
   
 # Export settings
 export:

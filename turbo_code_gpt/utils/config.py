@@ -3,8 +3,11 @@ Configuration management for Turbo Code GPT.
 """
 
 import yaml
+import logging
 from pathlib import Path
 from typing import Dict, Any
+
+logger = logging.getLogger(__name__)
 
 
 class Config:
@@ -60,8 +63,43 @@ class Config:
         return self.get(f'model.{source}', {})
     
     def get_repository_config(self) -> Dict[str, Any]:
-        """Get repository analysis configuration."""
-        return self.get('repository', {})
+        """
+        Get repository analysis configuration with path validation.
+
+        Returns:
+            Repository configuration dictionary with validated path
+
+        Raises:
+            ValueError: If repository path is invalid
+        """
+        repo_config = self.get('repository', {}).copy()
+
+        # Get and validate repository path
+        repo_path = repo_config.get('path', '.')
+
+        # Resolve to absolute path
+        repo_path = Path(repo_path).resolve()
+
+        # Security: Validate path exists
+        if not repo_path.exists():
+            raise ValueError(
+                f"Repository path does not exist: {repo_path}\n"
+                "Please check your configuration and ensure the path is correct."
+            )
+
+        # Security: Validate it's a directory
+        if not repo_path.is_dir():
+            raise ValueError(
+                f"Repository path is not a directory: {repo_path}\n"
+                "Please provide a valid directory path."
+            )
+
+        # Update config with validated absolute path
+        repo_config['path'] = str(repo_path)
+
+        logger.debug(f"Validated repository path: {repo_path}")
+
+        return repo_config
     
     def get_training_config(self) -> Dict[str, Any]:
         """Get training configuration."""

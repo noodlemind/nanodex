@@ -35,13 +35,19 @@ class ModelTrainer:
     def train(self, train_dataset: Dataset, val_dataset: Optional[Dataset] = None):
         """
         Train the model on the provided datasets.
-        
+
         Args:
             train_dataset: Training dataset
             val_dataset: Optional validation dataset
+
+        Raises:
+            ValueError: If datasets are invalid or empty
         """
         logger.info("Starting model training")
-        
+
+        # Validate datasets before expensive operations
+        self._validate_datasets(train_dataset, val_dataset)
+
         # Prepare datasets
         train_dataset = self._prepare_dataset(train_dataset)
         if val_dataset:
@@ -75,9 +81,54 @@ class ModelTrainer:
         self.tokenizer.save_pretrained(str(output_dir))
         
         logger.info(f"Model saved to {output_dir}")
-        
+
         return trainer
-    
+
+    def _validate_datasets(self, train_dataset: Dataset, val_dataset: Optional[Dataset]):
+        """
+        Validate datasets before training.
+
+        Args:
+            train_dataset: Training dataset
+            val_dataset: Validation dataset (optional)
+
+        Raises:
+            ValueError: If validation fails
+        """
+        # Check if training dataset is empty
+        if len(train_dataset) == 0:
+            raise ValueError(
+                "Training dataset is empty! No training examples were generated. "
+                "Check your repository path and include_extensions configuration. "
+                "Make sure your codebase has files matching the configured extensions."
+            )
+
+        # Warn if training dataset is very small
+        if len(train_dataset) < 10:
+            logger.warning(
+                f"Training dataset is very small ({len(train_dataset)} examples). "
+                "This may not be enough for effective fine-tuning. "
+                "Consider adding more code files or using synthetic data generation. "
+                "Recommended minimum: 100 examples for basic fine-tuning."
+            )
+
+        # Warn if no validation dataset
+        if val_dataset is None:
+            logger.warning(
+                "No validation dataset provided. "
+                "Training will proceed without validation monitoring. "
+                "Consider setting validation_split > 0 in your config."
+            )
+        elif len(val_dataset) == 0:
+            logger.warning("Validation dataset is empty.")
+
+        # Log dataset sizes
+        logger.info(f"Dataset validation passed:")
+        logger.info(f"  Training examples: {len(train_dataset)}")
+        if val_dataset:
+            logger.info(f"  Validation examples: {len(val_dataset)}")
+            logger.info(f"  Split ratio: {len(train_dataset)/(len(train_dataset)+len(val_dataset)):.1%} train")
+
     def _prepare_dataset(self, dataset: Dataset) -> Dataset:
         """
         Prepare dataset for training by tokenizing.

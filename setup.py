@@ -47,7 +47,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "turbo-code-gpt=main:main",
+            "turbo-code-gpt=turbo_code_gpt.__main__:main",
         ],
     },
 )
