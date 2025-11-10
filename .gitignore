@@ -207,8 +207,8 @@ marimo/_lsp/
 __marimo__/
 
 # Turbo Code GPT specific
-data/
-models/
+/data/
+/models/
 *.gguf
 *.onnx
 Modelfile
