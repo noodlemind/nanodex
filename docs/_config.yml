@@ -1,0 +1,34 @@
+# Turbo Code GPT Documentation Site Configuration
+
+# Site settings
+title: Turbo Code GPT
+description: Train custom AI models that understand your specific codebase
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site
+
+# Build settings
+theme: jekyll-theme-cayman
+
+# Navigation
+navigation:
+  - title: Home
+    url: /
+  - title: Getting Started
+    url: /getting-started
+  - title: Documentation
+    url: /README
+
+# Exclude from processing
+exclude:
+  - old/
+  - README.md
+
+# Include files
+include:
+  - _config.yml
+
+# Markdown settings
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
