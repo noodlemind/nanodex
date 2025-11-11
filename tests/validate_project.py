@@ -12,15 +12,16 @@ def check_structure():
     print("Checking project structure...")
     
     required_files = [
-        "main.py",
         "config.yaml",
-        "requirements.txt",
-        "setup.py",
+        "pyproject.toml",
         "README.md",
         "docs/README.md",
         "docs/getting-started.md",
         "LICENSE",
         "nanodex/__init__.py",
+        "nanodex/__main__.py",
+        "nanodex/cli/__init__.py",
+        "nanodex/cli/main.py",
         "nanodex/utils/__init__.py",
         "nanodex/utils/config.py",
         "nanodex/analyzers/__init__.py",
@@ -139,9 +140,9 @@ def main():
         print("✅ All validation checks passed!")
         print("\nProject is ready to use.")
         print("\nNext steps:")
-        print("1. Install dependencies: pip install -r requirements.txt")
-        print("2. Configure your project: edit config.yaml")
-        print("3. Run the analyzer: python main.py --analyze-only")
+        print("1. Install dependencies: pip install -e .")
+        print("2. Configure your project: nanodex init")
+        print("3. Run the analyzer: nanodex analyze")
         print("=" * 60)
         return 0
     else:

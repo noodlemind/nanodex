@@ -28,7 +28,11 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 ### 3. Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+# Install package with all dependencies
+pip install -e .
+
+# Or install with dev dependencies for development
+pip install -e ".[dev]"
 ```
 
 ### 4. (Optional) Install Ollama
@@ -74,7 +78,7 @@ training:
 Run a quick analysis to verify everything is configured correctly:
 
 ```bash
-python main.py --analyze-only
+nanodex analyze
 ```
 
 **Expected output:**
@@ -89,7 +93,7 @@ Found 150 files
 Start the full training pipeline:
 
 ```bash
-python main.py
+nanodex train
 ```
 
 **This will:**
@@ -104,7 +108,7 @@ python main.py
 ### Step 4: Test Your Model
 
 ```bash
-python examples/inference_example.py
+nanodex chat
 ```
 
 Try asking questions like:

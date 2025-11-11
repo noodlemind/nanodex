@@ -128,7 +128,7 @@ model:
 ### Step 1: Analyze Your Codebase
 
 ```bash
-python main.py --analyze-only
+nanodex analyze
 ```
 
 **Output:**
@@ -148,7 +148,7 @@ Total: 23,000 lines of code
 ### Step 2: Prepare Training Data
 
 ```bash
-python main.py --prepare-only
+nanodex data generate
 ```
 
 **Output:**
@@ -169,7 +169,7 @@ cat ./data/processed/train.json | head -n 20
 ### Step 3: Train the Model
 
 ```bash
-python main.py
+nanodex train
 ```
 
 **Training output:**

@@ -32,6 +32,7 @@ dependencies = [
     "bitsandbytes>=0.41.0",
     "ollama>=0.1.0",
     "huggingface-hub>=0.19.0",
+    "tree-sitter>=0.20.0",
     "gitpython>=3.1.0",
     "pandas>=2.1.0",
     "numpy>=1.24.0",
@@ -41,6 +42,7 @@ dependencies = [
     "requests>=2.31.0",
     "click>=8.1.0",
     "rich>=13.0.0",
+    "questionary>=2.0.0",
     "pydantic>=2.0.0",
     "faiss-cpu>=1.7.0",
     "sentence-transformers>=2.2.0",
@@ -97,9 +99,12 @@ testpaths = ["tests"]
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
-addopts = "-v --strict-markers --tb=short"
+addopts = "-v --strict-markers --tb=short --color=yes"
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
     "unit: marks tests as unit tests",
 ]
+log_cli = false
+log_cli_level = "INFO"
+norecursedirs = [".git", ".tox", "dist", "build", "*.egg"]

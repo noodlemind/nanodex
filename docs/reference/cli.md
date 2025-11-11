@@ -2,21 +2,50 @@
 
 Command-line interface reference for nanodex.
 
+## Installation
+
+After installing nanodex, the `nanodex` command is available globally:
+
+```bash
+pip install -e .
+nanodex --help
+```
+
 ## Main Command
 
 ```bash
-python main.py [OPTIONS]
+nanodex [COMMAND] [OPTIONS]
 ```
 
-## Options
+## Commands
 
-### `--analyze-only`
+### `nanodex init`
 
-Analyze the codebase without training.
+Interactive setup wizard to configure your project.
 
 ```bash
-python main.py --analyze-only
+nanodex init
 ```
+
+**What it does:**
+- Guides you through configuration setup
+- Creates or updates `config.yaml`
+- Validates repository path and settings
+
+**Use case:** First-time setup or reconfiguration
+
+---
+
+### `nanodex analyze`
+
+Analyze your codebase without training.
+
+```bash
+nanodex analyze [OPTIONS]
+```
+
+**Options:**
+- `--config PATH`: Path to configuration file (default: `config.yaml`)
 
 **Use case:** Verify configuration and see what files will be analyzed.
 
@@ -29,15 +58,32 @@ Found 150 files
 Total: 23,000 lines of code
 ```
 
-### `--prepare-only`
+---
 
-Analyze and prepare training data without training.
+### `nanodex data`
+
+Manage training data generation.
+
+#### `nanodex data generate`
+
+Generate training data from your codebase.
 
 ```bash
-python main.py --prepare-only
+nanodex data generate [OPTIONS]
 ```
 
-**Use case:** Generate training dataset for inspection or custom training.
+**Options:**
+- `--mode MODE`: Generation mode (`free`, `hybrid`, `full`) (default: `free`)
+- `--config PATH`: Path to configuration file
+
+**Example:**
+```bash
+# Free mode (no API costs)
+nanodex data generate --mode free
+
+# Hybrid mode (mix self-supervised + synthetic)
+nanodex data generate --mode hybrid
+```
 
 **Output:**
 ```
@@ -48,57 +94,220 @@ Validation set: 150 examples
 Saved to ./data/processed/
 ```
 
-### `--config PATH`
+#### `nanodex data stats`
 
-Specify custom configuration file.
+Show dataset statistics.
 
 ```bash
-python main.py --config /path/to/custom-config.yaml
+nanodex data stats
 ```
 
-**Default:** `config.yaml`
+---
 
-### `--help`
+### `nanodex train`
+
+Train the model on your codebase.
+
+```bash
+nanodex train [OPTIONS]
+```
+
+**Options:**
+- `--config PATH`: Path to configuration file
+- `--resume`: Resume from last checkpoint
+
+**Example:**
+```bash
+# Start training
+nanodex train
+
+# Resume from checkpoint
+nanodex train --resume
+```
+
+**Output:**
+```
+Loading model: deepseek-ai/deepseek-coder-6.7b-base
+Applying 4-bit quantization...
+Adding LoRA adapters...
+Starting training...
+
+Epoch 1/3
+  Step 10: Loss = 2.45
+  Step 20: Loss = 2.12
+  ...
+Model saved to ./models/fine-tuned/
+```
+
+---
+
+### `nanodex rag`
+
+Manage RAG (Retrieval-Augmented Generation) indexing and search.
+
+#### `nanodex rag index`
+
+Build semantic search index from your codebase.
+
+```bash
+nanodex rag index [OPTIONS]
+```
+
+**Options:**
+- `--config PATH`: Path to configuration file
+
+**Example:**
+```bash
+nanodex rag index
+```
+
+#### `nanodex rag search`
+
+Search your codebase semantically.
+
+```bash
+nanodex rag search QUERY [OPTIONS]
+```
+
+**Options:**
+- `--top-k N`: Number of results to return (default: 5)
+
+**Example:**
+```bash
+nanodex rag search "authentication logic" --top-k 10
+```
+
+#### `nanodex rag query`
+
+Ask questions about your codebase using RAG.
+
+```bash
+nanodex rag query QUESTION [OPTIONS]
+```
+
+**Example:**
+```bash
+nanodex rag query "How does the login system work?"
+```
+
+---
+
+### `nanodex chat`
+
+Interactive chat interface with your fine-tuned model.
+
+```bash
+nanodex chat [OPTIONS]
+```
+
+**Options:**
+- `--model PATH`: Path to fine-tuned model (default: `./models/fine-tuned`)
+- `--config PATH`: Path to configuration file
+
+**Example:**
+```bash
+# Use default model
+nanodex chat
+
+# Use custom model
+nanodex chat --model /path/to/custom/model
+```
+
+**Interactive commands:**
+- Type your questions and press Enter
+- Type `quit`, `exit`, or `q` to exit
+- Type `clear` to clear conversation history
+
+---
+
+### `nanodex config-show`
+
+Display current configuration.
+
+```bash
+nanodex config-show [OPTIONS]
+```
+
+**Options:**
+- `--config PATH`: Path to configuration file
+
+---
+
+### `nanodex config-validate`
+
+Validate configuration file.
+
+```bash
+nanodex config-validate [OPTIONS]
+```
+
+**Options:**
+- `--config PATH`: Path to configuration file
+
+**Example:**
+```bash
+nanodex config-validate --config config.yaml
+```
+
+---
+
+### `nanodex --help`
 
 Display help message.
 
 ```bash
-python main.py --help
+nanodex --help
 ```
+
+For command-specific help:
+```bash
+nanodex COMMAND --help
+```
+
+---
 
 ## Workflows
 
 ### Full Pipeline
 
-Run complete training pipeline:
+Complete workflow from setup to trained model:
 
 ```bash
-python main.py
-```
+# 1. Interactive setup
+nanodex init
 
-**Steps:**
-1. Analyze codebase
-2. Prepare training data
-3. Load base model
-4. Fine-tune model
-5. Save to `./models/fine-tuned/`
+# 2. Verify configuration
+nanodex analyze
+
+# 3. Generate training data
+nanodex data generate --mode free
+
+# 4. Build RAG index
+nanodex rag index
+
+# 5. Train model
+nanodex train
+
+# 6. Test with chat
+nanodex chat
+```
 
 ### Incremental Development
 
 **Step 1:** Verify configuration
 ```bash
-python main.py --analyze-only
+nanodex analyze
 ```
 
 **Step 2:** Generate and inspect data
 ```bash
-python main.py --prepare-only
+nanodex data generate
 cat ./data/processed/train.json | head -n 50
 ```
 
 **Step 3:** Train
 ```bash
-python main.py
+nanodex train
 ```
 
 ### Resume Training
@@ -106,62 +315,22 @@ python main.py
 If training was interrupted:
 
 ```bash
-# 1. Update config to resume from checkpoint
-# In config.yaml:
+# Resume from last checkpoint
+nanodex train --resume
+```
+
+Or manually specify checkpoint in `config.yaml`:
+```yaml
 training:
   resume_from_checkpoint: "./models/fine-tuned/checkpoint-1000"
-
-# 2. Run training
-python main.py
 ```
 
-## Examples
-
-See `examples/` directory for usage examples.
-
-### Inference Example
-
+Then run:
 ```bash
-python examples/inference_example.py [OPTIONS]
+nanodex train
 ```
 
-**Options:**
-- `--model-path PATH`: Path to fine-tuned model (default: `./models/fine-tuned`)
-- `--interactive`: Enter interactive mode
-- `--question TEXT`: Ask a single question
-
-**Examples:**
-
-```bash
-# Interactive mode
-python examples/inference_example.py --interactive
-
-# Single question
-python examples/inference_example.py --question "How does login work?"
-
-# Custom model path
-python examples/inference_example.py --model-path /path/to/model --interactive
-```
-
-### Ollama Example
-
-```bash
-python examples/ollama_example.py
-```
-
-Generates a `Modelfile` for use with Ollama.
-
-**Usage:**
-```bash
-# 1. Generate Modelfile
-python examples/ollama_example.py > Modelfile
-
-# 2. Create Ollama model
-ollama create my-code-expert -f Modelfile
-
-# 3. Use it
-ollama run my-code-expert
-```
+---
 
 ## Environment Variables
 
@@ -171,13 +340,13 @@ Control which GPUs to use:
 
 ```bash
 # Use GPU 0
-CUDA_VISIBLE_DEVICES=0 python main.py
+CUDA_VISIBLE_DEVICES=0 nanodex train
 
 # Use GPUs 0 and 1
-CUDA_VISIBLE_DEVICES=0,1 python main.py
+CUDA_VISIBLE_DEVICES=0,1 nanodex train
 
 # Use CPU only
-CUDA_VISIBLE_DEVICES="" python main.py
+CUDA_VISIBLE_DEVICES="" nanodex train
 ```
 
 ### `TRANSFORMERS_CACHE`
@@ -186,7 +355,7 @@ Set HuggingFace cache directory:
 
 ```bash
 export TRANSFORMERS_CACHE=/path/to/cache
-python main.py
+nanodex train
 ```
 
 ### `HF_HOME`
@@ -195,8 +364,10 @@ Set HuggingFace home directory:
 
 ```bash
 export HF_HOME=/path/to/hf_home
-python main.py
+nanodex train
 ```
+
+---
 
 ## Output Files
 
@@ -224,13 +395,15 @@ Files created:
 - `special_tokens_map.json` - Special tokens
 - `checkpoint-XXX/` - Training checkpoints (every 500 steps)
 
-## Exit Codes
+### During RAG Indexing
 
-- `0`: Success
-- `1`: General error
-- `2`: Configuration error
-- `3`: Analysis error
-- `4`: Training error
+**Location:** `./models/rag_index/`
+
+Files created:
+- `index.faiss` - FAISS vector index
+- `metadata.json` - Code chunk metadata
+
+---
 
 ## Tips
 
@@ -239,7 +412,7 @@ Files created:
 Check what will be analyzed:
 
 ```bash
-python main.py --analyze-only 2>&1 | tee analysis.log
+nanodex analyze 2>&1 | tee analysis.log
 ```
 
 ### Monitor Progress
@@ -256,7 +429,7 @@ watch -n 5 'ls -lh ./models/fine-tuned/'
 Run training in background:
 
 ```bash
-nohup python main.py > training.log 2>&1 &
+nohup nanodex train > training.log 2>&1 &
 
 # Monitor progress
 tail -f training.log
@@ -271,14 +444,16 @@ Remove checkpoints after training:
 rm -rf ./models/fine-tuned/checkpoint-*
 ```
 
+---
+
 ## Common Patterns
 
 ### Train Multiple Configurations
 
 ```bash
 # Train with different configs
-python main.py --config config-small.yaml
-python main.py --config config-large.yaml
+nanodex train --config config-small.yaml
+nanodex train --config config-large.yaml
 ```
 
 ### Batch Processing
@@ -287,7 +462,7 @@ python main.py --config config-large.yaml
 #!/bin/bash
 for repo in repo1 repo2 repo3; do
     sed -i "s|path:.*|path: $repo|" config.yaml
-    python main.py
+    nanodex train
     mv ./models/fine-tuned ./models/$repo-model
 done
 ```
@@ -300,11 +475,11 @@ set -e  # Exit on error
 
 # 1. Analyze
 echo "Analyzing codebase..."
-python main.py --analyze-only
+nanodex analyze
 
 # 2. Prepare data
 echo "Preparing training data..."
-python main.py --prepare-only
+nanodex data generate
 
 # 3. Verify data
 echo "Verifying data..."
@@ -312,17 +487,40 @@ test -f ./data/processed/train.json || exit 1
 
 # 4. Train
 echo "Training model..."
-python main.py
+nanodex train
 
 # 5. Test
 echo "Testing model..."
-python examples/inference_example.py --question "What does this codebase do?"
+nanodex chat
+# Or test programmatically with Python API
 
 echo "Pipeline complete!"
 ```
+
+---
+
+## Examples
+
+### Python API Usage
+
+For programmatic usage, see `examples/` directory:
+
+```bash
+# Interactive inference
+python examples/inference_example.py
+
+# Ollama integration
+python examples/ollama_example.py
+
+# Basic demo
+python examples/demo.py
+```
+
+---
 
 ## Next Steps
 
 - **API Reference**: [API Reference](api.md)
 - **Configuration**: [Configuration Guide](../guides/configuration.md)
 - **Training**: [Training Guide](../guides/training.md)
+- **Troubleshooting**: [Troubleshooting Guide](troubleshooting.md)

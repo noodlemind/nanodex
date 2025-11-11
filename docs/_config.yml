@@ -20,7 +20,6 @@ navigation:
 
 # Exclude from processing
 exclude:
-  - old/
   - README.md
 
 # Include files

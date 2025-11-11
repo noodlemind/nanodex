@@ -254,22 +254,50 @@ Dataset → Tokenize → Format → Train → Validate → Save
 ```
 nanodex/
 ├── config.yaml                 # Configuration
-├── main.py                     # Main CLI
-├── nanodex/            # Main package
+├── pyproject.toml              # Package configuration & dependencies
+├── nanodex/                    # Main package
+│   ├── __main__.py            # CLI entry point
+│   ├── cli/                   # CLI commands
+│   │   ├── main.py            # Main CLI orchestrator
+│   │   ├── init.py            # Init command
+│   │   ├── analyze.py         # Analyze command
+│   │   ├── train.py           # Train command
+│   │   ├── data_gen.py        # Data generation command
+│   │   ├── rag.py             # RAG commands
+│   │   └── chat.py            # Chat command
 │   ├── analyzers/             # Code analysis
-│   │   └── code_analyzer.py
+│   │   ├── code_analyzer.py
+│   │   ├── ast_parser.py
+│   │   └── dependency_graph.py
 │   ├── models/                # Model loading
 │   │   └── model_loader.py
 │   ├── trainers/              # Training
 │   │   ├── data_preparer.py
 │   │   └── model_trainer.py
+│   ├── rag/                   # RAG infrastructure
+│   │   ├── embedder.py
+│   │   ├── indexer.py
+│   │   └── retriever.py
+│   ├── data_generators/       # Data generation
+│   │   ├── self_supervised.py
+│   │   └── synthetic_api.py
+│   ├── inference/             # Inference
+│   │   ├── chat.py
+│   │   └── rag_inference.py
 │   └── utils/                 # Utilities
-│       └── config.py
+│       ├── config.py
+│       └── schemas.py
 ├── examples/                   # Example scripts
 │   ├── inference_example.py
-│   └── ollama_example.py
+│   ├── ollama_example.py
+│   └── demo.py
+├── docs/                       # Documentation
+│   ├── README.md
+│   ├── getting-started.md
+│   └── ...
 └── tests/                      # Tests
-    └── test_basic.py
+    ├── test_basic.py
+    └── test_pydantic_config.py
 ```
 
 ## Extension Points

@@ -46,14 +46,17 @@ nanodex is a tool for fine-tuning large language models on your codebase, creati
 ## 🚀 Quick Example
 
 ```bash
-# 1. Configure your project
-edit config.yaml
+# 1. Interactive setup wizard
+nanodex init
 
-# 2. Train the model
-python main.py
+# 2. Generate training data
+nanodex data generate
 
-# 3. Use it
-python examples/inference_example.py
+# 3. Train the model
+nanodex train
+
+# 4. Use it with interactive chat
+nanodex chat
 ```
 
 Your model can now answer questions like:

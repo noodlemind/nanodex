@@ -46,14 +46,15 @@ pip install --upgrade pip
 
 2. **Use specific Python version:**
 ```bash
-python3.10 -m pip install -r requirements.txt
+python3.10 -m pip install -e .
 ```
 
-3. **Install individually:**
+3. **Install individually (if package install fails):**
 ```bash
 pip install transformers
 pip install torch
 pip install datasets
+# See pyproject.toml for full dependency list
 ```
 
 ## Configuration Issues
@@ -419,7 +420,7 @@ rm -rf ~/.cache/huggingface/hub/models--deepseek-ai*
 4. **Verify model integrity:**
 ```bash
 # Re-run training
-python main.py
+nanodex train
 ```
 
 ## Data Issues
@@ -436,7 +437,7 @@ JSONDecodeError: Expecting property name enclosed in double quotes
 1. **Re-generate data:**
 ```bash
 rm -rf ./data/processed/
-python main.py --prepare-only
+nanodex data generate
 ```
 
 2. **Check code for invalid characters**

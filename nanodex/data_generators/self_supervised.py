@@ -339,16 +339,15 @@ class GitHistoryGenerator(DataGeneratorPlugin):
         """
         examples = []
 
-        # TODO: Implement git history extraction
-        # This requires:
-        # 1. git.Repo integration
-        # 2. Iterating through commits
-        # 3. Extracting diffs
-        # 4. Filtering useful changes
-        # 5. Creating before/after examples
+        # Future enhancement: Git history extraction
+        # Planned implementation will include:
+        # - git.Repo integration for accessing repository history
+        # - Iterating through commits to extract meaningful changes
+        # - Analyzing diffs to create before/after training examples
+        # - Filtering changes by significance and relevance
+        # This will provide training data showing code evolution patterns
 
-        # Placeholder for future implementation
-        logger.debug("GitHistoryGenerator requires git integration - not yet implemented")
+        logger.debug("GitHistoryGenerator: Git history extraction not yet implemented - returning empty list")
 
         return examples
 
