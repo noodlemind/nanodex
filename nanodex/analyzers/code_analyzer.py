@@ -196,16 +196,20 @@ class CodeAnalyzer:
     def get_statistics(self, code_samples: List[Dict[str, str]]) -> Dict:
         """
         Get statistics about the analyzed code.
-        
+
         Args:
             code_samples: List of code samples
-            
+
         Returns:
             Dictionary with statistics
         """
+        total_files = len(code_samples)
+        total_lines = sum(s['lines'] for s in code_samples)
+
         stats = {
-            'total_files': len(code_samples),
-            'total_lines': sum(s['lines'] for s in code_samples),
+            'total_files': total_files,
+            'total_lines': total_lines,
+            'avg_lines_per_file': total_lines / total_files if total_files > 0 else 0,
             'languages': {},
         }
         
