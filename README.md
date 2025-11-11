@@ -35,8 +35,12 @@ nanodex fine-tunes large language models (like DeepSeek Coder, CodeLlama) on you
 ```bash
 git clone https://github.com/noodlemind/nanodex.git
 cd nanodex
-pip install -r requirements.txt
+
+# Install package with all dependencies
 pip install -e .
+
+# Or install with dev dependencies for development
+pip install -e ".[dev]"
 ```
 
 ### 2. Configure

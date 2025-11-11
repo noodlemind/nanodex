@@ -255,9 +255,9 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Install nanodex package
+COPY pyproject.toml .
+RUN pip install -e .
 
 # Copy model
 COPY ./models/fine-tuned ./models/fine-tuned
@@ -398,7 +398,7 @@ When your codebase changes:
 
 ```bash
 # 1. Re-analyze and train
-python main.py
+nanodex train
 
 # 2. Replace model in production
 cp -r ./models/fine-tuned /production/models/fine-tuned

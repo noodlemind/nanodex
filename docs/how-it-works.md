@@ -123,7 +123,7 @@ The model is like a developer who studied your code and can answer questions fro
 ### Full Pipeline
 
 ```bash
-python main.py
+nanodex train
 ```
 
 Runs all steps automatically:
@@ -137,13 +137,13 @@ Runs all steps automatically:
 
 ```bash
 # Step 1: Analyze code only
-python main.py --analyze-only
+nanodex analyze
 
-# Step 2: Analyze + prepare data (no training)
-python main.py --prepare-only
+# Step 2: Generate training data
+nanodex data generate
 
-# Step 3: Full pipeline
-python main.py
+# Step 3: Train the model
+nanodex train
 ```
 
 ## Using the Fine-Tuned Model
@@ -173,7 +173,7 @@ print(response)
 ### Interactive Mode
 
 ```bash
-python examples/inference_example.py
+nanodex chat
 ```
 
 ## What Makes This Model Special
