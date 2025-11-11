@@ -2,17 +2,18 @@
 Interactive initialization wizard for nanodex.
 """
 
+# Standard library imports
 import sys
+from pathlib import Path
+from typing import Any
+
+# Third-party imports
 import click
+import questionary
+import yaml
+from questionary import Style
 from rich.console import Console
 from rich.panel import Panel
-from rich.prompt import Prompt, Confirm
-from rich.table import Table
-from rich import box
-from pathlib import Path
-import yaml
-import questionary
-from questionary import Style
 
 console = Console()
 
@@ -31,72 +32,79 @@ custom_style = Style(
     ]
 )
 
+# Default configuration template (without repo path)
+_DEFAULT_CONFIG_TEMPLATE = {
+    "mode": "free",
+    "repository": {
+        "path": ".",  # Will be overridden by get_default_config
+        "include_extensions": [".py"],
+        "exclude_dirs": ["node_modules", "venv", ".git", "__pycache__", "build", "dist"],
+        "max_file_size": 1048576,
+        "deep_parsing": {
+            "enabled": True,
+            "extract_functions": True,
+            "extract_classes": True,
+            "extract_imports": True,
+            "extract_docstrings": True,
+            "calculate_complexity": True,
+        },
+    },
+    "model_source": "huggingface",
+    "model": {
+        "huggingface": {
+            "model_name": "deepseek-ai/deepseek-coder-6.7b-base",
+            "use_4bit": True,
+            "use_8bit": False,
+            "trust_remote_code": False,
+        },
+        "ollama": {"model_name": "codellama", "base_url": "http://localhost:11434"},
+    },
+    "training": {
+        "output_dir": "./models/fine-tuned",
+        "num_epochs": 3,
+        "batch_size": 4,
+        "learning_rate": 2.0e-5,
+        "max_seq_length": 2048,
+        "gradient_accumulation_steps": 4,
+        "warmup_steps": 100,
+        "logging_steps": 10,
+        "save_steps": 500,
+        "lora": {
+            "r": 16,
+            "lora_alpha": 32,
+            "lora_dropout": 0.05,
+            "target_modules": ["q_proj", "v_proj", "k_proj", "o_proj"],
+        },
+    },
+    "data": {
+        "output_dir": "./data/processed",
+        "train_split": 0.9,
+        "validation_split": 0.1,
+        "context_window": 4096,
+        "random_seed": 42,
+    },
+    "export": {
+        "output_dir": "./models/exported",
+        "format": "gguf",
+        "quantization": "q4_k_m",
+    },
+}
 
-def get_default_config(repo_path="."):
+
+def get_default_config(repo_path: str = ".") -> dict[str, Any]:
     """Generate default configuration without user prompts."""
-    return {
-        "mode": "free",
-        "repository": {
-            "path": repo_path,
-            "include_extensions": [".py"],
-            "exclude_dirs": ["node_modules", "venv", ".git", "__pycache__", "build", "dist"],
-            "max_file_size": 1048576,
-            "deep_parsing": {
-                "enabled": True,
-                "extract_functions": True,
-                "extract_classes": True,
-                "extract_imports": True,
-                "extract_docstrings": True,
-                "calculate_complexity": True,
-            },
-        },
-        "model_source": "huggingface",
-        "model": {
-            "huggingface": {
-                "model_name": "deepseek-ai/deepseek-coder-6.7b-base",
-                "use_4bit": True,
-                "use_8bit": False,
-                "trust_remote_code": False,
-            },
-            "ollama": {"model_name": "codellama", "base_url": "http://localhost:11434"},
-        },
-        "training": {
-            "output_dir": "./models/fine-tuned",
-            "num_epochs": 3,
-            "batch_size": 4,
-            "learning_rate": 2.0e-5,
-            "max_seq_length": 2048,
-            "gradient_accumulation_steps": 4,
-            "warmup_steps": 100,
-            "logging_steps": 10,
-            "save_steps": 500,
-            "lora": {
-                "r": 16,
-                "lora_alpha": 32,
-                "lora_dropout": 0.05,
-                "target_modules": ["q_proj", "v_proj", "k_proj", "o_proj"],
-            },
-        },
-        "data": {
-            "output_dir": "./data/processed",
-            "train_split": 0.9,
-            "validation_split": 0.1,
-            "context_window": 4096,
-            "random_seed": 42,
-        },
-        "export": {
-            "output_dir": "./models/exported",
-            "format": "gguf",
-            "quantization": "q4_k_m",
-        },
-    }
+    import copy
+
+    config = copy.deepcopy(_DEFAULT_CONFIG_TEMPLATE)
+    config["repository"]["path"] = repo_path
+    return config
 
 
 @click.command()
 @click.option("--output", default="config.yaml", help="Output configuration file")
 @click.option("--non-interactive", is_flag=True, help="Generate default config without prompts")
 @click.option("--repo-path", default=".", help="Repository path (for non-interactive mode)")
-def init_cmd(output, non_interactive, repo_path):
+def init_cmd(output: str, non_interactive: bool, repo_path: str) -> None:
     """
     🎯 Interactive setup wizard
 

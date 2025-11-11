@@ -3,6 +3,7 @@ Model loader for loading and configuring HuggingFace models.
 """
 
 import logging
+from typing import Any, Tuple
 import torch
 from transformers import (
     AutoModelForCausalLM,
@@ -27,7 +28,12 @@ logger = logging.getLogger(__name__)
 class ModelLoader:
     """Load and configure models for fine-tuning."""
 
-    def __init__(self, model_config: dict, training_config: dict, trust_remote_code: bool = False):
+    def __init__(
+        self,
+        model_config: dict[str, Any],
+        training_config: dict[str, Any],
+        trust_remote_code: bool = False,
+    ) -> None:
         """
         Initialize model loader.
 
@@ -70,7 +76,7 @@ class ModelLoader:
                 "with models from trusted sources."
             )
 
-    def load_huggingface_model(self):
+    def load_huggingface_model(self) -> Tuple[AutoModelForCausalLM, AutoTokenizer]:
         """
         Load a HuggingFace model with optional quantization.
 
@@ -127,7 +133,7 @@ class ModelLoader:
                 quantization_config=quantization_config,
                 device_map="auto",
                 trust_remote_code=self.trust_remote_code,
-                torch_dtype=torch.float16 if quantization_config else torch.float32,
+                torch_dtype=torch.float16,  # Always use fp16 for efficiency
             )
 
             # Prepare model for k-bit training if using quantization
@@ -158,7 +164,7 @@ class ModelLoader:
                 f"Original error: {e}"
             ) from e
 
-    def apply_lora(self, model):
+    def apply_lora(self, model: AutoModelForCausalLM) -> AutoModelForCausalLM:
         """
         Apply LoRA (Low-Rank Adaptation) to the model.
 

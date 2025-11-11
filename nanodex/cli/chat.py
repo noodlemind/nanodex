@@ -2,6 +2,7 @@
 Interactive chat CLI command.
 """
 
+from typing import Any
 import click
 from rich.console import Console
 from rich.panel import Panel
@@ -23,7 +24,9 @@ console = Console()
 @click.option(
     "--yes", "-y", is_flag=True, help="Skip confirmations (continue without RAG if missing)"
 )
-def chat_cmd(index, model, session, no_rag, temperature, yes):
+def chat_cmd(
+    index: str, model: str | None, session: str | None, no_rag: bool, temperature: float, yes: bool
+) -> None:
     """
     💬 Interactive chat with your codebase
 
@@ -209,7 +212,7 @@ def chat_cmd(index, model, session, no_rag, temperature, yes):
         raise click.Abort()
 
 
-def _show_help():
+def _show_help() -> None:
     """Show help message."""
     help_table = Table(title="Chat Commands", box=box.ROUNDED)
     help_table.add_column("Command", style="cyan")
@@ -227,7 +230,7 @@ def _show_help():
     console.print()
 
 
-def _show_history(chat_session):
+def _show_history(chat_session: Any) -> None:
     """Show conversation history."""
     messages = chat_session.get_history()
 
@@ -247,7 +250,7 @@ def _show_history(chat_session):
         console.print()
 
 
-def _show_stats(chat_session):
+def _show_stats(chat_session: Any) -> None:
     """Show session statistics."""
     stats = chat_session.get_stats()
 
