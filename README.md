@@ -20,13 +20,15 @@ nanodex fine-tunes large language models (like DeepSeek Coder, CodeLlama) on you
 ## ✨ Features
 
 - 🚀 **Modern CLI** - Beautiful Click-based interface with Rich formatting
+- 🐚 **Interactive Shell** - REPL mode with persistent context and command history
+- 📚 **Better Onboarding** - Examples and pipeline guides for easy getting started
+- 📊 **Pipeline Status** - Track progress and see what's next
 - 🎯 **State-of-the-Art Models** - DeepSeek Coder, CodeLlama, StarCoder2 support
 - 💾 **Memory Efficient** - LoRA fine-tuning with 4-bit quantization
 - 🔍 **RAG Infrastructure** - Semantic code search with FAISS indexing
-- 💬 **Interactive Chat** - Conversational interface with context-aware responses
+- 💬 **Enhanced Chat** - Persistent history, auto-suggestions, and Ctrl+R search
 - 🤖 **Production Ready** - Deploy standalone models without code access
 - 🐛 **Debug Assistant** - Models help identify error sources in your code
-- 📊 **Comprehensive Evaluation** - Multiple metrics (BLEU, F1, exact match)
 
 ## 🚀 Quick Start
 
@@ -134,6 +136,11 @@ The model knows YOUR codebase!
 ## 🛠️ Key Commands
 
 ```bash
+# Getting Started
+nanodex examples          # Show usage examples
+nanodex pipeline guide    # Complete pipeline walkthrough
+nanodex status            # Check progress
+
 # Setup & Configuration
 nanodex init              # Interactive setup wizard
 nanodex analyze           # Analyze your codebase
@@ -151,9 +158,9 @@ nanodex rag index         # Build semantic search index
 nanodex rag search QUERY  # Search for code
 nanodex rag query "..."   # Ask questions
 
-# Interactive Chat
-nanodex chat              # Start chat session
-nanodex chat --model PATH # Chat with specific model
+# Interactive Use
+nanodex chat              # Start chat session (with history!)
+nanodex shell             # Interactive shell mode
 ```
 
 ## 📊 Data Generation Modes

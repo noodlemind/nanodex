@@ -38,6 +38,9 @@ def cli(ctx):
 
     \b
     Quick Start:
+      nanodex examples        # Show usage examples
+      nanodex pipeline guide  # Show complete pipeline guide
+      nanodex status          # Check pipeline progress
       nanodex init          # Interactive setup wizard
       nanodex analyze       # Analyze your codebase
       nanodex data generate # Generate training data
@@ -45,6 +48,7 @@ def cli(ctx):
       nanodex rag index     # Build RAG index
       nanodex rag search    # Semantic code search
       nanodex chat          # Interactive chat interface
+      nanodex shell         # Interactive shell mode
 
     \b
     Learn more:
@@ -123,6 +127,10 @@ from .data_gen import data_cmd
 from .train import train_cmd
 from .rag import rag_cmd
 from .chat import chat_cmd
+from .shell import shell_cmd
+from .examples import examples_cmd
+from .status import status_cmd
+from .pipeline import pipeline_cmd
 
 # Register commands
 cli.add_command(init_cmd, name='init')
@@ -131,6 +139,10 @@ cli.add_command(data_cmd, name='data')
 cli.add_command(train_cmd, name='train')
 cli.add_command(rag_cmd, name='rag')
 cli.add_command(chat_cmd, name='chat')
+cli.add_command(shell_cmd, name='shell')
+cli.add_command(examples_cmd, name='examples')
+cli.add_command(status_cmd, name='status')
+cli.add_command(pipeline_cmd, name='pipeline')
 
 
 if __name__ == '__main__':
