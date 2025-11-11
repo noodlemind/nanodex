@@ -81,6 +81,6 @@ def shell_cmd(ctx, no_history):
 
     # Start REPL
     try:
-        repl(ctx.parent, prompt_kwargs=prompt_kwargs)
+        repl(ctx, prompt_kwargs=prompt_kwargs)
     except (KeyboardInterrupt, EOFError):
         console.print("\n[cyan]👋 Exiting shell...[/cyan]\n")

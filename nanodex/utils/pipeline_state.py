@@ -61,7 +61,6 @@ class PipelineState:
                 "data_generation": {"status": StepStatus.PENDING.value, "data": {}},
                 "training": {"status": StepStatus.PENDING.value, "data": {}},
                 "rag_indexing": {"status": StepStatus.PENDING.value, "data": {}},
-                "validation": {"status": StepStatus.PENDING.value, "data": {}},
             },
         }
 

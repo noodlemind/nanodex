@@ -42,8 +42,10 @@ def status_cmd(config):
         # Initialize pipeline state
         pipeline = PipelineState()
 
-        # Check each step
-        pipeline.check_configuration()
+        # Check each step (using the specified config path)
+        config_path = Path(config)
+        if config_path.exists():
+            pipeline.set_step_status("configuration", StepStatus.COMPLETED, {"config_file": config})
         pipeline.check_analysis()
         pipeline.check_data_generation()
         pipeline.check_training()
@@ -51,9 +53,7 @@ def status_cmd(config):
 
         # Show project info
         console.print(f"[bold]Project:[/bold] {os.getcwd()}")
-        console.print(
-            f"[bold]Config:[/bold] {config} " f"{'✓' if Path(config).exists() else '✗'}\n"
-        )
+        console.print(f"[bold]Config:[/bold] {config} " f"{'✓' if config_path.exists() else '✗'}\n")
 
         # Create progress table
         table = Table(title="Pipeline Progress", box=box.ROUNDED)
