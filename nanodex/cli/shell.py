@@ -11,6 +11,7 @@ from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from rich.console import Console
 from rich.panel import Panel
+import yaml
 
 console = Console()
 
@@ -56,18 +57,25 @@ def shell_cmd(ctx, no_history):
     )
     console.print()
 
-    # Initialize persistent context
-    ctx.ensure_object(dict)
-    ctx.obj["shell_mode"] = True
+    # Initialize persistent context on root CLI context
+    root_ctx = ctx.find_root()
+    root_ctx.ensure_object(dict)
+    root_ctx.obj["shell_mode"] = True
 
-    # Load config once (instead of per-command)
+    # Load config once (instead of per-command) and store on root context
     try:
         from ..utils.config import Config
 
-        ctx.obj["config"] = Config("config.yaml")
+        root_ctx.obj["config"] = Config("config.yaml")
         console.print("[green]✓[/green] Configuration loaded\n")
-    except Exception as e:
-        console.print(f"[yellow]⚠[/yellow] Config not loaded: {e}")
+    except FileNotFoundError as e:
+        console.print(f"[yellow]⚠[/yellow] Config file not found: {e}")
+        console.print("[dim]You can still use commands that don't require config[/dim]\n")
+    except ImportError as e:
+        console.print(f"[yellow]⚠[/yellow] Failed to import Config module: {e}")
+        console.print("[dim]You can still use commands that don't require config[/dim]\n")
+    except yaml.YAMLError as e:
+        console.print(f"[yellow]⚠[/yellow] Config file has invalid YAML: {e}")
         console.print("[dim]You can still use commands that don't require config[/dim]\n")
 
     # Setup prompt kwargs
@@ -79,8 +87,8 @@ def shell_cmd(ctx, no_history):
         prompt_kwargs["history"] = FileHistory(".nanodex_history")
         prompt_kwargs["auto_suggest"] = AutoSuggestFromHistory()
 
-    # Start REPL
+    # Start REPL with root context so commands see shared state
     try:
-        repl(ctx, prompt_kwargs=prompt_kwargs)
+        repl(root_ctx, prompt_kwargs=prompt_kwargs)
     except (KeyboardInterrupt, EOFError):
         console.print("\n[cyan]👋 Exiting shell...[/cyan]\n")

@@ -31,7 +31,6 @@ class PipelineState:
     3. Data Generation
     4. Training
     5. RAG Indexing
-    6. Validation
     """
 
     def __init__(self, project_path: str = "."):
@@ -77,7 +76,7 @@ class PipelineState:
             return StepStatus(status_value)
         return StepStatus.PENDING
 
-    def set_step_status(self, step_name: str, status: StepStatus, data: Dict = None):
+    def set_step_status(self, step_name: str, status: StepStatus, data: Optional[Dict] = None):
         """Set status of a specific step."""
         if step_name in self.state["steps"]:
             self.state["steps"][step_name]["status"] = status.value
