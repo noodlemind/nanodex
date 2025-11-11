@@ -1,7 +1,7 @@
-# Turbo Code GPT Documentation Site Configuration
+# nanodex Documentation Site Configuration
 
 # Site settings
-title: Turbo Code GPT
+title: nanodex
 description: Train custom AI models that understand your specific codebase
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site
