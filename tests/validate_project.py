@@ -20,16 +20,16 @@ def check_structure():
         "docs/README.md",
         "docs/getting-started.md",
         "LICENSE",
-        "turbo_code_gpt/__init__.py",
-        "turbo_code_gpt/utils/__init__.py",
-        "turbo_code_gpt/utils/config.py",
-        "turbo_code_gpt/analyzers/__init__.py",
-        "turbo_code_gpt/analyzers/code_analyzer.py",
-        "turbo_code_gpt/models/__init__.py",
-        "turbo_code_gpt/models/model_loader.py",
-        "turbo_code_gpt/trainers/__init__.py",
-        "turbo_code_gpt/trainers/data_preparer.py",
-        "turbo_code_gpt/trainers/model_trainer.py",
+        "nanodex/__init__.py",
+        "nanodex/utils/__init__.py",
+        "nanodex/utils/config.py",
+        "nanodex/analyzers/__init__.py",
+        "nanodex/analyzers/code_analyzer.py",
+        "nanodex/models/__init__.py",
+        "nanodex/models/model_loader.py",
+        "nanodex/trainers/__init__.py",
+        "nanodex/trainers/data_preparer.py",
+        "nanodex/trainers/model_trainer.py",
         "examples/__init__.py",
         "examples/inference_example.py",
         "examples/ollama_example.py",
@@ -87,7 +87,7 @@ def check_imports():
         from nanodex.analyzers import CodeAnalyzer
         
         print("✅ Basic imports successful")
-        print(f"   Package version: {turbo_code_gpt.__version__}")
+        print(f"   Package version: {nanodex.__version__}")
         return True
     except Exception as e:
         print(f"❌ Import error: {e}")

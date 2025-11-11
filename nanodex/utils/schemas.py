@@ -306,7 +306,7 @@ class ExportConfig(BaseModel):
         return v
 
 
-class TurboCodeGPTConfig(BaseModel):
+class NanodexConfig(BaseModel):
     """Complete nanodex configuration schema."""
 
     model_source: Literal["huggingface", "ollama"] = Field(
@@ -320,7 +320,7 @@ class TurboCodeGPTConfig(BaseModel):
     export: ExportConfig = Field(default_factory=ExportConfig, description="Export configuration")
 
     @model_validator(mode='after')
-    def validate_output_dirs(self) -> 'TurboCodeGPTConfig':
+    def validate_output_dirs(self) -> 'NanodexConfig':
         """Create output directories if they don't exist."""
         dirs_to_create = [
             self.training.output_dir,

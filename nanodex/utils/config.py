@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Dict, Any
 from pydantic import ValidationError
 
-from .schemas import TurboCodeGPTConfig
+from .schemas import NanodexConfig
 
 logger = logging.getLogger(__name__)
 
@@ -57,18 +57,18 @@ class Config:
                 "Please check your configuration file for syntax errors."
             )
 
-    def _validate_config(self) -> TurboCodeGPTConfig:
+    def _validate_config(self) -> NanodexConfig:
         """
         Validate configuration using Pydantic schemas.
 
         Returns:
-            Validated TurboCodeGPTConfig object
+            Validated NanodexConfig object
 
         Raises:
             ValidationError: If validation fails with detailed error messages
         """
         try:
-            validated_config = TurboCodeGPTConfig(**self.config_dict)
+            validated_config = NanodexConfig(**self.config_dict)
             logger.info("Configuration validated successfully")
             return validated_config
 

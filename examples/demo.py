@@ -86,7 +86,7 @@ def run_demo():
     print()
     
     # Create temporary directory for demo
-    temp_dir = tempfile.mkdtemp(prefix="turbo_code_gpt_demo_")
+    temp_dir = tempfile.mkdtemp(prefix="nanodex_demo_")
     
     try:
         # Create sample codebase
