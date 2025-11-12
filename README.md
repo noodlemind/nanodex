@@ -38,12 +38,17 @@ nanodex fine-tunes large language models (like DeepSeek Coder, CodeLlama) on you
 git clone https://github.com/noodlemind/nanodex.git
 cd nanodex
 
-# Install package with all dependencies
+# Basic installation (CPU mode)
 pip install -e .
+
+# Or with GPU support (includes bitsandbytes for quantization)
+pip install -e ".[gpu]"
 
 # Or install with dev dependencies for development
 pip install -e ".[dev]"
 ```
+
+**Note for macOS users:** GPU quantization (bitsandbytes) requires CUDA, which is not available on macOS. Use the basic installation for CPU-only mode. The system will automatically fall back to fp16 precision if quantization is unavailable.
 
 ### 2. Configure
 
