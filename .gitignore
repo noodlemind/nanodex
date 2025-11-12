@@ -213,3 +213,9 @@ __marimo__/
 *.onnx
 Modelfile
 .worktrees
+
+# macOS
+.DS_Store
+
+# Local documentation
+CLAUDE.md
