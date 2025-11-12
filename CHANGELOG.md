@@ -7,17 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Interactive Shell Mode** (`nanodex shell`) - REPL interface with persistent context (#11)
+  - Command history with auto-suggestions using `click-repl`
+  - Context persists between commands for faster iteration
+  - History stored in `.nanodex_history` file
+  - Tab completion for commands
+- **Examples Command** (`nanodex examples`) - Quick-start guide for new users (#11)
+  - Step-by-step workflow examples
+  - Pro tips and best practices
+  - Common usage patterns
+- **Enhanced Chat Interface** - Improved UX with Prompt Toolkit (#11)
+  - Persistent chat history in `.nanodex_chat_history`
+  - Fish-shell style auto-suggestions
+  - Ctrl+R reverse history search
+  - Arrow key navigation through history
+- **Status Command** (`nanodex status`) - Pipeline progress tracking (#11)
+  - Shows completion status of all pipeline steps
+  - Displays resource utilization (RAM, disk, GPU if available)
+  - Suggests next recommended action
+  - Overall progress percentage
+- **Pipeline Command** (`nanodex pipeline`) - Workflow guidance (#11)
+  - `nanodex pipeline guide` - Complete walkthrough of the pipeline
+  - `nanodex pipeline check` - Quick progress check (alias for status)
+  - Step-by-step instructions with examples
+- **Enhanced Error Utilities** - Better error messages with suggestions (#11)
+  - Actionable error messages in `nanodex/utils/errors.py`
+  - Helpful suggestions for common mistakes
+  - Example commands for resolution
+- **Pipeline State Tracking** - Infrastructure for progress monitoring (#11)
+  - State persistence in `.nanodex_state.json`
+  - Track completion status of each pipeline step
+  - Automatic detection of completed steps
+
 ### Changed
 - Restructured codebase following Python best practices and nanoGPT philosophy
 - Moved test scripts to `tests/` directory for better organization
 - Moved `demo.py` to `examples/` directory
 - Renamed `TurboCodeGPTConfig` to `NanodexConfig` for consistent naming
+- Updated chat interface to use Prompt Toolkit for better UX (#11)
+- Enhanced CLI help text to include new commands (#11)
 
-### Added
+### Added (Infrastructure)
 - `pyproject.toml` for modern Python packaging (PEP 621)
 - `pytest.ini` for test configuration
 - `CHANGELOG.md` to track version history
 - Tool configuration for Black and mypy in pyproject.toml
+- Dependencies: `click-repl>=0.3.0`, `prompt-toolkit>=3.0.0` (#11)
 
 ### Fixed
 - Updated all references from `turbo_code_gpt` to `nanodex` throughout codebase

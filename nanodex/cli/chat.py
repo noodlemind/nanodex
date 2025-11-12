@@ -7,10 +7,12 @@ import click
 from rich.console import Console
 from rich.panel import Panel
 from rich.markdown import Markdown
-from rich.prompt import Prompt
 from rich.table import Table
 from rich import box
 from pathlib import Path
+from prompt_toolkit import PromptSession
+from prompt_toolkit.history import FileHistory
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
 console = Console()
 
@@ -49,6 +51,8 @@ def chat_cmd(
     \\b
     Commands during chat:
     - Type your message and press Enter
+    - Use ↑/↓ arrow keys to browse command history
+    - Ctrl+R for reverse history search
     - /help     - Show help
     - /history  - Show conversation history
     - /clear    - Clear conversation history
@@ -131,15 +135,24 @@ def chat_cmd(
             chat_session = ChatSession(rag_inference=rag_inference, use_rag=use_rag)
             console.print(f"📝 Created new chat session: {chat_session.session_id}\n")
 
+        # Create prompt session with history and auto-suggestions
+        prompt_session = PromptSession(
+            history=FileHistory(".nanodex_chat_history"),
+            auto_suggest=AutoSuggestFromHistory(),
+            enable_history_search=True,
+        )
+
         # Chat loop
         console.print(
             "[bold green]Ready to chat! Type your message or /help for commands.[/bold green]\n"
         )
+        console.print("[dim]💡 Tip: Use arrow keys for history, Ctrl+R for reverse search[/dim]\n")
 
         while True:
             try:
-                # Get user input
-                user_input = Prompt.ask("\n[bold cyan]You[/bold cyan]")
+                # Get user input with enhanced prompt
+                console.print()
+                user_input = prompt_session.prompt("You: ")
 
                 if not user_input.strip():
                     continue
