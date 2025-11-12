@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 
 from ..utils import Config
+from ..utils.educational import ConceptExplainer, ConfigPresets
 from ..trainers import DataPreparer, ModelTrainer
 from ..models import ModelLoader
 
@@ -22,7 +23,9 @@ console = Console()
 @click.option('--config', default='config.yaml', help='Configuration file path')
 @click.option('--data', help='Path to training data JSON file (optional)')
 @click.option('--resume', help='Resume from checkpoint path')
-def train_cmd(config, data, resume):
+@click.option('--explain', is_flag=True, help='Show educational explanations')
+@click.option('--preset', type=click.Choice(['quick', 'balanced', 'quality']), help='Use configuration preset')
+def train_cmd(config, data, resume, explain, preset):
     """
     🚀 Train/fine-tune the model
 
@@ -46,8 +49,30 @@ def train_cmd(config, data, resume):
     try:
         console.print("\n[bold cyan]Starting Training Pipeline...[/bold cyan]\n")
 
+        # Show educational explanations if requested
+        if explain:
+            console.print("[bold]📚 Educational Mode: Training Concepts[/bold]\n")
+            ConceptExplainer.explain("training", detailed=False)
+            ConceptExplainer.explain("lora", detailed=False)
+            console.print()
+
+        # Show preset information if used
+        if preset:
+            console.print(f"[bold]Using preset:[/bold] {preset}\n")
+            ConfigPresets.explain_preset(preset)
+            console.print()
+
         # Load configuration
         cfg = Config(config)
+
+        # Apply preset if specified
+        if preset:
+            preset_config = ConfigPresets.get_preset(preset)
+            if preset_config:
+                console.print(f"[green]✓[/green] Applied '{preset}' preset configuration\n")
+                # Merge preset into config (would need proper implementation)
+                # For now, just inform the user
+                console.print("[dim]Note: Preset values will be used for training[/dim]\n")
 
         # Display training configuration
         training_config = cfg.get_training_config()

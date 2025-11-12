@@ -131,6 +131,10 @@ from .shell import shell_cmd
 from .examples import examples_cmd
 from .status import status_cmd
 from .pipeline import pipeline_cmd
+from .educational_commands import educational
+from .shell_commands import shell_commands
+from .learn import learn_cmd
+from .experiments import experiments_cmd
 
 # Register commands
 cli.add_command(init_cmd, name='init')
@@ -143,6 +147,10 @@ cli.add_command(shell_cmd, name='shell')
 cli.add_command(examples_cmd, name='examples')
 cli.add_command(status_cmd, name='status')
 cli.add_command(pipeline_cmd, name='pipeline')
+cli.add_command(educational, name='edu')  # Educational commands group
+cli.add_command(shell_commands, name='sh')  # Shell-specific commands
+cli.add_command(learn_cmd, name='learn')  # Interactive learning tutorials
+cli.add_command(experiments_cmd, name='experiments')  # Experiment tracking
 
 
 if __name__ == '__main__':

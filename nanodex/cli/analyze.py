@@ -12,6 +12,7 @@ from rich import box
 import random
 
 from ..utils import Config
+from ..utils.educational import ConceptExplainer
 from ..analyzers import CodeAnalyzer
 
 console = Console()
@@ -28,7 +29,8 @@ ANALYZE_TIPS = [
 @click.command()
 @click.option('--config', default='config.yaml', help='Configuration file path')
 @click.option('--verbose', '-v', is_flag=True, help='Verbose output')
-def analyze_cmd(config, verbose):
+@click.option('--explain', is_flag=True, help='Show educational explanations')
+def analyze_cmd(config, verbose, explain):
     """
     📊 Analyze your codebase
 
@@ -40,6 +42,12 @@ def analyze_cmd(config, verbose):
     """
     try:
         console.print("\n[bold cyan]Analyzing Codebase...[/bold cyan]\n")
+
+        # Show educational explanations if requested
+        if explain:
+            console.print("[bold]📚 Educational Mode: Code Analysis[/bold]\n")
+            console.print("[dim]Analysis extracts code samples and metadata from your repository.[/dim]")
+            console.print("[dim]This data is used to generate training examples for fine-tuning.[/dim]\n")
 
         # Load configuration
         cfg = Config(config)

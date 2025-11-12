@@ -12,6 +12,15 @@ Educational Shell Features:
 - Educational tips: Learn while you work
 """
 
+# Suppress noisy warnings from bitsandbytes and PyTorch
+import warnings
+warnings.filterwarnings("ignore", message=".*bitsandbytes.*")
+warnings.filterwarnings("ignore", message=".*PyTorch.*")
+warnings.filterwarnings("ignore", message=".*Redirects.*")
+
+import os
+os.environ['BITSANDBYTES_NOWELCOME'] = '1'
+
 import click
 from click_repl import repl
 from prompt_toolkit.history import FileHistory
@@ -37,11 +46,15 @@ SHELL_TIPS = [
 ]
 
 SESSION_FILE = ".nanodex_session.json"
+SESSIONS_DIR = Path(".nanodex_sessions")
 
 
-def load_session() -> Dict[str, Any]:
+def load_session(session_name: str = None) -> Dict[str, Any]:
     """
     Load previous session state if available.
+
+    Args:
+        session_name: Optional name of saved session to load
 
     Session maintains:
     - Last command results
@@ -49,15 +62,34 @@ def load_session() -> Dict[str, Any]:
     - Analysis statistics
     - Timestamp of last session
     """
-    session_path = Path(SESSION_FILE)
+    if session_name:
+        # Load named session
+        session_path = SESSIONS_DIR / f"{session_name}.json"
+        if not session_path.exists():
+            console.print(f"[yellow]⚠ Session '{session_name}' not found[/yellow]")
+            return _empty_session()
+    else:
+        # Load default session
+        session_path = Path(SESSION_FILE)
+
     if session_path.exists():
         try:
             with open(session_path, 'r') as f:
                 session = json.load(f)
-            console.print(f"[dim]📂 Restored session from {session.get('last_saved', 'unknown time')}[/dim]")
+
+            if session_name:
+                console.print(f"[dim]📂 Loaded session '{session_name}' from {session.get('last_saved', 'unknown time')}[/dim]")
+            else:
+                console.print(f"[dim]📂 Restored session from {session.get('last_saved', 'unknown time')}[/dim]")
             return session
         except (json.JSONDecodeError, IOError) as e:
             console.print(f"[yellow]⚠ Could not load session: {e}[/yellow]")
+
+    return _empty_session()
+
+
+def _empty_session() -> Dict[str, Any]:
+    """Return an empty session dictionary."""
     return {
         "last_results": None,
         "training_state": None,
@@ -66,9 +98,13 @@ def load_session() -> Dict[str, Any]:
     }
 
 
-def save_session(context: Dict[str, Any]) -> None:
+def save_session(context: Dict[str, Any], session_name: str = None) -> None:
     """
     Save current session state for next time.
+
+    Args:
+        context: Session context to save
+        session_name: Optional name for the session
 
     Persists context across shell sessions so you can pick up where you left off.
     """
@@ -80,11 +116,45 @@ def save_session(context: Dict[str, Any]) -> None:
             "command_count": context.get("command_count", 0),
             "last_saved": datetime.now().isoformat(),
         }
-        with open(SESSION_FILE, 'w') as f:
-            json.dump(session, f, indent=2)
-        console.print(f"\n[dim]💾 Session saved to {SESSION_FILE}[/dim]")
+
+        if session_name:
+            # Save named session
+            SESSIONS_DIR.mkdir(exist_ok=True)
+            session_path = SESSIONS_DIR / f"{session_name}.json"
+            with open(session_path, 'w') as f:
+                json.dump(session, f, indent=2)
+            console.print(f"\n[dim]💾 Session saved as '{session_name}'[/dim]")
+        else:
+            # Save default session
+            with open(SESSION_FILE, 'w') as f:
+                json.dump(session, f, indent=2)
+            console.print(f"\n[dim]💾 Session saved to {SESSION_FILE}[/dim]")
     except IOError as e:
         console.print(f"[yellow]⚠ Could not save session: {e}[/yellow]")
+
+
+def list_sessions() -> None:
+    """List all saved named sessions."""
+    if not SESSIONS_DIR.exists():
+        console.print("[dim]No saved sessions found[/dim]")
+        return
+
+    sessions = list(SESSIONS_DIR.glob("*.json"))
+    if not sessions:
+        console.print("[dim]No saved sessions found[/dim]")
+        return
+
+    console.print("\n[bold cyan]Saved Sessions:[/bold cyan]\n")
+    for session_path in sorted(sessions):
+        try:
+            with open(session_path, 'r') as f:
+                session = json.load(f)
+            name = session_path.stem
+            last_saved = session.get('last_saved', 'unknown')
+            console.print(f"  [cyan]{name}[/cyan] - saved {last_saved}")
+        except Exception:
+            continue
+    console.print()
 
 
 @click.command("shell")

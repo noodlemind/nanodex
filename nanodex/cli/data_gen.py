@@ -14,6 +14,7 @@ from pathlib import Path
 import random
 
 from ..utils import Config
+from ..utils.educational import ConceptExplainer
 from ..analyzers import CodeAnalyzer
 from ..data_generators.orchestrator import DataGenerationOrchestrator
 
@@ -45,7 +46,8 @@ def data_cmd():
 @click.option('--config', default='config.yaml', help='Configuration file path')
 @click.option('--output', default='./data/training_examples.json', help='Output file path')
 @click.option('--limit', type=int, help='Limit number of files to process')
-def generate(config, output, limit):
+@click.option('--explain', is_flag=True, help='Show educational explanations')
+def generate(config, output, limit, explain):
     """
     Generate training data from codebase.
 
@@ -57,6 +59,13 @@ def generate(config, output, limit):
     """
     try:
         console.print("\n[bold cyan]Generating Training Data...[/bold cyan]\n")
+
+        # Show educational explanations if requested
+        if explain:
+            console.print("[bold]📚 Educational Mode: Training Data Generation[/bold]\n")
+            console.print("[dim]Training data consists of instruction-response pairs.[/dim]")
+            console.print("[dim]Each example teaches the model one pattern from your codebase.[/dim]")
+            console.print("[dim]Quality matters more than quantity - focus on diverse, clear examples.[/dim]\n")
 
         # Load configuration
         cfg = Config(config)
