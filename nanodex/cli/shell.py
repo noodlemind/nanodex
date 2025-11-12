@@ -210,17 +210,18 @@ def custom_repl(ctx, prompt_kwargs):
             try:
                 args = shlex.split(text)
 
-                # Invoke command through Click context
-                with ctx.scope() as sub_ctx:
-                    cli.invoke(sub_ctx, args=args)
+                # Invoke command through Click's main() method
+                try:
+                    cli.main(args=args, standalone_mode=False, obj=ctx.obj)
+                except SystemExit as e:
+                    # Click calls sys.exit() on completion, which is normal
+                    if e.code != 0:
+                        console.print(f"[yellow]Command exited with code {e.code}[/yellow]")
 
             except click.ClickException as e:
                 e.show()
             except click.Abort:
                 console.print("[yellow]Command aborted[/yellow]")
-            except SystemExit:
-                # Catch sys.exit() from Click
-                pass
             except Exception as e:
                 console.print(f"[red]Error:[/red] {e}")
 
