@@ -9,6 +9,12 @@ from pathlib import Path
 import json
 import pickle
 
+try:
+    import faiss
+    FAISS_AVAILABLE = True
+except ImportError:
+    FAISS_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -52,9 +58,7 @@ class VectorIndexer:
 
     def _create_index(self, num_vectors: Optional[int] = None):
         """Create FAISS index."""
-        try:
-            import faiss
-        except ImportError:
+        if not FAISS_AVAILABLE:
             raise ImportError(
                 "faiss-cpu is required for RAG functionality. "
                 "Install it with: pip install faiss-cpu"
@@ -163,7 +167,6 @@ class VectorIndexer:
 
         # Normalize if using cosine
         if self.normalize_embeddings:
-            import faiss
             faiss.normalize_L2(query_embedding)
 
         # Search
@@ -213,14 +216,13 @@ class VectorIndexer:
         save_path.mkdir(parents=True, exist_ok=True)
 
         # Save FAISS index
-        try:
-            import faiss
-            index_file = save_path / 'index.faiss'
-            faiss.write_index(self.index, str(index_file))
-            logger.info(f"Saved FAISS index to {index_file}")
-        except ImportError:
+        if not FAISS_AVAILABLE:
             logger.error("faiss-cpu not installed, cannot save index")
             return
+
+        index_file = save_path / 'index.faiss'
+        faiss.write_index(self.index, str(index_file))
+        logger.info(f"Saved FAISS index to {index_file}")
 
         # Save metadata
         metadata_file = save_path / 'metadata.json'
@@ -264,13 +266,12 @@ class VectorIndexer:
         self.normalize_embeddings = metadata.get('normalize_embeddings', False)
 
         # Load FAISS index
-        try:
-            import faiss
-            index_file = load_path / 'index.faiss'
-            self.index = faiss.read_index(str(index_file))
-            logger.info(f"Loaded FAISS index from {index_file}")
-        except ImportError:
+        if not FAISS_AVAILABLE:
             raise ImportError("faiss-cpu not installed, cannot load index")
+
+        index_file = load_path / 'index.faiss'
+        self.index = faiss.read_index(str(index_file))
+        logger.info(f"Loaded FAISS index from {index_file}")
 
         # Load chunks
         chunks_file = load_path / 'chunks.pkl'

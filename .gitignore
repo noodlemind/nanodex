@@ -212,3 +212,10 @@ __marimo__/
 *.gguf
 *.onnx
 Modelfile
+.worktrees
+
+# macOS
+.DS_Store
+
+# Local documentation
+CLAUDE.md
