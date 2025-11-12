@@ -60,6 +60,47 @@ class ProgressCallback(TrainerCallback):
             logger.info(f"Best training loss: {self.best_loss:.4f}")
 
 
+class TipCallback(TrainerCallback):
+    """
+    Educational callback that shows tips during training.
+
+    Shows helpful information during long training runs to help users
+    understand what's happening and learn about the training process.
+    """
+
+    # Educational tips shown during training
+    TIPS = [
+        "💡 LoRA trains only 0.1% of parameters - that's why it's so fast!",
+        "💡 Loss measures prediction error. Good: <1.0, Great: <0.5",
+        "💡 Your fine-tuned model is just ~50MB of LoRA adapters",
+        "💡 4-bit quantization reduces memory by 75% with minimal accuracy loss",
+        "💡 Gradient accumulation lets you use larger effective batch sizes",
+        "💡 Learning rate warmup prevents unstable training at the start",
+        "💡 The model learns patterns from your codebase, not memorizes it",
+        "💡 Lower training loss = better fit to your code's patterns",
+        "💡 Validation loss shows generalization to unseen code samples",
+        "💡 Save checkpoints frequently - training can be resumed if interrupted",
+    ]
+
+    def __init__(self):
+        super().__init__()
+        self.tip_index = 0
+        self.last_tip_step = 0
+
+    def on_log(self, args, state, control, logs=None, **kwargs):
+        """
+        Show educational tip every N steps during training.
+
+        Tips are shown periodically to educate without overwhelming the log output.
+        """
+        # Show tip every 50 steps (configurable)
+        if state.global_step > 0 and state.global_step % 50 == 0 and state.global_step != self.last_tip_step:
+            tip = self.TIPS[self.tip_index % len(self.TIPS)]
+            logger.info(f"\n{tip}\n")
+            self.tip_index += 1
+            self.last_tip_step = state.global_step
+
+
 class ModelTrainer:
     """Enhanced model trainer with checkpoint recovery and early stopping."""
 
@@ -122,7 +163,13 @@ class ModelTrainer:
         data_collator = DataCollatorForLanguageModeling(tokenizer=self.tokenizer, mlm=False)
 
         # Create callbacks
-        callbacks = [ProgressCallback()]
+        #
+        # CALLBACKS: Monitor and enhance training
+        # - ProgressCallback: Track training progress and best metrics
+        # - TipCallback: Show educational tips during training
+        # - EarlyStoppingCallback: Stop if validation loss stops improving (optional)
+        #
+        callbacks = [ProgressCallback(), TipCallback()]
 
         # Add early stopping if enabled
         if self.config.get("enable_early_stopping", False) and val_dataset:
@@ -230,6 +277,10 @@ class ModelTrainer:
         """
         Prepare dataset for training by tokenizing.
 
+        Tokenization converts text into numbers (tokens) that the model can process.
+        We use a structured format with Instruction/Input/Response sections to teach
+        the model how to understand and respond to code-related questions.
+
         Args:
             dataset: Input dataset
 
@@ -239,7 +290,18 @@ class ModelTrainer:
         max_length = self.config.get("max_seq_length", 2048)
 
         def tokenize_function(examples):
-            # Format the examples
+            #
+            # TOKENIZATION: Convert text to numbers
+            # - Each word/subword gets a unique number (token ID)
+            # - Example: "def hello()" → [1234, 5678, 90, 91]
+            # - Model learns patterns in these number sequences
+            #
+            # FORMAT: Instruction-Input-Response
+            # This structured format helps the model learn:
+            # 1. What task to perform (Instruction)
+            # 2. What code to analyze (Input)
+            # 3. What output to generate (Response)
+            #
             texts = []
             for i in range(len(examples["instruction"])):
                 if examples.get("input") and examples["input"][i]:

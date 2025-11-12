@@ -100,17 +100,31 @@ class ModelLoader:
                 self.use_8bit = False
 
             # Configure quantization if requested and available
+            #
+            # QUANTIZATION: Reduces model precision to save memory
+            # - 16-bit (fp16) → 4-bit = 75% memory reduction
+            # - Trade-off: ~1% accuracy loss for massive memory savings
+            # - Example: 7B model: 14GB (16-bit) → 3.5GB (4-bit)
+            #
+            # Why it works: Most model weights have redundant precision.
+            # Neural networks are surprisingly robust to reduced precision!
+            #
             quantization_config = None
             if self.use_4bit:
                 logger.info("Using 4-bit quantization")
+                # NF4 (NormalFloat4): Optimized 4-bit format for neural networks
+                # Double quantization: Quantize the quantization constants (meta-quantization)
+                # Result: Best compression with minimal quality loss
                 quantization_config = BitsAndBytesConfig(
-                    load_in_4bit=True,
-                    bnb_4bit_compute_dtype=torch.float16,
-                    bnb_4bit_quant_type="nf4",
-                    bnb_4bit_use_double_quant=True,
+                    load_in_4bit=True,  # Use 4-bit precision for weights
+                    bnb_4bit_compute_dtype=torch.float16,  # Compute activations in fp16
+                    bnb_4bit_quant_type="nf4",  # Use NormalFloat4 quantization
+                    bnb_4bit_use_double_quant=True,  # Quantize quantization constants too
                 )
             elif self.use_8bit:
                 logger.info("Using 8-bit quantization")
+                # 8-bit quantization: Less aggressive than 4-bit
+                # Better quality preservation, still 50% memory reduction
                 quantization_config = BitsAndBytesConfig(
                     load_in_8bit=True,
                 )
@@ -137,16 +151,29 @@ class ModelLoader:
             )
 
             # Prepare model for k-bit training if using quantization
+            #
+            # K-bit training preparation:
+            # - Enables gradient computation through quantized weights
+            # - Casts layer norms to fp32 for stability
+            # - Prepares input embeddings for backpropagation
+            #
             if (self.use_4bit or self.use_8bit) and HAS_BITSANDBYTES:
                 logger.info("Preparing model for k-bit training...")
                 model = prepare_model_for_kbit_training(model)
 
             # Enable gradient checkpointing for memory efficiency
-            model.config.use_cache = False
+            #
+            # GRADIENT CHECKPOINTING: Trade computation for memory
+            # - Don't store all activations during forward pass
+            # - Recompute them during backward pass when needed
+            # - Result: 2x slower training, but uses ~50% less memory
+            # - Essential for training large models on consumer GPUs
+            #
+            model.config.use_cache = False  # Disable KV-cache (incompatible with training)
             if hasattr(model, "enable_input_require_grads"):
                 model.enable_input_require_grads()
             else:
-
+                # Fallback for older transformers versions
                 def make_inputs_require_grad(module, input, output):
                     output.requires_grad_(True)
 
@@ -187,28 +214,47 @@ class ModelLoader:
         """
         logger.info("Applying LoRA configuration...")
 
+        #
+        # LORA (Low-Rank Adaptation): Train only 0.1% of parameters
+        #
+        # How it works:
+        # - Instead of updating weight matrix W directly
+        # - Decompose update into: W + B×A (two small matrices)
+        # - Train only B and A, keep W frozen
+        #
+        # Math example for 7B model:
+        # - Full training: 6.7 billion parameters
+        # - LoRA with r=16: ~4 million trainable parameters
+        # - That's 0.06% of the full model!
+        #
+        # Result:
+        # - 6.7B params → 4M trainable (~50MB saved model vs 13GB full model)
+        # - Much faster training (only updating 0.1% of weights)
+        # - Lower memory requirements (no optimizer states for frozen weights)
+        # - Can train on consumer GPUs instead of requiring datacenter hardware
+        #
         lora_config_dict = self.training_config.get("lora", {})
 
         # Create LoRA configuration
         target_modules = lora_config_dict.get(
             "target_modules",
             [
-                "q_proj",
-                "v_proj",
-                "k_proj",
-                "o_proj",
+                "q_proj",  # Query projection in attention
+                "v_proj",  # Value projection in attention
+                "k_proj",  # Key projection in attention
+                "o_proj",  # Output projection in attention
             ],
         )
 
         logger.info(f"Target modules for LoRA: {target_modules}")
 
         lora_config = LoraConfig(
-            r=lora_config_dict.get("r", 16),
-            lora_alpha=lora_config_dict.get("lora_alpha", 32),
-            lora_dropout=lora_config_dict.get("lora_dropout", 0.05),
-            target_modules=target_modules,
-            bias="none",
-            task_type="CAUSAL_LM",
+            r=lora_config_dict.get("r", 16),  # Rank: controls adapter size (higher = more capacity)
+            lora_alpha=lora_config_dict.get("lora_alpha", 32),  # Scaling factor (typically 2× rank)
+            lora_dropout=lora_config_dict.get("lora_dropout", 0.05),  # Dropout for regularization
+            target_modules=target_modules,  # Which model layers to adapt
+            bias="none",  # Don't train bias terms
+            task_type="CAUSAL_LM",  # Causal language modeling (predict next token)
         )
 
         # Apply LoRA with error handling

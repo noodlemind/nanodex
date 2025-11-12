@@ -7,12 +7,22 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich.progress import track
+from rich.markdown import Markdown
 from rich import box
+import random
 
 from ..utils import Config
 from ..analyzers import CodeAnalyzer
 
 console = Console()
+
+# Educational tips for codebase analysis
+ANALYZE_TIPS = [
+    "💡 Deep parsing extracts functions and classes for better training data",
+    "💡 Larger codebases create more diverse training examples",
+    "💡 Code complexity metrics help identify patterns worth learning",
+    "💡 Analysis happens once - results are cached for training",
+]
 
 
 @click.command()
@@ -46,6 +56,12 @@ def analyze_cmd(config, verbose):
             f"Repository: [cyan]{repo_config['path']}[/cyan]",
             border_style="green"
         ))
+
+        # Show a random educational tip
+        tip = random.choice(ANALYZE_TIPS)
+        console.print()
+        console.print(Markdown(tip))
+        console.print()
 
         # File statistics table
         table = Table(title="\nFile Statistics", box=box.ROUNDED)

@@ -8,14 +8,25 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich import box
+from rich.markdown import Markdown
 import json
 from pathlib import Path
+import random
 
 from ..utils import Config
 from ..analyzers import CodeAnalyzer
 from ..data_generators.orchestrator import DataGenerationOrchestrator
 
 console = Console()
+
+# Educational tips for data generation
+DATA_GEN_TIPS = [
+    "💡 Training data quality matters more than quantity",
+    "💡 Each example teaches the model one pattern from your code",
+    "💡 Free mode extracts patterns directly from your codebase - no API costs!",
+    "💡 Diverse examples help the model generalize better",
+    "💡 Good training data: Clear instruction + relevant code + accurate explanation",
+]
 
 
 @click.group()
@@ -62,6 +73,11 @@ def generate(config, output, limit):
 
         stats = analyzer.get_statistics(code_samples)
         console.print(f"  Found {stats['total_files']} files with {stats['total_lines']:,} lines\n")
+
+        # Show a random educational tip
+        tip = random.choice(DATA_GEN_TIPS)
+        console.print(Markdown(tip))
+        console.print()
 
         # Initialize orchestrator
         console.print("Step 2: Initializing data generators...")
