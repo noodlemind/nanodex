@@ -217,5 +217,15 @@ Modelfile
 # macOS
 .DS_Store
 
-# Local documentation
+# Local documentation and templates
 CLAUDE.md
+*IMPLEMENTATION*.md
+*implementation*.md
+.github/ISSUE_TEMPLATE/
+.github/issue_template/
+issue_templates/
+ISSUE_TEMPLATE/
+*TODO*.md
+*NOTES*.md
+*PLAN*.md
+.local/
