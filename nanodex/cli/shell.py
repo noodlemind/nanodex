@@ -22,14 +22,16 @@ import os
 os.environ['BITSANDBYTES_NOWELCOME'] = '1'
 
 import click
-from click_repl import repl
+from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.completion import WordCompleter
 from rich.console import Console
 from rich.panel import Panel
 from rich.markdown import Markdown
 import yaml
 import json
+import shlex
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any
@@ -157,6 +159,82 @@ def list_sessions() -> None:
     console.print()
 
 
+def custom_repl(ctx, prompt_kwargs):
+    """
+    Custom REPL implementation without click-repl dependency.
+
+    Avoids compatibility issues with Click 8.1+.
+    """
+    # Get available commands
+    cli = ctx.find_root().command
+    available_commands = list(cli.commands.keys()) if hasattr(cli, 'commands') else []
+
+    # Create completer
+    completer = WordCompleter(
+        words=available_commands + ['help', 'exit', 'quit'],
+        ignore_case=True
+    )
+
+    # Create prompt session
+    session = PromptSession(
+        message=prompt_kwargs.get('message', '> '),
+        history=prompt_kwargs.get('history'),
+        auto_suggest=prompt_kwargs.get('auto_suggest'),
+        completer=completer,
+    )
+
+    while True:
+        try:
+            # Get input
+            text = session.prompt()
+
+            # Skip empty lines
+            if not text.strip():
+                continue
+
+            # Handle exit commands
+            if text.strip().lower() in ('exit', 'quit'):
+                break
+
+            # Handle help command
+            if text.strip().lower() == 'help':
+                console.print("\n[bold cyan]Available Commands:[/bold cyan]\n")
+                for cmd in sorted(available_commands):
+                    console.print(f"  [cyan]{cmd}[/cyan]")
+                console.print("\n[bold cyan]Built-in Commands:[/bold cyan]")
+                console.print("  [cyan]help[/cyan] - Show this help")
+                console.print("  [cyan]exit[/cyan] or [cyan]quit[/cyan] - Exit shell\n")
+                continue
+
+            # Parse and invoke command
+            try:
+                args = shlex.split(text)
+
+                # Invoke command through Click context
+                with ctx.scope() as sub_ctx:
+                    cli.invoke(sub_ctx, args=args)
+
+            except click.ClickException as e:
+                e.show()
+            except click.Abort:
+                console.print("[yellow]Command aborted[/yellow]")
+            except SystemExit:
+                # Catch sys.exit() from Click
+                pass
+            except Exception as e:
+                console.print(f"[red]Error:[/red] {e}")
+
+            # Increment command counter
+            if 'command_count' in ctx.obj:
+                ctx.obj['command_count'] += 1
+
+        except KeyboardInterrupt:
+            console.print("\n[dim]Use 'exit' or Ctrl+D to quit[/dim]")
+            continue
+        except EOFError:
+            break
+
+
 @click.command("shell")
 @click.pass_context
 @click.option("--no-history", is_flag=True, help="Disable command history")
@@ -240,7 +318,7 @@ def shell_cmd(ctx, no_history):
 
     # Start REPL with root context so commands see shared state
     try:
-        repl(root_ctx, prompt_kwargs=prompt_kwargs)
+        custom_repl(root_ctx, prompt_kwargs=prompt_kwargs)
     except (KeyboardInterrupt, EOFError):
         console.print("\n[cyan]👋 Exiting shell...[/cyan]")
     finally:
