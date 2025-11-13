@@ -5,6 +5,8 @@ This module provides reusable educational content and explanations that can be
 used across CLI commands with the --explain flag.
 """
 
+from typing import ClassVar
+
 from rich.console import Console
 from rich.panel import Panel
 from rich.markdown import Markdown
@@ -17,7 +19,7 @@ console = Console()
 class ConceptExplainer:
     """Explains machine learning concepts in simple terms."""
 
-    CONCEPTS = {
+    CONCEPTS: ClassVar[dict] = {
         "lora": {
             "name": "LoRA (Low-Rank Adaptation)",
             "summary": "Train only 0.1% of parameters instead of 100%",
@@ -55,9 +57,8 @@ LoRA adds two small matrices:
                 "Trains only 0.06% of parameters (4M vs 6.7B)",
                 "Saved model is ~50MB instead of 13GB",
                 "Works by decomposing weight updates into low-rank matrices",
-            ]
+            ],
         },
-
         "quantization": {
             "name": "Quantization",
             "summary": "Reduce model precision to save 50-75% memory",
@@ -94,9 +95,8 @@ LoRA adds two small matrices:
                 "Essential for running large models on consumer GPUs",
                 "4-bit quantization is the sweet spot (75% savings, <1% loss)",
                 "Works during both training and inference",
-            ]
+            ],
         },
-
         "rag": {
             "name": "RAG (Retrieval-Augmented Generation)",
             "summary": "Semantic search for your code + LLM responses",
@@ -137,9 +137,8 @@ LoRA adds two small matrices:
                 "No model retraining needed - just update the index",
                 "FAISS provides fast similarity search",
                 "Embeddings capture the meaning of code",
-            ]
+            ],
         },
-
         "training": {
             "name": "Fine-Tuning / Training",
             "summary": "Teach the model patterns from your codebase",
@@ -186,9 +185,8 @@ LoRA adds two small matrices:
                 "Loss measures error - lower is better",
                 "Learning rate controls update step size",
                 "LoRA makes training efficient (0.1% parameters)",
-            ]
+            ],
         },
-
         "embeddings": {
             "name": "Embeddings",
             "summary": "Convert code to vectors that capture meaning",
@@ -237,8 +235,8 @@ Becomes: `[0.12, -0.34, 0.56, ..., 0.78]` (384 numbers)
                 "Similar code has similar embeddings",
                 "Used for semantic search and clustering",
                 "Typical: 384-768 dimensions",
-            ]
-        }
+            ],
+        },
     }
 
     @classmethod
@@ -261,15 +259,17 @@ Becomes: `[0.12, -0.34, 0.56, ..., 0.78]` (384 numbers)
         if detailed:
             # Show full explanation
             console.print(f"\n[bold cyan]{info['name']}[/bold cyan]")
-            console.print(Markdown(info['explanation']))
+            console.print(Markdown(info["explanation"]))
         else:
             # Show summary
-            console.print(Panel.fit(
-                f"[bold]{info['name']}[/bold]\n\n"
-                f"{info['summary']}\n\n"
-                f"[dim]Use --explain for full details[/dim]",
-                border_style="cyan"
-            ))
+            console.print(
+                Panel.fit(
+                    f"[bold]{info['name']}[/bold]\n\n"
+                    f"{info['summary']}\n\n"
+                    f"[dim]Use --explain for full details[/dim]",
+                    border_style="cyan",
+                )
+            )
 
     @classmethod
     def show_key_points(cls, concept: str):
@@ -280,7 +280,7 @@ Becomes: `[0.12, -0.34, 0.56, ..., 0.78]` (384 numbers)
 
         info = cls.CONCEPTS[concept]
         console.print(f"\n[bold]Key Points: {info['name']}[/bold]")
-        for point in info['key_points']:
+        for point in info["key_points"]:
             console.print(f"  • {point}")
         console.print()
 
@@ -288,7 +288,7 @@ Becomes: `[0.12, -0.34, 0.56, ..., 0.78]` (384 numbers)
 class ConfigPresets:
     """Pre-configured settings for different use cases."""
 
-    PRESETS = {
+    PRESETS: ClassVar[dict] = {
         "quick": {
             "name": "Quick Test",
             "description": "Fast testing (1 epoch, small LoRA)",
@@ -300,13 +300,12 @@ class ConfigPresets:
                     "lora": {
                         "r": 8,
                         "lora_alpha": 16,
-                    }
+                    },
                 }
             },
             "use_case": "Quick iteration, testing configurations",
-            "time": "~5-10 minutes"
+            "time": "~5-10 minutes",
         },
-
         "balanced": {
             "name": "Balanced",
             "description": "Good defaults (3 epochs, rank 16)",
@@ -318,13 +317,12 @@ class ConfigPresets:
                     "lora": {
                         "r": 16,
                         "lora_alpha": 32,
-                    }
+                    },
                 }
             },
             "use_case": "Most common use case, good quality/speed balance",
-            "time": "~30-60 minutes"
+            "time": "~30-60 minutes",
         },
-
         "quality": {
             "name": "High Quality",
             "description": "Best results (5 epochs, rank 32)",
@@ -336,12 +334,12 @@ class ConfigPresets:
                     "lora": {
                         "r": 32,
                         "lora_alpha": 64,
-                    }
+                    },
                 }
             },
             "use_case": "Production use, maximum quality",
-            "time": "~2-4 hours"
-        }
+            "time": "~2-4 hours",
+        },
     }
 
     @classmethod
@@ -358,17 +356,19 @@ class ConfigPresets:
             return
 
         preset = cls.PRESETS[name]
-        console.print(Panel.fit(
-            f"[bold cyan]{preset['name']}[/bold cyan]\n\n"
-            f"{preset['description']}\n\n"
-            f"[bold]Use case:[/bold] {preset['use_case']}\n"
-            f"[bold]Est. time:[/bold] {preset['time']}\n\n"
-            f"[dim]Settings:[/dim]\n"
-            f"  Epochs: {preset['config']['training']['num_epochs']}\n"
-            f"  LoRA rank: {preset['config']['training']['lora']['r']}\n"
-            f"  Batch size: {preset['config']['training']['batch_size']}",
-            border_style="cyan"
-        ))
+        console.print(
+            Panel.fit(
+                f"[bold cyan]{preset['name']}[/bold cyan]\n\n"
+                f"{preset['description']}\n\n"
+                f"[bold]Use case:[/bold] {preset['use_case']}\n"
+                f"[bold]Est. time:[/bold] {preset['time']}\n\n"
+                f"[dim]Settings:[/dim]\n"
+                f"  Epochs: {preset['config']['training']['num_epochs']}\n"
+                f"  LoRA rank: {preset['config']['training']['lora']['r']}\n"
+                f"  Batch size: {preset['config']['training']['batch_size']}",
+                border_style="cyan",
+            )
+        )
 
     @classmethod
     def list_presets(cls):
@@ -380,12 +380,7 @@ class ConfigPresets:
         table.add_column("Time")
 
         for name, preset in cls.PRESETS.items():
-            table.add_row(
-                name,
-                preset['description'],
-                preset['use_case'],
-                preset['time']
-            )
+            table.add_row(name, preset["description"], preset["use_case"], preset["time"])
 
         console.print(table)
         console.print("\n[dim]Use: nanodex train --preset <name>[/dim]\n")

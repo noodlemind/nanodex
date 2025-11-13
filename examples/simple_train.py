@@ -26,8 +26,7 @@ from rich.table import Table
 
 # Configure logging to see what's happening
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -47,13 +46,15 @@ def main():
     6. Saving: Export the trained adapters
     """
 
-    console.print(Panel.fit(
-        "[bold cyan]nanodex Simple Training Example[/bold cyan]\n\n"
-        "This example walks through the complete fine-tuning process.\n"
-        "Educational comments explain each step.\n\n"
-        "[dim]Press Ctrl+C to stop at any time[/dim]",
-        border_style="cyan"
-    ))
+    console.print(
+        Panel.fit(
+            "[bold cyan]nanodex Simple Training Example[/bold cyan]\n\n"
+            "This example walks through the complete fine-tuning process.\n"
+            "Educational comments explain each step.\n\n"
+            "[dim]Press Ctrl+C to stop at any time[/dim]",
+            border_style="cyan",
+        )
+    )
     console.print()
 
     # ============================================================================
@@ -73,7 +74,6 @@ def main():
             },
         },
         "model_source": "huggingface",
-
         # Repository to learn from
         "repository": {
             "path": ".",  # Current directory
@@ -85,9 +85,8 @@ def main():
                 "extract_functions": True,
                 "extract_classes": True,
                 "extract_docstrings": True,
-            }
+            },
         },
-
         # Training configuration
         "training": {
             "output_dir": "./models/simple-example",
@@ -99,16 +98,14 @@ def main():
             "warmup_steps": 10,
             "logging_steps": 5,
             "save_steps": 100,
-
             # LoRA configuration
             "lora": {
                 "r": 8,  # Smaller rank = fewer parameters (faster, less memory)
                 "lora_alpha": 16,  # Scaling factor
                 "lora_dropout": 0.05,
                 "target_modules": ["q_proj", "v_proj"],  # Just attention layers
-            }
+            },
         },
-
         # Data configuration
         "data": {
             "output_dir": "./data/simple-example",
@@ -117,7 +114,6 @@ def main():
             "context_window": 1024,
             "random_seed": 42,
         },
-
         "mode": "free",  # Free mode: no API costs!
     }
 
@@ -133,7 +129,7 @@ def main():
 
     from nanodex.analyzers import CodeAnalyzer
 
-    analyzer = CodeAnalyzer(config['repository'])
+    analyzer = CodeAnalyzer(config["repository"])
     console.print("Scanning files...")
     code_samples = analyzer.analyze()
     stats = analyzer.get_statistics(code_samples)
@@ -142,7 +138,7 @@ def main():
     console.print(f"✓ Total lines: {stats['total_lines']:,}")
     console.print(f"✓ Average lines/file: {stats['avg_lines_per_file']:.1f}\n")
 
-    if stats['total_files'] == 0:
+    if stats["total_files"] == 0:
         console.print("[red]No files found! Check your repository path and extensions.[/red]")
         return
 
@@ -160,8 +156,7 @@ def main():
     console.print("Generating examples...")
 
     training_examples = orchestrator.generate_from_codebase(
-        code_samples[:20],  # Limit to 20 files for quick example
-        show_progress=True
+        code_samples[:20], show_progress=True  # Limit to 20 files for quick example
     )
 
     console.print(f"✓ Generated {len(training_examples)} training examples\n")
@@ -186,7 +181,7 @@ def main():
 
     from nanodex.trainers import DataPreparer
 
-    preparer = DataPreparer(config['data'])
+    preparer = DataPreparer(config["data"])
     console.print("Splitting into train/validation...")
     train_dataset, val_dataset = preparer.prepare_datasets(training_examples)
 
@@ -203,8 +198,7 @@ def main():
     from nanodex.models import ModelLoader
 
     loader = ModelLoader(
-        model_config=config['model']['huggingface'],
-        training_config=config['training']
+        model_config=config["model"]["huggingface"], training_config=config["training"]
     )
 
     console.print("Loading model and tokenizer...")
@@ -238,16 +232,13 @@ def main():
 
     from nanodex.trainers import ModelTrainer
 
-    trainer_obj = ModelTrainer(model, tokenizer, config['training'])
+    trainer_obj = ModelTrainer(model, tokenizer, config["training"])
 
     console.print("Starting training...")
     console.print("[dim]You'll see loss decrease as the model learns[/dim]\n")
     console.print("=" * 60)
 
-    trainer = trainer_obj.train(
-        train_dataset=train_dataset,
-        val_dataset=val_dataset
-    )
+    trainer_obj.train(train_dataset=train_dataset, val_dataset=val_dataset)
 
     console.print("=" * 60)
     console.print()
@@ -258,28 +249,32 @@ def main():
     console.print("[bold]Step 8: Saving Fine-Tuned Model[/bold]\n")
     console.print("💡 Save only the LoRA adapters (~50MB instead of 2GB+)\n")
 
-    output_dir = Path(config['training']['output_dir'])
+    output_dir = Path(config["training"]["output_dir"])
     console.print(f"✓ Model saved to: [cyan]{output_dir}[/cyan]\n")
 
     # ============================================================================
     # Summary
     # ============================================================================
-    console.print(Panel.fit(
-        "[bold green]✓ Training Complete![/bold green]\n\n"
-        f"Fine-tuned model saved to: {output_dir}\n\n"
-        "[bold]What's next?[/bold]\n"
-        "1. Use the model: python -m nanodex chat\n"
-        "2. Build RAG index: python -m nanodex rag index\n"
-        "3. Export model: python -m nanodex export\n\n"
-        "[dim]The model has learned patterns from your codebase!\n"
-        "It can now answer questions about your code.[/dim]",
-        border_style="green"
-    ))
+    console.print(
+        Panel.fit(
+            "[bold green]✓ Training Complete![/bold green]\n\n"
+            f"Fine-tuned model saved to: {output_dir}\n\n"
+            "[bold]What's next?[/bold]\n"
+            "1. Use the model: python -m nanodex chat\n"
+            "2. Build RAG index: python -m nanodex rag index\n"
+            "3. Export model: python -m nanodex export\n\n"
+            "[dim]The model has learned patterns from your codebase!\n"
+            "It can now answer questions about your code.[/dim]",
+            border_style="green",
+        )
+    )
     console.print()
 
     # Show model size
     if output_dir.exists():
-        size_mb = sum(f.stat().st_size for f in output_dir.rglob('*') if f.is_file()) / (1024*1024)
+        size_mb = sum(f.stat().st_size for f in output_dir.rglob("*") if f.is_file()) / (
+            1024 * 1024
+        )
         console.print(f"Model size: [cyan]{size_mb:.1f}MB[/cyan]")
         console.print(f"[dim](Compare to {total / 1e9:.1f}B full parameters!)[/dim]\n")
 

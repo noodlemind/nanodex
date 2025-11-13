@@ -100,9 +100,13 @@ def compare_cmd(param1, param2):
         ("lora", "full"): _compare_training_methods,
         ("lora", "full-finetune"): _compare_training_methods,
         ("full", "lora"): _compare_training_methods,
+        ("full-finetune", "lora"): _compare_training_methods,
         ("quick", "balanced"): _compare_presets,
+        ("balanced", "quick"): _compare_presets,
         ("quick", "quality"): _compare_presets,
+        ("quality", "quick"): _compare_presets,
         ("balanced", "quality"): _compare_presets,
+        ("quality", "balanced"): _compare_presets,
     }
 
     key = (param1.lower(), param2.lower())
@@ -125,25 +129,28 @@ def context_cmd(ctx):
     console.print("\n[bold cyan]Current Session Context[/bold cyan]\n")
 
     # Configuration
-    if "config" in root_ctx.obj:
+    cfg = root_ctx.obj.get("config")
+    if cfg:
         console.print("[green]✓[/green] Configuration loaded")
-        cfg = root_ctx.obj["config"]
         console.print(f"  Model: {cfg.get_model_source()}")
     else:
         console.print("[yellow]⚠[/yellow] No configuration loaded")
 
     # Last results
-    if "last_results" in root_ctx.obj and root_ctx.obj["last_results"]:
-        console.print(f"\n[green]✓[/green] Last results available")
-        console.print(f"  {root_ctx.obj['last_results']}")
+    last_results = root_ctx.obj.get("last_results")
+    if last_results:
+        console.print("\n[green]✓[/green] Last results available")
+        console.print(f"  {last_results}")
 
     # Training state
-    if "training_state" in root_ctx.obj and root_ctx.obj["training_state"]:
-        console.print(f"\n[green]✓[/green] Training state: {root_ctx.obj['training_state']}")
+    training_state = root_ctx.obj.get("training_state")
+    if training_state:
+        console.print(f"\n[green]✓[/green] Training state: {training_state}")
 
     # Command count
-    if "command_count" in root_ctx.obj:
-        console.print(f"\n📊 Commands run: {root_ctx.obj['command_count']}")
+    command_count = root_ctx.obj.get("command_count")
+    if command_count is not None:
+        console.print(f"\n📊 Commands run: {command_count}")
 
     console.print()
 

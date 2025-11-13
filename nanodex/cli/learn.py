@@ -13,7 +13,6 @@ from rich.syntax import Syntax
 from rich.table import Table
 from rich.prompt import Prompt, Confirm
 from rich import box
-import time
 
 from ..utils.educational import ConceptExplainer
 
@@ -43,17 +42,34 @@ def learn_cmd():
     pass
 
 
-@learn_cmd.command('list')
+@learn_cmd.command("list")
 def list_tutorials():
     """List all available tutorials."""
     console.print("\n[bold cyan]Available Tutorials:[/bold cyan]\n")
 
     tutorials = [
-        ("finetuning", "Fine-Tuning Basics", "Understand how fine-tuning works", "Beginner", "~10 min"),
+        (
+            "finetuning",
+            "Fine-Tuning Basics",
+            "Understand how fine-tuning works",
+            "Beginner",
+            "~10 min",
+        ),
         ("lora", "Understanding LoRA", "Learn Low-Rank Adaptation", "Beginner", "~15 min"),
-        ("quantization", "Quantization Deep Dive", "Master 4-bit and 8-bit quantization", "Intermediate", "~12 min"),
-        ("rag", "RAG From Scratch", "Build retrieval-augmented generation", "Intermediate", "~20 min"),
-        ("embeddings", "Code Embeddings", "Understand vector representations", "Intermediate", "~10 min"),
+        (
+            "quantization",
+            "Quantization Deep Dive",
+            "Master 4-bit and 8-bit quantization",
+            "Intermediate",
+            "~12 min",
+        ),
+        (
+            "rag",
+            "RAG From Scratch",
+            "Build retrieval-augmented generation",
+            "Intermediate",
+            "~20 min",
+        ),
     ]
 
     table = Table(box=box.ROUNDED)
@@ -70,41 +86,43 @@ def list_tutorials():
     console.print("\n[dim]Run: nanodex learn <command>[/dim]\n")
 
 
-@learn_cmd.command('finetuning')
+@learn_cmd.command("finetuning")
 def tutorial_finetuning():
     """
     Interactive tutorial: Fine-Tuning Basics
 
     Learn what fine-tuning does and how it works.
     """
-    console.print(Panel.fit(
-        "[bold cyan]Tutorial: Fine-Tuning Basics[/bold cyan]\n\n"
-        "You'll learn:\n"
-        "• What fine-tuning does\n"
-        "• How models learn from your code\n"
-        "• The role of training data\n"
-        "• Loss, epochs, and hyperparameters\n\n"
-        "Duration: ~10 minutes",
-        border_style="cyan"
-    ))
+    console.print(
+        Panel.fit(
+            "[bold cyan]Tutorial: Fine-Tuning Basics[/bold cyan]\n\n"
+            "You'll learn:\n"
+            "• What fine-tuning does\n"
+            "• How models learn from your code\n"
+            "• The role of training data\n"
+            "• Loss, epochs, and hyperparameters\n\n"
+            "Duration: ~10 minutes",
+            border_style="cyan",
+        )
+    )
 
     if not Confirm.ask("\n[bold]Ready to start?[/bold]"):
         console.print("[dim]Tutorial cancelled[/dim]\n")
         return
 
     # Step 1: The Problem
-    console.print("\n" + "="*70)
+    console.print("\n" + "=" * 70)
     console.print("[bold]Step 1: The Problem[/bold]")
-    console.print("="*70 + "\n")
+    console.print("=" * 70 + "\n")
 
     console.print("Imagine you have a base model that knows general coding:")
 
-    code = '''
+    code = """
 # Base model (before fine-tuning)
 prompt = "Write a function to sort a list"
 response = model.generate(prompt)
 # → Gives generic sorting code
-'''
+"""
     console.print(Syntax(code, "python", theme="monokai"))
 
     console.print("\n[dim]But what if your codebase has specific patterns?[/dim]")
@@ -116,9 +134,9 @@ response = model.generate(prompt)
         console.print("\n[yellow]The base model doesn't know YOUR code patterns yet![/yellow]\n")
 
     # Step 2: The Solution
-    console.print("\n" + "="*70)
+    console.print("\n" + "=" * 70)
     console.print("[bold]Step 2: The Solution - Fine-Tuning[/bold]")
-    console.print("="*70 + "\n")
+    console.print("=" * 70 + "\n")
 
     console.print("Fine-tuning teaches the model YOUR code patterns:\n")
 
@@ -135,23 +153,23 @@ response = model.generate(prompt)
     console.print()
 
     # Step 3: Training Data
-    console.print("\n" + "="*70)
+    console.print("\n" + "=" * 70)
     console.print("[bold]Step 3: Training Data Format[/bold]")
-    console.print("="*70 + "\n")
+    console.print("=" * 70 + "\n")
 
-    example = '''{
+    example = """{
   "instruction": "Explain this authentication code",
   "input": "def login(user, password): ...",
   "output": "This function handles user login by..."
-}'''
+}"""
     console.print(Syntax(example, "json", theme="monokai"))
 
     console.print("\n[dim]Each example teaches one pattern![/dim]\n")
 
     # Step 4: Key Concepts
-    console.print("\n" + "="*70)
+    console.print("\n" + "=" * 70)
     console.print("[bold]Step 4: Key Concepts[/bold]")
-    console.print("="*70 + "\n")
+    console.print("=" * 70 + "\n")
 
     concepts = [
         ("Loss", "Measures prediction error (lower = better)"),
@@ -171,9 +189,9 @@ response = model.generate(prompt)
     console.print()
 
     # Summary
-    console.print("\n" + "="*70)
+    console.print("\n" + "=" * 70)
     console.print("[bold green]✓ Tutorial Complete![/bold green]")
-    console.print("="*70 + "\n")
+    console.print("=" * 70 + "\n")
 
     console.print("[bold]What you learned:[/bold]")
     console.print("✓ Fine-tuning adapts models to YOUR code")
@@ -187,23 +205,25 @@ response = model.generate(prompt)
     console.print("• Try: nanodex data generate (Create training data)\n")
 
 
-@learn_cmd.command('lora')
+@learn_cmd.command("lora")
 def tutorial_lora():
     """
     Interactive tutorial: Understanding LoRA
 
     Learn Low-Rank Adaptation and why it's efficient.
     """
-    console.print(Panel.fit(
-        "[bold cyan]Tutorial: Understanding LoRA[/bold cyan]\n\n"
-        "You'll learn:\n"
-        "• Why training all parameters is wasteful\n"
-        "• How LoRA uses low-rank decomposition\n"
-        "• The math (optional but enlightening)\n"
-        "• Practical benefits\n\n"
-        "Duration: ~15 minutes",
-        border_style="cyan"
-    ))
+    console.print(
+        Panel.fit(
+            "[bold cyan]Tutorial: Understanding LoRA[/bold cyan]\n\n"
+            "You'll learn:\n"
+            "• Why training all parameters is wasteful\n"
+            "• How LoRA uses low-rank decomposition\n"
+            "• The math (optional but enlightening)\n"
+            "• Practical benefits\n\n"
+            "Duration: ~15 minutes",
+            border_style="cyan",
+        )
+    )
 
     if not Confirm.ask("\n[bold]Ready to start?[/bold]"):
         console.print("[dim]Tutorial cancelled[/dim]\n")
@@ -225,7 +245,7 @@ def tutorial_lora():
     if show_math:
         console.print("\n[bold]The Mathematics:[/bold]\n")
 
-        math = '''
+        math = """
 Traditional: Train weight matrix W
   W ∈ R^(d×d)  # 6.7 billion parameters
 
@@ -238,7 +258,7 @@ Parameters to train:
   LoRA: 2dr = 2 × 4096 × 16 ≈ 4,000,000
 
 Result: 0.06% of parameters! 🎉
-        '''
+        """
         console.print(Syntax(math, "python", theme="monokai"))
         console.print()
 
@@ -278,23 +298,25 @@ Result: 0.06% of parameters! 🎉
     console.print("• Try: nanodex train --preset quick\n")
 
 
-@learn_cmd.command('quantization')
+@learn_cmd.command("quantization")
 def tutorial_quantization():
     """
     Interactive tutorial: Quantization Deep Dive
 
     Master 4-bit and 8-bit quantization.
     """
-    console.print(Panel.fit(
-        "[bold cyan]Tutorial: Quantization Deep Dive[/bold cyan]\n\n"
-        "You'll learn:\n"
-        "• What quantization does\n"
-        "• 4-bit vs 8-bit vs 16-bit\n"
-        "• Trade-offs (memory vs quality)\n"
-        "• When to use what\n\n"
-        "Duration: ~12 minutes",
-        border_style="cyan"
-    ))
+    console.print(
+        Panel.fit(
+            "[bold cyan]Tutorial: Quantization Deep Dive[/bold cyan]\n\n"
+            "You'll learn:\n"
+            "• What quantization does\n"
+            "• 4-bit vs 8-bit vs 16-bit\n"
+            "• Trade-offs (memory vs quality)\n"
+            "• When to use what\n\n"
+            "Duration: ~12 minutes",
+            border_style="cyan",
+        )
+    )
 
     if not Confirm.ask("\n[bold]Ready to start?[/bold]"):
         console.print("[dim]Tutorial cancelled[/dim]\n")
@@ -344,23 +366,25 @@ def tutorial_quantization():
     console.print("✓ Essential for running large models\n")
 
 
-@learn_cmd.command('rag')
+@learn_cmd.command("rag")
 def tutorial_rag():
     """
     Interactive tutorial: RAG From Scratch
 
     Build retrieval-augmented generation from the ground up.
     """
-    console.print(Panel.fit(
-        "[bold cyan]Tutorial: RAG From Scratch[/bold cyan]\n\n"
-        "You'll learn:\n"
-        "• What RAG is and why it's useful\n"
-        "• How embeddings capture meaning\n"
-        "• How FAISS enables fast search\n"
-        "• Building a RAG system\n\n"
-        "Duration: ~20 minutes",
-        border_style="cyan"
-    ))
+    console.print(
+        Panel.fit(
+            "[bold cyan]Tutorial: RAG From Scratch[/bold cyan]\n\n"
+            "You'll learn:\n"
+            "• What RAG is and why it's useful\n"
+            "• How embeddings capture meaning\n"
+            "• How FAISS enables fast search\n"
+            "• Building a RAG system\n\n"
+            "Duration: ~20 minutes",
+            border_style="cyan",
+        )
+    )
 
     if not Confirm.ask("\n[bold]Ready to start?[/bold]"):
         console.print("[dim]Tutorial cancelled[/dim]\n")
@@ -385,7 +409,7 @@ def tutorial_rag():
 
 
 # Main entry point when run without subcommand
-@learn_cmd.command('start', hidden=True)
+@learn_cmd.command("start", hidden=True)
 @click.pass_context
 def start(ctx):
     """Start interactive tutorial selection."""
@@ -394,4 +418,4 @@ def start(ctx):
 
 
 # Make list the default command
-learn_cmd.add_command(list_tutorials, name='__default__')
+learn_cmd.add_command(list_tutorials, name="__default__")

@@ -4,7 +4,7 @@ Model trainer for fine-tuning code models with enhanced features.
 
 import logging
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, ClassVar
 import torch
 import json
 from datetime import datetime
@@ -69,7 +69,7 @@ class TipCallback(TrainerCallback):
     """
 
     # Educational tips shown during training
-    TIPS = [
+    TIPS: ClassVar[list] = [
         "💡 LoRA trains only 0.1% of parameters - that's why it's so fast!",
         "💡 Loss measures prediction error. Good: <1.0, Great: <0.5",
         "💡 Your fine-tuned model is just ~50MB of LoRA adapters",
@@ -87,14 +87,18 @@ class TipCallback(TrainerCallback):
         self.tip_index = 0
         self.last_tip_step = 0
 
-    def on_log(self, args, state, control, logs=None, **kwargs):
+    def on_log(self, _args, state, _control, _logs=None, **_kwargs):
         """
         Show educational tip every N steps during training.
 
         Tips are shown periodically to educate without overwhelming the log output.
         """
         # Show tip every 50 steps (configurable)
-        if state.global_step > 0 and state.global_step % 50 == 0 and state.global_step != self.last_tip_step:
+        if (
+            state.global_step > 0
+            and state.global_step % 50 == 0
+            and state.global_step != self.last_tip_step
+        ):
             tip = self.TIPS[self.tip_index % len(self.TIPS)]
             logger.info(f"\n{tip}\n")
             self.tip_index += 1

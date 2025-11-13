@@ -160,16 +160,18 @@ def info_cmd(ctx):
         console.print("[yellow]⚠[/yellow] No configuration loaded")
 
     # Session stats
-    console.print(f"\n📊 Session Statistics:")
+    console.print("\n📊 Session Statistics:")
     console.print(f"  Commands run: {root_ctx.obj.get('command_count', 0)}")
 
     # Last results
-    if "last_results" in root_ctx.obj and root_ctx.obj["last_results"]:
-        console.print(f"\n[green]✓[/green] Last results available")
+    last_results = root_ctx.obj.get("last_results")
+    if last_results:
+        console.print("\n[green]✓[/green] Last results available")
 
     # Training state
-    if "training_state" in root_ctx.obj and root_ctx.obj["training_state"]:
-        console.print(f"[green]✓[/green] Training state: {root_ctx.obj['training_state']}")
+    training_state = root_ctx.obj.get("training_state")
+    if training_state:
+        console.print(f"[green]✓[/green] Training state: {training_state}")
 
     console.print()
 
