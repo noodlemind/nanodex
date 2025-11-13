@@ -5,6 +5,8 @@ These commands provide learning support: explain concepts, compare configuration
 visualize metrics, and show context.
 """
 
+from typing import Any
+
 import click
 from rich.console import Console
 from rich.panel import Panel
@@ -23,9 +25,9 @@ def educational():
     pass
 
 
-@educational.command('explain')
-@click.argument('concept', required=False)
-@click.option('--detailed', '-d', is_flag=True, help='Show detailed explanation')
+@educational.command("explain")
+@click.argument("concept", required=False)
+@click.option("--detailed", "-d", is_flag=True, help="Show detailed explanation")
 def explain_cmd(concept, detailed):
     """
     Explain machine learning concepts.
@@ -53,8 +55,8 @@ def explain_cmd(concept, detailed):
         console.print("\n[dim]Tip: Use --detailed for full explanation[/dim]\n")
 
 
-@educational.command('presets')
-@click.argument('preset_name', required=False)
+@educational.command("presets")
+@click.argument("preset_name", required=False)
 def presets_cmd(preset_name):
     """
     Show configuration presets.
@@ -79,9 +81,9 @@ def presets_cmd(preset_name):
     ConfigPresets.explain_preset(preset_name)
 
 
-@educational.command('compare')
-@click.argument('param1')
-@click.argument('param2')
+@educational.command("compare")
+@click.argument("param1")
+@click.argument("param2")
 def compare_cmd(param1, param2):
     """
     Compare two parameters or configurations.
@@ -93,14 +95,14 @@ def compare_cmd(param1, param2):
         compare quick quality
     """
     comparisons = {
-        ('4bit', '8bit'): _compare_quantization,
-        ('8bit', '4bit'): _compare_quantization,
-        ('lora', 'full'): _compare_training_methods,
-        ('lora', 'full-finetune'): _compare_training_methods,
-        ('full', 'lora'): _compare_training_methods,
-        ('quick', 'balanced'): _compare_presets,
-        ('quick', 'quality'): _compare_presets,
-        ('balanced', 'quality'): _compare_presets,
+        ("4bit", "8bit"): _compare_quantization,
+        ("8bit", "4bit"): _compare_quantization,
+        ("lora", "full"): _compare_training_methods,
+        ("lora", "full-finetune"): _compare_training_methods,
+        ("full", "lora"): _compare_training_methods,
+        ("quick", "balanced"): _compare_presets,
+        ("quick", "quality"): _compare_presets,
+        ("balanced", "quality"): _compare_presets,
     }
 
     key = (param1.lower(), param2.lower())
@@ -114,7 +116,7 @@ def compare_cmd(param1, param2):
         console.print("  • quick vs balanced vs quality\n")
 
 
-@educational.command('context')
+@educational.command("context")
 @click.pass_context
 def context_cmd(ctx):
     """Show current session context and state."""
@@ -123,24 +125,24 @@ def context_cmd(ctx):
     console.print("\n[bold cyan]Current Session Context[/bold cyan]\n")
 
     # Configuration
-    if 'config' in root_ctx.obj:
+    if "config" in root_ctx.obj:
         console.print("[green]✓[/green] Configuration loaded")
-        cfg = root_ctx.obj['config']
+        cfg = root_ctx.obj["config"]
         console.print(f"  Model: {cfg.get_model_source()}")
     else:
         console.print("[yellow]⚠[/yellow] No configuration loaded")
 
     # Last results
-    if 'last_results' in root_ctx.obj and root_ctx.obj['last_results']:
+    if "last_results" in root_ctx.obj and root_ctx.obj["last_results"]:
         console.print(f"\n[green]✓[/green] Last results available")
         console.print(f"  {root_ctx.obj['last_results']}")
 
     # Training state
-    if 'training_state' in root_ctx.obj and root_ctx.obj['training_state']:
+    if "training_state" in root_ctx.obj and root_ctx.obj["training_state"]:
         console.print(f"\n[green]✓[/green] Training state: {root_ctx.obj['training_state']}")
 
     # Command count
-    if 'command_count' in root_ctx.obj:
+    if "command_count" in root_ctx.obj:
         console.print(f"\n📊 Commands run: {root_ctx.obj['command_count']}")
 
     console.print()
@@ -148,8 +150,14 @@ def context_cmd(ctx):
 
 # Helper functions for comparisons
 
-def _compare_quantization(param1, param2):
-    """Compare 4-bit vs 8-bit quantization."""
+
+def _compare_quantization(param1: str, param2: str) -> None:
+    """Compare 4-bit vs 8-bit quantization.
+
+    Args:
+        param1: First quantization method (4bit/8bit)
+        param2: Second quantization method (4bit/8bit)
+    """
     table = Table(title="Quantization Comparison", box=box.ROUNDED)
     table.add_column("Aspect", style="cyan")
     table.add_column("4-bit", style="green")
@@ -168,8 +176,13 @@ def _compare_quantization(param1, param2):
     console.print("  • Use 8-bit if you need maximum quality and have GPU memory\n")
 
 
-def _compare_training_methods(param1, param2):
-    """Compare LoRA vs full fine-tuning."""
+def _compare_training_methods(param1: str, param2: str) -> None:
+    """Compare LoRA vs full fine-tuning.
+
+    Args:
+        param1: First training method (lora/full)
+        param2: Second training method (lora/full)
+    """
     table = Table(title="Training Method Comparison", box=box.ROUNDED)
     table.add_column("Aspect", style="cyan")
     table.add_column("LoRA", style="green")
@@ -188,8 +201,13 @@ def _compare_training_methods(param1, param2):
     console.print("  • Use full fine-tuning only if you have resources & need max quality\n")
 
 
-def _compare_presets(param1, param2):
-    """Compare configuration presets."""
+def _compare_presets(param1: str, param2: str) -> None:
+    """Compare configuration presets.
+
+    Args:
+        param1: First preset name (quick/balanced/quality)
+        param2: Second preset name (quick/balanced/quality)
+    """
     presets = [p.lower() for p in [param1, param2]]
 
     table = Table(title="Preset Comparison", box=box.ROUNDED)
@@ -201,11 +219,11 @@ def _compare_presets(param1, param2):
     from ..utils.educational import ConfigPresets
 
     aspects = [
-        ("Epochs", lambda p: ConfigPresets.PRESETS[p]['config']['training']['num_epochs']),
-        ("LoRA Rank", lambda p: ConfigPresets.PRESETS[p]['config']['training']['lora']['r']),
-        ("Batch Size", lambda p: ConfigPresets.PRESETS[p]['config']['training']['batch_size']),
-        ("Time", lambda p: ConfigPresets.PRESETS[p]['time']),
-        ("Use Case", lambda p: ConfigPresets.PRESETS[p]['use_case']),
+        ("Epochs", lambda p: ConfigPresets.PRESETS[p]["config"]["training"]["num_epochs"]),
+        ("LoRA Rank", lambda p: ConfigPresets.PRESETS[p]["config"]["training"]["lora"]["r"]),
+        ("Batch Size", lambda p: ConfigPresets.PRESETS[p]["config"]["training"]["batch_size"]),
+        ("Time", lambda p: ConfigPresets.PRESETS[p]["time"]),
+        ("Use Case", lambda p: ConfigPresets.PRESETS[p]["use_case"]),
     ]
 
     for aspect_name, getter in aspects:

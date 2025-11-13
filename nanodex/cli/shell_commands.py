@@ -21,7 +21,7 @@ def shell_commands():
     pass
 
 
-@shell_commands.command('sessions')
+@shell_commands.command("sessions")
 def sessions_cmd():
     """
     List all saved sessions.
@@ -31,11 +31,12 @@ def sessions_cmd():
     Use /load <name> to restore a session.
     """
     from .shell import list_sessions
+
     list_sessions()
 
 
-@shell_commands.command('checkpoints')
-@click.option('--dir', default='./models/fine-tuned', help='Model directory')
+@shell_commands.command("checkpoints")
+@click.option("--dir", default="./models/fine-tuned", help="Model directory")
 def checkpoints_cmd(dir):
     """
     List available training checkpoints.
@@ -58,9 +59,9 @@ def checkpoints_cmd(dir):
     # Find checkpoint directories
     checkpoints = []
     for path in model_dir.iterdir():
-        if path.is_dir() and path.name.startswith('checkpoint-'):
+        if path.is_dir() and path.name.startswith("checkpoint-"):
             try:
-                step = int(path.name.split('-')[1])
+                step = int(path.name.split("-")[1])
                 checkpoints.append((step, path))
             except (IndexError, ValueError):
                 continue
@@ -81,19 +82,15 @@ def checkpoints_cmd(dir):
 
     for step, path in checkpoints:
         # Calculate directory size
-        size_mb = sum(f.stat().st_size for f in path.rglob('*') if f.is_file()) / (1024 * 1024)
-        table.add_row(
-            str(step),
-            str(path.name),
-            f"{size_mb:.1f}MB"
-        )
+        size_mb = sum(f.stat().st_size for f in path.rglob("*") if f.is_file()) / (1024 * 1024)
+        table.add_row(str(step), str(path.name), f"{size_mb:.1f}MB")
 
     console.print(table)
     console.print(f"\n[dim]Use: nanodex train --resume {model_dir}/checkpoint-XXXX[/dim]\n")
 
 
-@shell_commands.command('history')
-@click.option('--limit', '-n', default=20, help='Number of commands to show')
+@shell_commands.command("history")
+@click.option("--limit", "-n", default=20, help="Number of commands to show")
 def history_cmd(limit):
     """
     Show command history.
@@ -106,14 +103,14 @@ def history_cmd(limit):
         history
         history --limit 50
     """
-    history_file = Path('.nanodex_history')
+    history_file = Path(".nanodex_history")
 
     if not history_file.exists():
         console.print("[dim]No command history found[/dim]")
         return
 
     try:
-        with open(history_file, 'r') as f:
+        with open(history_file, "r") as f:
             lines = f.readlines()
 
         # Show last N commands
@@ -130,15 +127,16 @@ def history_cmd(limit):
         console.print(f"[yellow]⚠ Could not read history: {e}[/yellow]")
 
 
-@shell_commands.command('clear')
+@shell_commands.command("clear")
 def clear_cmd():
     """Clear the terminal screen."""
-    import os
-    os.system('clear' if os.name != 'nt' else 'cls')
+    # Use ANSI escape codes instead of os.system() for security
+    # \033[2J clears the screen, \033[H moves cursor to home position
+    print("\033[2J\033[H", end="")
     console.print("[dim]Screen cleared[/dim]\n")
 
 
-@shell_commands.command('info')
+@shell_commands.command("info")
 @click.pass_context
 def info_cmd(ctx):
     """
@@ -152,9 +150,9 @@ def info_cmd(ctx):
     console.print("\n[bold cyan]Session Information[/bold cyan]\n")
 
     # Configuration
-    if 'config' in root_ctx.obj:
+    if "config" in root_ctx.obj:
         console.print("[green]✓[/green] Configuration loaded")
-        cfg = root_ctx.obj['config']
+        cfg = root_ctx.obj["config"]
         console.print(f"  Model source: {cfg.get_model_source()}")
         model_config = cfg.get_model_config()
         console.print(f"  Model: {model_config.get('model_name', 'N/A')}")
@@ -166,17 +164,17 @@ def info_cmd(ctx):
     console.print(f"  Commands run: {root_ctx.obj.get('command_count', 0)}")
 
     # Last results
-    if 'last_results' in root_ctx.obj and root_ctx.obj['last_results']:
+    if "last_results" in root_ctx.obj and root_ctx.obj["last_results"]:
         console.print(f"\n[green]✓[/green] Last results available")
 
     # Training state
-    if 'training_state' in root_ctx.obj and root_ctx.obj['training_state']:
+    if "training_state" in root_ctx.obj and root_ctx.obj["training_state"]:
         console.print(f"[green]✓[/green] Training state: {root_ctx.obj['training_state']}")
 
     console.print()
 
 
-@shell_commands.command('help')
+@shell_commands.command("help")
 def help_cmd():
     """
     Show available shell commands.
