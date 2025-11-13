@@ -8,14 +8,26 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich import box
+from rich.markdown import Markdown
 import json
 from pathlib import Path
+import random
 
 from ..utils import Config
+from ..utils.educational import ConceptExplainer
 from ..analyzers import CodeAnalyzer
 from ..data_generators.orchestrator import DataGenerationOrchestrator
 
 console = Console()
+
+# Educational tips for data generation
+DATA_GEN_TIPS = [
+    "💡 Training data quality matters more than quantity",
+    "💡 Each example teaches the model one pattern from your code",
+    "💡 Free mode extracts patterns directly from your codebase - no API costs!",
+    "💡 Diverse examples help the model generalize better",
+    "💡 Good training data: Clear instruction + relevant code + accurate explanation",
+]
 
 
 @click.group()
@@ -34,7 +46,8 @@ def data_cmd():
 @click.option('--config', default='config.yaml', help='Configuration file path')
 @click.option('--output', default='./data/training_examples.json', help='Output file path')
 @click.option('--limit', type=int, help='Limit number of files to process')
-def generate(config, output, limit):
+@click.option('--explain', is_flag=True, help='Show educational explanations')
+def generate(config, output, limit, explain):
     """
     Generate training data from codebase.
 
@@ -46,6 +59,13 @@ def generate(config, output, limit):
     """
     try:
         console.print("\n[bold cyan]Generating Training Data...[/bold cyan]\n")
+
+        # Show educational explanations if requested
+        if explain:
+            console.print("[bold]📚 Educational Mode: Training Data Generation[/bold]\n")
+            console.print("[dim]Training data consists of instruction-response pairs.[/dim]")
+            console.print("[dim]Each example teaches the model one pattern from your codebase.[/dim]")
+            console.print("[dim]Quality matters more than quantity - focus on diverse, clear examples.[/dim]\n")
 
         # Load configuration
         cfg = Config(config)
@@ -62,6 +82,11 @@ def generate(config, output, limit):
 
         stats = analyzer.get_statistics(code_samples)
         console.print(f"  Found {stats['total_files']} files with {stats['total_lines']:,} lines\n")
+
+        # Show a random educational tip
+        tip = random.choice(DATA_GEN_TIPS)
+        console.print(Markdown(tip))
+        console.print()
 
         # Initialize orchestrator
         console.print("Step 2: Initializing data generators...")

@@ -214,6 +214,12 @@ __marimo__/
 Modelfile
 .worktrees
 
+# Session files
+.nanodex_session.json
+.nanodex_sessions/
+.nanodex_history
+.nanodex_state.json
+
 # macOS
 .DS_Store
 

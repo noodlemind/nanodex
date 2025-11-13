@@ -1,5 +1,24 @@
 """
 Vector indexing using FAISS for efficient similarity search.
+
+RAG (Retrieval-Augmented Generation):
+Think of it as "semantic search" for your code.
+
+How it works:
+1. Convert code to embeddings (vectors of numbers that capture meaning)
+2. Store embeddings in FAISS index (fast similarity search data structure)
+3. When querying: convert query to embedding, find similar code chunks
+4. Use retrieved chunks to augment LLM responses with relevant context
+
+Example:
+- Query: "How do we handle authentication?"
+- Retrieval: Finds auth-related code chunks based on semantic similarity
+- Generation: LLM uses retrieved code to answer accurately
+
+Benefits:
+- No model retraining needed - just add new code to index
+- Fast updates - index new code in seconds
+- Precise retrieval - gets exactly relevant code sections
 """
 
 from typing import List, Dict, Optional, Tuple
@@ -57,7 +76,18 @@ class VectorIndexer:
         )
 
     def _create_index(self, num_vectors: Optional[int] = None):
-        """Create FAISS index."""
+        """
+        Create FAISS index for vector similarity search.
+
+        FAISS (Facebook AI Similarity Search):
+        - Library for efficient similarity search in high-dimensional spaces
+        - Used by production systems at Facebook, Google, etc.
+        - Can handle millions to billions of vectors
+
+        Index Types:
+        - Flat: Exact search, checks all vectors (slower but accurate)
+        - IVF: Approximate search, checks clusters (faster for large datasets)
+        """
         if not FAISS_AVAILABLE:
             raise ImportError(
                 "faiss-cpu is required for RAG functionality. "
@@ -65,23 +95,39 @@ class VectorIndexer:
             )
 
         if self.index_type == 'flat':
-            # Exact search - good for small datasets (<100k vectors)
+            #
+            # FLAT INDEX: Exact nearest neighbor search
+            # - Compares query to every vector in index
+            # - 100% accurate but slower for large datasets
+            # - Good for: <100k vectors (most codebases)
+            # - Speed: O(n) where n = number of vectors
+            #
             if self.metric == 'cosine':
-                # Normalize vectors and use L2 distance for cosine similarity
+                # Cosine similarity: measures angle between vectors
+                # Used for semantic similarity (meaning-based matching)
+                # Normalize vectors and use L2 distance (mathematically equivalent)
                 self.index = faiss.IndexFlatL2(self.embedding_dim)
                 self.normalize_embeddings = True
             else:
+                # L2 distance: Euclidean distance between vectors
                 self.index = faiss.IndexFlatL2(self.embedding_dim)
                 self.normalize_embeddings = False
 
             logger.info("Created Flat index for exact search")
 
         elif self.index_type == 'ivf':
-            # Approximate search - good for large datasets
+            #
+            # IVF INDEX: Inverted File Index (approximate search)
+            # - Groups vectors into clusters (like a hashtable)
+            # - Searches only relevant clusters
+            # - Good for: >100k vectors
+            # - Speed: O(log n) with slight accuracy trade-off
+            #
             if num_vectors is None:
                 raise ValueError("num_vectors required for IVF index")
 
-            # Choose number of clusters
+            # Choose number of clusters (nlist)
+            # Rule of thumb: sqrt(n) to n/100 clusters
             nlist = min(100, max(10, num_vectors // 100))
 
             quantizer = faiss.IndexFlatL2(self.embedding_dim)
@@ -99,7 +145,10 @@ class VectorIndexer:
 
     def add_chunks(self, chunks: List[Dict]):
         """
-        Add chunks to the index.
+        Add code chunks to the index.
+
+        Each chunk is a piece of code with its embedding (vector representation).
+        The embedding captures the semantic meaning of the code.
 
         Args:
             chunks: List of chunks with 'embedding' field
@@ -112,14 +161,27 @@ class VectorIndexer:
         if self.index is None:
             self._create_index(num_vectors=len(chunks))
 
-        # Extract embeddings
+        #
+        # EMBEDDINGS: Vector representations of code
+        # - Each code chunk → 384-dimensional vector (or 768, 1024, etc.)
+        # - Similar code → similar vectors (close in vector space)
+        # - Example: [0.12, -0.34, 0.56, ...] (384 numbers)
+        #
+        # How embeddings capture meaning:
+        # - Model trained on millions of code examples
+        # - Learns that "def", "function", "method" are similar
+        # - "authentication", "login", "auth" cluster together
+        #
         embeddings = np.array([chunk['embedding'] for chunk in chunks], dtype=np.float32)
 
         # Normalize if using cosine similarity
+        # Normalization: Scale vectors to unit length
+        # Why: Makes cosine similarity = dot product (faster computation)
         if self.normalize_embeddings:
             faiss.normalize_L2(embeddings)
 
         # Train index if needed (for IVF)
+        # Training: Learn cluster centers for approximate search
         if self.index_type == 'ivf' and not self.index.is_trained:
             logger.info("Training IVF index...")
             self.index.train(embeddings)
@@ -129,6 +191,8 @@ class VectorIndexer:
         self.index.add(embeddings)
 
         # Store metadata
+        # We keep the code text, file path, etc. but discard embeddings to save memory
+        # Embeddings are already in FAISS index - no need to duplicate
         for i, chunk in enumerate(chunks):
             chunk_id = start_id + i
             # Remove embedding from stored chunk to save memory
