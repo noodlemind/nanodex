@@ -168,6 +168,8 @@ class LoRATrainer:
         bnb_config = None
         if use_quantization:
             logger.info("✨ Configuring 4-bit quantization (QLoRA)")
+            # Type narrowing: use_quantization implies quantization is not None
+            assert self.config.quantization is not None
             bnb_config = BitsAndBytesConfig(
                 load_in_4bit=True,
                 bnb_4bit_quant_type=self.config.quantization.bnb_4bit_quant_type,
@@ -187,6 +189,8 @@ class LoRATrainer:
 
         # Determine dtype based on device
         if use_quantization:
+            # Type narrowing: use_quantization implies quantization is not None
+            assert self.config.quantization is not None
             dtype = self._get_compute_dtype(self.config.quantization.bnb_4bit_compute_dtype)
         elif self.device == "mps":
             dtype = torch.float32  # MPS works best with FP32

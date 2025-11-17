@@ -14,7 +14,8 @@ from nanodex.config import ExtractorConfig
 def temp_dir() -> Generator[Path, None, None]:
     """Create a temporary directory for testing."""
     with tempfile.TemporaryDirectory() as tmpdir:
-        yield Path(tmpdir)
+        # Resolve to handle macOS symlinks (/var -> /private/var)
+        yield Path(tmpdir).resolve()
 
 
 @pytest.fixture
