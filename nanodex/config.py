@@ -25,6 +25,15 @@ class ExtractorConfig(BaseModel):
         default=Path("data/brain/graph.sqlite"), description="Output path for graph database"
     )
     max_file_size_mb: int = Field(default=5, description="Maximum file size in MB to process", ge=1)
+    max_total_files: int = Field(
+        default=100000, description="Maximum number of files to process", ge=1
+    )
+    max_repo_size_mb: int = Field(
+        default=10000, description="Maximum total repository size in MB", ge=1
+    )
+    processing_timeout_seconds: int = Field(
+        default=7200, description="Processing timeout in seconds (default: 2 hours)", ge=60
+    )
 
     @field_validator("languages")
     @classmethod

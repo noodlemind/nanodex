@@ -19,6 +19,19 @@ from nanodex.trainer.data_loader import InstructionDataset, create_dataloaders
 
 logger = logging.getLogger(__name__)
 
+# Trusted model repositories (for security)
+# Only these models can be loaded with trust_remote_code=True
+TRUSTED_MODEL_REPOS = {
+    "Qwen/Qwen2.5-Coder-7B",
+    "Qwen/Qwen2.5-Coder-14B",
+    "Qwen/Qwen2.5-Coder-1.5B",
+    "Qwen/Qwen2.5-Coder-32B",
+    "codellama/CodeLlama-7b-hf",
+    "codellama/CodeLlama-13b-hf",
+    "bigcode/starcoder2-7b",
+    "bigcode/starcoder2-15b",
+}
+
 
 class LoRATrainer:
     """Trainer for LoRA/QLoRA fine-tuning."""
@@ -39,6 +52,9 @@ class LoRATrainer:
         """Setup model, tokenizer, and datasets."""
         logger.info("Setting up trainer...")
 
+        # Validate model security
+        self._validate_model_security()
+
         # Load tokenizer
         self._load_tokenizer()
 
@@ -53,13 +69,32 @@ class LoRATrainer:
 
         logger.info("Trainer setup complete")
 
+    def _validate_model_security(self) -> None:
+        """Validate model repository is trusted."""
+        if self.config.base_model not in TRUSTED_MODEL_REPOS:
+            logger.warning(
+                f"Model '{self.config.base_model}' is not in the trusted repositories list. "
+                f"Loading untrusted models can execute arbitrary code. "
+                f"Trusted models: {sorted(TRUSTED_MODEL_REPOS)}"
+            )
+            logger.warning(
+                "To use an untrusted model, add it to TRUSTED_MODEL_REPOS in trainer.py "
+                "after verifying its source code is safe."
+            )
+            raise ValueError(
+                f"Untrusted model repository: {self.config.base_model}. "
+                f"Only trusted models are allowed for security."
+            )
+
     def _load_tokenizer(self) -> None:
         """Load and configure tokenizer."""
         logger.info(f"Loading tokenizer: {self.config.base_model}")
 
+        # trust_remote_code=True is required for some models (e.g., Qwen)
+        # Security: Only trusted models pass _validate_model_security()
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.config.base_model,
-            trust_remote_code=True,
+            trust_remote_code=True,  # Safe: model validated against TRUSTED_MODEL_REPOS
         )
 
         # Set padding token if not set
@@ -90,11 +125,13 @@ class LoRATrainer:
             )
 
         # Load model
+        # trust_remote_code=True is required for some models (e.g., Qwen)
+        # Security: Only trusted models pass _validate_model_security()
         self.model = AutoModelForCausalLM.from_pretrained(
             self.config.base_model,
             quantization_config=bnb_config,
             device_map="auto",
-            trust_remote_code=True,
+            trust_remote_code=True,  # Safe: model validated against TRUSTED_MODEL_REPOS
             torch_dtype=self._get_compute_dtype(
                 self.config.quantization.bnb_4bit_compute_dtype
                 if self.config.quantization

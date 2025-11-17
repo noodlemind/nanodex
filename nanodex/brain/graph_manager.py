@@ -47,8 +47,20 @@ class GraphManager:
 
     def connect(self) -> None:
         """Establish database connection and initialize schema."""
-        self.conn = sqlite3.connect(str(self.db_path))
+        self.conn = sqlite3.connect(str(self.db_path), check_same_thread=False, timeout=30.0)
         self.conn.row_factory = sqlite3.Row
+
+        # Enable foreign key constraints (disabled by default in SQLite)
+        self.conn.execute("PRAGMA foreign_keys = ON")
+
+        # Enable WAL mode for better concurrency
+        self.conn.execute("PRAGMA journal_mode = WAL")
+
+        # Performance optimizations
+        self.conn.execute("PRAGMA synchronous = NORMAL")  # Faster commits
+        self.conn.execute("PRAGMA cache_size = -64000")  # 64MB cache
+        self.conn.execute("PRAGMA temp_store = MEMORY")  # In-memory temp tables
+
         self._init_schema()
 
     def close(self) -> None:
@@ -116,7 +128,7 @@ class GraphManager:
             """,
             (node_id, node_type, name, path, lang, props_json),
         )
-        self.conn.commit()
+        # Note: Commit is caller's responsibility for batch operations
 
     def add_edge(
         self,
@@ -165,7 +177,7 @@ class GraphManager:
             """,
             (source_id, target_id, relationship, weight, props_json),
         )
-        self.conn.commit()
+        # Note: Commit is caller's responsibility for batch operations
 
     def get_node(self, node_id: str) -> Optional[Dict[str, Any]]:
         """
