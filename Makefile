@@ -1,4 +1,4 @@
-.PHONY: help setup clean extract graph-inspect brain brain-embed dataset test lint format type-check
+.PHONY: help setup clean extract graph-inspect brain brain-embed dataset train-qlora train-lora test lint format type-check
 
 # Default target
 help:
@@ -12,6 +12,8 @@ help:
 	@echo "  brain         - Classify nodes and generate summaries"
 	@echo "  brain-embed   - Generate embeddings for summaries (optional)"
 	@echo "  dataset       - Generate training Q&A dataset"
+	@echo "  train-qlora   - Train QLoRA adapter (4-bit, 12-24GB VRAM)"
+	@echo "  train-lora    - Train LoRA adapter (FP16, 24-40GB VRAM)"
 	@echo "  test          - Run tests with coverage"
 	@echo "  lint          - Run linting with ruff"
 	@echo "  format        - Format code with black"
@@ -24,6 +26,8 @@ help:
 	@echo "  make brain CONFIG=config/brain.yaml"
 	@echo "  make brain-embed MODEL=sentence-transformers/all-MiniLM-L6-v2"
 	@echo "  make dataset CONFIG=config/dataset.yaml"
+	@echo "  make train-qlora CONFIG=config/train_qlora.yaml"
+	@echo "  make train-lora CONFIG=config/train_lora.yaml"
 
 # Variables
 PYTHON := python3
@@ -74,6 +78,14 @@ brain-embed:
 # Generate training dataset
 dataset:
 	$(BIN)/python scripts/generate_dataset.py --config $(CONFIG) --db $(DB)
+
+# Train QLoRA adapter (4-bit quantization, 12-24GB VRAM)
+train-qlora:
+	$(BIN)/python scripts/train.py --config $(if $(CONFIG),$(CONFIG),config/train_qlora.yaml) $(if $(DATASET),--dataset $(DATASET),) $(if $(EPOCHS),--epochs $(EPOCHS),) $(if $(BATCH_SIZE),--batch-size $(BATCH_SIZE),)
+
+# Train LoRA adapter (FP16, 24-40GB VRAM)
+train-lora:
+	$(BIN)/python scripts/train.py --config $(if $(CONFIG),$(CONFIG),config/train_lora.yaml) $(if $(DATASET),--dataset $(DATASET),) $(if $(EPOCHS),--epochs $(EPOCHS),) $(if $(BATCH_SIZE),--batch-size $(BATCH_SIZE),)
 
 # Run tests
 test:

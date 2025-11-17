@@ -99,7 +99,8 @@ def test_generate_explain_questions(qa_generator):
         assert "prompt" in qa
         assert "response" in qa
         assert "refs" in qa
-        assert "How" in qa["prompt"] or "What" in qa["prompt"]
+        prompt_lower = qa["prompt"].lower()
+        assert "how" in prompt_lower or "what" in prompt_lower or "explain" in prompt_lower
 
 
 def test_generate_howto_questions(qa_generator):

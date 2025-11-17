@@ -1,0 +1,63 @@
+# LoRA Training Configuration (FP16, 24-40GB VRAM)
+
+# Model configuration
+base_model: "Qwen/Qwen2.5-Coder-7B"  # Apache-2.0 license
+model_max_length: 2048
+
+# Dataset configuration
+dataset_path: "data/dataset/train.jsonl"
+validation_split: 0.1  # 10% for validation
+
+# LoRA configuration
+lora:
+  r: 32  # Higher rank for full precision
+  lora_alpha: 64  # Scaling factor
+  lora_dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+# Training hyperparameters
+training:
+  output_dir: "models/nanodex-lora"
+  num_train_epochs: 3
+  per_device_train_batch_size: 8
+  per_device_eval_batch_size: 8
+  gradient_accumulation_steps: 2
+  learning_rate: 1.0e-4
+  weight_decay: 0.01
+  warmup_ratio: 0.03
+  lr_scheduler_type: "cosine"
+  logging_steps: 10
+  save_steps: 100
+  eval_steps: 100
+  save_total_limit: 3
+  fp16: true
+  bf16: false
+  max_grad_norm: 1.0
+  optim: "adamw_torch"
+  group_by_length: true
+  report_to: "tensorboard"
+
+# Generation parameters (for evaluation)
+generation:
+  max_new_tokens: 512
+  temperature: 0.7
+  top_p: 0.9
+  do_sample: true
+
+# Instruction format
+instruction_template: |
+  <|im_start|>system
+  You are a helpful code assistant specialized in this codebase.<|im_end|>
+  <|im_start|>user
+  {prompt}<|im_end|>
+  <|im_start|>assistant
+  {response}<|im_end|>

@@ -105,25 +105,26 @@ class DatasetConfig(BaseModel):
         return v
 
 
-class TrainingConfig(BaseModel):
-    """Configuration for LoRA/QLoRA training."""
+class QuantizationConfig(BaseModel):
+    """Quantization configuration for QLoRA."""
 
-    base_model: str = Field(
-        default="Qwen/Qwen2.5-Coder-7B", description="Base model identifier"
+    load_in_4bit: bool = Field(default=True, description="Load model in 4-bit")
+    bnb_4bit_compute_dtype: str = Field(
+        default="bfloat16", description="Compute dtype for 4-bit training"
     )
-    bits: int = Field(default=4, description="Quantization bits: 4, 8, or 16", ge=4, le=16)
     bnb_4bit_quant_type: str = Field(
         default="nf4", description="BitsAndBytes quantization type"
     )
     bnb_4bit_use_double_quant: bool = Field(
         default=True, description="Use double quantization"
     )
-    bnb_4bit_compute_dtype: str = Field(
-        default="bfloat16", description="Compute dtype for 4-bit training"
-    )
 
-    lora_rank: int = Field(default=16, description="LoRA rank", ge=8, le=64)
-    lora_alpha: int = Field(default=32, description="LoRA alpha", ge=16, le=64)
+
+class LoRAConfig(BaseModel):
+    """LoRA adapter configuration."""
+
+    r: int = Field(default=16, description="LoRA rank", ge=8, le=64)
+    lora_alpha: int = Field(default=32, description="LoRA alpha", ge=16, le=128)
     lora_dropout: float = Field(default=0.05, description="LoRA dropout", ge=0.0, le=0.2)
     target_modules: List[str] = Field(
         default=[
@@ -137,25 +138,76 @@ class TrainingConfig(BaseModel):
         ],
         description="Target modules for LoRA",
     )
+    bias: str = Field(default="none", description="Bias setting")
+    task_type: str = Field(default="CAUSAL_LM", description="Task type")
 
-    learning_rate: float = Field(default=2e-4, description="Learning rate", ge=1e-5, le=1e-3)
-    batch_size: int = Field(default=4, description="Training batch size", ge=1, le=32)
+
+class TrainingParams(BaseModel):
+    """Training hyperparameters."""
+
+    output_dir: str = Field(default="models/nanodex-qlora", description="Output directory")
+    num_train_epochs: int = Field(default=3, description="Number of training epochs", ge=1)
+    per_device_train_batch_size: int = Field(
+        default=4, description="Training batch size", ge=1, le=32
+    )
+    per_device_eval_batch_size: int = Field(
+        default=4, description="Evaluation batch size", ge=1, le=32
+    )
     gradient_accumulation_steps: int = Field(
-        default=16, description="Gradient accumulation steps", ge=1
+        default=4, description="Gradient accumulation steps", ge=1
     )
-    max_steps: int = Field(default=3000, description="Maximum training steps", ge=100)
-    max_seq_len: int = Field(default=2048, description="Maximum sequence length", ge=512)
-    warmup_steps: int = Field(default=100, description="Warmup steps", ge=0)
-    eval_interval: int = Field(default=500, description="Evaluation interval", ge=50)
-    save_steps: int = Field(default=500, description="Save checkpoint interval", ge=50)
-
-    dataset_path: Path = Field(
-        default=Path("data/dataset/train.jsonl"), description="Training dataset path"
-    )
-    output_dir: Path = Field(
-        default=Path("models/project-nanodex-lora"), description="Output directory for adapter"
-    )
+    learning_rate: float = Field(default=2e-4, description="Learning rate", ge=1e-5, le=1e-3)
+    weight_decay: float = Field(default=0.01, description="Weight decay", ge=0.0, le=0.1)
+    warmup_ratio: float = Field(default=0.03, description="Warmup ratio", ge=0.0, le=0.2)
+    lr_scheduler_type: str = Field(default="cosine", description="LR scheduler type")
+    logging_steps: int = Field(default=10, description="Logging interval", ge=1)
+    save_steps: int = Field(default=100, description="Save checkpoint interval", ge=1)
+    eval_steps: int = Field(default=100, description="Evaluation interval", ge=1)
+    save_total_limit: int = Field(default=3, description="Max checkpoints to keep", ge=1)
+    fp16: bool = Field(default=False, description="Use FP16 training")
+    bf16: bool = Field(default=True, description="Use BF16 training")
+    max_grad_norm: float = Field(default=0.3, description="Max gradient norm", ge=0.0)
     optim: str = Field(default="paged_adamw_32bit", description="Optimizer")
+    group_by_length: bool = Field(default=True, description="Group samples by length")
+    report_to: str = Field(default="tensorboard", description="Logging destination")
+
+
+class GenerationConfig(BaseModel):
+    """Generation parameters for evaluation."""
+
+    max_new_tokens: int = Field(default=512, description="Max new tokens", ge=64, le=2048)
+    temperature: float = Field(default=0.7, description="Sampling temperature", ge=0.0, le=2.0)
+    top_p: float = Field(default=0.9, description="Top-p sampling", ge=0.0, le=1.0)
+    do_sample: bool = Field(default=True, description="Use sampling")
+
+
+class TrainingConfig(BaseModel):
+    """Configuration for LoRA/QLoRA training."""
+
+    base_model: str = Field(
+        default="Qwen/Qwen2.5-Coder-7B", description="Base model identifier"
+    )
+    model_max_length: int = Field(
+        default=2048, description="Maximum sequence length", ge=512, le=4096
+    )
+    dataset_path: str = Field(
+        default="data/dataset/train.jsonl", description="Training dataset path"
+    )
+    validation_split: float = Field(
+        default=0.1, description="Validation split ratio", ge=0.0, le=0.5
+    )
+    quantization: Optional[QuantizationConfig] = Field(
+        default=None, description="Quantization config (for QLoRA)"
+    )
+    lora: LoRAConfig = Field(default_factory=LoRAConfig, description="LoRA config")
+    training: TrainingParams = Field(default_factory=TrainingParams, description="Training params")
+    generation: GenerationConfig = Field(
+        default_factory=GenerationConfig, description="Generation config"
+    )
+    instruction_template: str = Field(
+        default="<|im_start|>system\nYou are a helpful code assistant specialized in this codebase.<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\n{response}<|im_end|>",
+        description="Instruction formatting template",
+    )
 
 
 class InferenceConfig(BaseModel):
