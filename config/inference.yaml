@@ -1,0 +1,27 @@
+# Inference Configuration for vLLM/TGI serving
+
+# Model configuration
+base_model: "Qwen/Qwen2.5-Coder-7B"  # Apache-2.0 license
+adapter_path: "models/nanodex-qlora"  # Path to LoRA adapter
+
+# Server configuration
+host: "0.0.0.0"
+port: 8000
+
+# vLLM parameters
+max_lora_rank: 32  # Maximum LoRA rank to support
+gpu_memory_utilization: 0.9  # GPU memory utilization (0.0-1.0)
+tensor_parallel_size: 1  # Number of GPUs for tensor parallelism
+max_num_seqs: 256  # Maximum number of sequences to process in parallel
+
+# Generation parameters
+max_tokens: 512  # Maximum tokens per response
+temperature: 0.3  # Sampling temperature (lower = more deterministic)
+top_p: 0.9  # Top-p sampling
+top_k: 50  # Top-k sampling
+repetition_penalty: 1.1  # Penalty for repetition
+presence_penalty: 0.0  # Presence penalty
+frequency_penalty: 0.0  # Frequency penalty
+
+# System prompt
+system_prompt: "You are a helpful code assistant specialized in this codebase. Answer questions based on your knowledge of the codebase structure and functionality."

@@ -1,4 +1,4 @@
-.PHONY: help setup clean extract graph-inspect brain brain-embed dataset train-qlora train-lora test lint format type-check
+.PHONY: help setup clean extract graph-inspect brain brain-embed dataset train-qlora train-lora serve query test lint format type-check
 
 # Default target
 help:
@@ -14,6 +14,8 @@ help:
 	@echo "  dataset       - Generate training Q&A dataset"
 	@echo "  train-qlora   - Train QLoRA adapter (4-bit, 12-24GB VRAM)"
 	@echo "  train-lora    - Train LoRA adapter (FP16, 24-40GB VRAM)"
+	@echo "  serve         - Print instructions for starting inference server"
+	@echo "  query         - Query the inference server (requires server running)"
 	@echo "  test          - Run tests with coverage"
 	@echo "  lint          - Run linting with ruff"
 	@echo "  format        - Format code with black"
@@ -28,6 +30,8 @@ help:
 	@echo "  make dataset CONFIG=config/dataset.yaml"
 	@echo "  make train-qlora CONFIG=config/train_qlora.yaml"
 	@echo "  make train-lora CONFIG=config/train_lora.yaml"
+	@echo "  make serve CONFIG=config/inference.yaml"
+	@echo "  make query QUESTION='How does X work?' ENDPOINT=http://localhost:8000"
 
 # Variables
 PYTHON := python3
@@ -86,6 +90,14 @@ train-qlora:
 # Train LoRA adapter (FP16, 24-40GB VRAM)
 train-lora:
 	$(BIN)/python scripts/train.py --config $(if $(CONFIG),$(CONFIG),config/train_lora.yaml) $(if $(DATASET),--dataset $(DATASET),) $(if $(EPOCHS),--epochs $(EPOCHS),) $(if $(BATCH_SIZE),--batch-size $(BATCH_SIZE),)
+
+# Print instructions for starting inference server
+serve:
+	$(BIN)/python scripts/serve.py --config $(if $(CONFIG),$(CONFIG),config/inference.yaml) $(if $(ADAPTER),--adapter $(ADAPTER),) $(if $(PORT),--port $(PORT),)
+
+# Query inference server
+query:
+	$(BIN)/python scripts/query.py --endpoint $(if $(ENDPOINT),$(ENDPOINT),http://localhost:8000) $(if $(QUESTION),--question "$(QUESTION)",--interactive) $(if $(MAX_TOKENS),--max-tokens $(MAX_TOKENS),) $(if $(TEMPERATURE),--temperature $(TEMPERATURE),)
 
 # Run tests
 test:
