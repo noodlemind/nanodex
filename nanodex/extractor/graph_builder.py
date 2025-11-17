@@ -1,10 +1,8 @@
 """Graph builder for extracting symbols from repositories."""
 
 import logging
-import os
 import time
 from pathlib import Path
-from typing import List, Optional, Set
 
 from nanodex.brain.graph_manager import GraphManager
 from nanodex.config import ExtractorConfig
@@ -17,6 +15,9 @@ def validate_path_safety(path: Path, allowed_root: Path) -> Path:
     """
     Validate path doesn't escape allowed directory.
 
+    Supports symlinks - validates the resolved path location.
+    Works correctly on macOS with system symlinks (/var, /tmp, etc.).
+
     Args:
         path: Path to validate
         allowed_root: Root directory that path must be under
@@ -25,23 +26,21 @@ def validate_path_safety(path: Path, allowed_root: Path) -> Path:
         Resolved safe path
 
     Raises:
-        ValueError: If path traversal attempt detected or path is a symlink
+        ValueError: If path resolves outside allowed directory
     """
+    # Resolve both paths to handle symlinks consistently
+    resolved_path = path.resolve(strict=False)
+    resolved_root = allowed_root.resolve(strict=False)
+
     try:
-        # Resolve to absolute paths
-        resolved_path = path.resolve()
-        resolved_root = allowed_root.resolve()
-
-        # Check if path is under allowed root
+        # Verify resolved path is under allowed root
         resolved_path.relative_to(resolved_root)
-
-        # Block symlinks for security
-        if path.is_symlink():
-            raise ValueError(f"Symlinks not allowed: {path}")
-
         return resolved_path
-    except (ValueError, RuntimeError) as e:
-        raise ValueError(f"Path traversal attempt detected: {path}") from e
+    except ValueError:
+        raise ValueError(
+            f"Path outside allowed directory: {path} resolves to {resolved_path}, "
+            f"which is not under {allowed_root} (resolves to {resolved_root})"
+        )
 
 
 class GraphBuilder:
@@ -61,7 +60,7 @@ class GraphBuilder:
         self.skipped_files = 0
         self.total_nodes = 0
         self.total_edges = 0
-        self.start_time: Optional[float] = None
+        self.start_time: float | None = None
 
     def build_graph(self, repo_path: Path) -> None:
         """
@@ -122,7 +121,7 @@ class GraphBuilder:
                 logger.error(f"Failed to process {file_path}: {e}")
                 self.skipped_files += 1
 
-    def _find_source_files(self, repo_path: Path) -> List[Path]:
+    def _find_source_files(self, repo_path: Path) -> list[Path]:
         """
         Find all source files in repository.
 
@@ -135,7 +134,7 @@ class GraphBuilder:
         Raises:
             ValueError: If resource limits are exceeded
         """
-        source_files = []
+        source_files: list[Path] = []
         exclude_patterns = self._compile_exclude_patterns()
         total_size_bytes = 0
         max_repo_bytes = self.config.max_repo_size_mb * 1024 * 1024
@@ -178,10 +177,12 @@ class GraphBuilder:
                         logger.warning(f"Skipping unsafe path: {e}")
                         self.skipped_files += 1
 
-        logger.info(f"Found {len(source_files)} source files to process ({total_size_bytes / 1024 / 1024:.1f}MB)")
+        logger.info(
+            f"Found {len(source_files)} source files to process ({total_size_bytes / 1024 / 1024:.1f}MB)"
+        )
         return source_files
 
-    def _compile_exclude_patterns(self) -> Set[str]:
+    def _compile_exclude_patterns(self) -> set[str]:
         """Compile exclude patterns into a set for faster lookups."""
         patterns = set()
         for pattern in self.config.exclude:
@@ -190,7 +191,7 @@ class GraphBuilder:
             patterns.add(clean_pattern)
         return patterns
 
-    def _is_excluded(self, file_path: Path, repo_path: Path, patterns: Set[str]) -> bool:
+    def _is_excluded(self, file_path: Path, repo_path: Path, patterns: set[str]) -> bool:
         """
         Check if file should be excluded.
 
@@ -225,7 +226,7 @@ class GraphBuilder:
 
         return False
 
-    def _get_language_extensions(self, language: str) -> List[str]:
+    def _get_language_extensions(self, language: str) -> list[str]:
         """Get file extensions for a language."""
         extension_map = {
             "python": [".py"],
@@ -357,7 +358,7 @@ def build_graph_from_config(config_path: Path, repo_path: Path) -> None:
         config_path: Path to extractor configuration YAML
         repo_path: Path to repository to extract
     """
-    from nanodex.config import load_config, ExtractorConfig
+    from nanodex.config import ExtractorConfig, load_config
 
     config = load_config(config_path, ExtractorConfig)
     builder = GraphBuilder(config)

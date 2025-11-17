@@ -89,8 +89,6 @@ def test_extract_excludes_patterns(temp_dir, extractor_config):
     builder.build_graph(repo)
 
     with GraphManager(extractor_config.out_graph) as gm:
-        stats = gm.get_stats()
-
         # Should only have nodes from main.py, not test/
         file_nodes = []
         cursor = gm.conn.execute("SELECT path FROM nodes WHERE type = 'file'")
@@ -124,3 +122,51 @@ def test_extract_large_file_skipped(temp_dir, extractor_config):
         stats = gm.get_stats()
         # Should have small.py but not large.py
         assert stats["total_nodes"] >= 1
+
+
+@pytest.mark.integration
+def test_extract_with_symlink_inside_repo(temp_dir, extractor_config):
+    """Test that symlinks within the repository are handled correctly."""
+    repo = temp_dir / "repo_with_symlink"
+    repo.mkdir()
+
+    # Create target file
+    target = repo / "target.py"
+    target.write_text("def target_function(): pass")
+
+    # Create symlink to target within repo
+    symlink = repo / "link.py"
+    symlink.symlink_to(target)
+
+    builder = GraphBuilder(extractor_config)
+    builder.build_graph(repo)
+
+    with GraphManager(extractor_config.out_graph) as gm:
+        stats = gm.get_stats()
+        # Should extract from resolved target
+        assert stats["total_nodes"] >= 1
+
+
+@pytest.mark.integration
+def test_extract_rejects_symlink_outside_repo(temp_dir, extractor_config):
+    """Test that symlinks pointing outside repository are rejected."""
+    repo = temp_dir / "repo_safe"
+    repo.mkdir()
+
+    outside = temp_dir / "outside"
+    outside.mkdir()
+
+    outside_file = outside / "external.py"
+    outside_file.write_text("def external(): pass")
+
+    # Create symlink from inside repo to outside
+    symlink = repo / "bad_link.py"
+    symlink.symlink_to(outside_file)
+
+    builder = GraphBuilder(extractor_config)
+    builder.build_graph(repo)
+
+    with GraphManager(extractor_config.out_graph) as gm:
+        stats = gm.get_stats()
+        # Should have 0 nodes - symlink rejected
+        assert stats["total_nodes"] == 0
