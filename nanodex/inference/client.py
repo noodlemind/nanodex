@@ -1,8 +1,6 @@
 """Query client for inference server."""
 
-import json
 import logging
-from typing import Dict, List, Optional
 
 import requests
 
@@ -15,7 +13,7 @@ class QueryClient:
     def __init__(
         self,
         endpoint: str = "http://localhost:8000",
-        system_prompt: Optional[str] = None,
+        system_prompt: str | None = None,
     ):
         """
         Initialize query client.
@@ -35,7 +33,7 @@ class QueryClient:
         max_tokens: int = 512,
         temperature: float = 0.3,
         top_p: float = 0.9,
-    ) -> Dict:
+    ) -> dict:
         """
         Query the inference server.
 
@@ -98,11 +96,11 @@ class QueryClient:
 
     def query_batch(
         self,
-        questions: List[str],
+        questions: list[str],
         max_tokens: int = 512,
         temperature: float = 0.3,
         top_p: float = 0.9,
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """
         Query multiple questions.
 
@@ -141,7 +139,7 @@ class QueryClient:
         except requests.exceptions.RequestException:
             return False
 
-    def get_models(self) -> List[str]:
+    def get_models(self) -> list[str]:
         """
         Get available models from server.
 

@@ -1,7 +1,7 @@
 """Configuration management for nanodex pipeline."""
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import Literal, TypeVar
 
 import yaml
 from pydantic import BaseModel, Field, field_validator
@@ -12,12 +12,12 @@ T = TypeVar("T", bound=BaseModel)
 class ExtractorConfig(BaseModel):
     """Configuration for the extractor stage."""
 
-    languages: List[str] = Field(
+    languages: list[str] = Field(
         default=["python", "java", "typescript", "cpp"],
         description="Programming languages to extract from",
     )
     use_scip: bool = Field(default=False, description="Enable SCIP indexers for semantic edges")
-    exclude: List[str] = Field(
+    exclude: list[str] = Field(
         default=["**/vendor/**", "**/node_modules/**", "**/.git/**"],
         description="Glob patterns to exclude from extraction",
     )
@@ -37,7 +37,7 @@ class ExtractorConfig(BaseModel):
 
     @field_validator("languages")
     @classmethod
-    def validate_languages(cls, v: List[str]) -> List[str]:
+    def validate_languages(cls, v: list[str]) -> list[str]:
         """Validate supported languages."""
         supported = {"python", "java", "typescript", "javascript", "cpp", "c", "rust", "go"}
         for lang in v:
@@ -49,7 +49,7 @@ class ExtractorConfig(BaseModel):
 class BrainConfig(BaseModel):
     """Configuration for the brain stage."""
 
-    node_types: List[str] = Field(
+    node_types: list[str] = Field(
         default=["module", "capability", "concept", "error", "recipe"],
         description="Semantic node types for classification",
     )
@@ -63,14 +63,14 @@ class BrainConfig(BaseModel):
         default=Path("data/brain/nodes"), description="Output directory for node summaries"
     )
     use_embeddings: bool = Field(default=False, description="Generate vector embeddings")
-    embedding_model: Optional[str] = Field(
+    embedding_model: str | None = Field(
         default=None,
         description="Model for embeddings (e.g., sentence-transformers/all-MiniLM-L6-v2)",
     )
 
     @field_validator("node_types")
     @classmethod
-    def validate_node_types(cls, v: List[str]) -> List[str]:
+    def validate_node_types(cls, v: list[str]) -> list[str]:
         """Validate node types."""
         allowed = {"module", "capability", "concept", "error", "recipe"}
         for node_type in v:
@@ -82,7 +82,7 @@ class BrainConfig(BaseModel):
 class DatasetConfig(BaseModel):
     """Configuration for the dataset generation stage."""
 
-    qa_categories: Dict[str, int] = Field(
+    qa_categories: dict[str, int] = Field(
         default={
             "discovery": 250,
             "explain": 250,
@@ -106,7 +106,7 @@ class DatasetConfig(BaseModel):
 
     @field_validator("qa_categories")
     @classmethod
-    def validate_categories(cls, v: Dict[str, int]) -> Dict[str, int]:
+    def validate_categories(cls, v: dict[str, int]) -> dict[str, int]:
         """Validate Q&A categories."""
         allowed = {"discovery", "explain", "howto", "diagnostics"}
         for category in v.keys():
@@ -132,7 +132,7 @@ class LoRAConfig(BaseModel):
     r: int = Field(default=16, description="LoRA rank", ge=8, le=64)
     lora_alpha: int = Field(default=32, description="LoRA alpha", ge=16, le=128)
     lora_dropout: float = Field(default=0.05, description="LoRA dropout", ge=0.0, le=0.2)
-    target_modules: List[str] = Field(
+    target_modules: list[str] = Field(
         default=[
             "q_proj",
             "k_proj",
@@ -144,7 +144,7 @@ class LoRAConfig(BaseModel):
         ],
         description="Target modules for LoRA",
     )
-    bias: str = Field(default="none", description="Bias setting")
+    bias: Literal["none", "all", "lora_only"] = Field(default="none", description="Bias setting")
     task_type: str = Field(default="CAUSAL_LM", description="Task type")
 
 
@@ -200,7 +200,7 @@ class TrainingConfig(BaseModel):
     validation_split: float = Field(
         default=0.1, description="Validation split ratio", ge=0.0, le=0.5
     )
-    quantization: Optional[QuantizationConfig] = Field(
+    quantization: QuantizationConfig | None = Field(
         default=None, description="Quantization config (for QLoRA)"
     )
     lora: LoRAConfig = Field(default_factory=LoRAConfig, description="LoRA config")
@@ -218,7 +218,7 @@ class InferenceConfig(BaseModel):
     """Configuration for inference serving."""
 
     base_model: str = Field(default="Qwen/Qwen2.5-Coder-7B", description="Base model identifier")
-    adapter_path: Optional[Path] = Field(
+    adapter_path: Path | None = Field(
         default=Path("models/project-nanodex-lora"), description="LoRA adapter path"
     )
     max_lora_rank: int = Field(default=32, description="Maximum LoRA rank", ge=8, le=64)
@@ -246,7 +246,7 @@ def load_config(config_path: Path, config_class: type[T]) -> T:
     if not config_path.exists():
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
 
-    with open(config_path, "r") as f:
+    with open(config_path) as f:
         config_dict = yaml.safe_load(f)
 
     return config_class(**config_dict)

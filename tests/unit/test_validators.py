@@ -1,6 +1,5 @@
 """Unit tests for DatasetValidator."""
 
-import pytest
 
 from nanodex.dataset.validators import DatasetValidator
 

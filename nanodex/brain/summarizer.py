@@ -3,7 +3,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from nanodex.brain.graph_manager import GraphManager
 from nanodex.config import BrainConfig
@@ -72,7 +72,7 @@ class Summarizer:
         logger.info(f"Summary generation complete: {generated} new, {skipped} cached")
         return generated
 
-    def _generate_node_summary(self, node_row: Any) -> Dict[str, Any]:
+    def _generate_node_summary(self, node_row: Any) -> dict[str, Any]:
         """
         Generate summary for a single node.
 
@@ -118,7 +118,7 @@ class Summarizer:
         }
 
     def _build_summary_text(
-        self, node_type: str, name: str, context: Dict, properties: Dict
+        self, node_type: str, name: str, context: dict, properties: dict
     ) -> str:
         """
         Build summary text based on node type and style.
@@ -140,7 +140,7 @@ class Summarizer:
             return self._build_technical_summary(node_type, name, context, properties)
 
     def _build_concise_summary(
-        self, node_type: str, name: str, context: Dict, properties: Dict
+        self, node_type: str, name: str, context: dict, properties: dict
     ) -> str:
         """Build concise summary."""
         summaries = {
@@ -168,7 +168,7 @@ class Summarizer:
         return base_summary
 
     def _build_detailed_summary(
-        self, node_type: str, name: str, context: Dict, properties: Dict
+        self, node_type: str, name: str, context: dict, properties: dict
     ) -> str:
         """Build detailed summary."""
         parts = [self._build_concise_summary(node_type, name, context, properties)]
@@ -194,7 +194,7 @@ class Summarizer:
         return " ".join(parts)
 
     def _build_technical_summary(
-        self, node_type: str, name: str, context: Dict, properties: Dict
+        self, node_type: str, name: str, context: dict, properties: dict
     ) -> str:
         """Build technical summary."""
         parts = [
@@ -218,7 +218,7 @@ class Summarizer:
 
         return " | ".join(parts)
 
-    def _save_summary(self, path: Path, summary_data: Dict[str, Any]) -> None:
+    def _save_summary(self, path: Path, summary_data: dict[str, Any]) -> None:
         """
         Save summary to JSON file.
 
@@ -229,7 +229,7 @@ class Summarizer:
         with open(path, "w") as f:
             json.dump(summary_data, f, indent=2)
 
-    def get_summary_stats(self) -> Dict[str, Any]:
+    def get_summary_stats(self) -> dict[str, Any]:
         """
         Get statistics about generated summaries.
 

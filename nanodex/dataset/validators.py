@@ -3,7 +3,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any
 
 from nanodex.brain.graph_manager import GraphManager
 
@@ -31,7 +31,7 @@ class DatasetValidator:
         self.min_response_tokens = min_response_tokens
         self.max_response_tokens = max_response_tokens
 
-    def validate_example(self, example: Dict[str, Any]) -> Tuple[bool, List[str]]:
+    def validate_example(self, example: dict[str, Any]) -> tuple[bool, list[str]]:
         """
         Validate a single Q&A example.
 
@@ -93,7 +93,7 @@ class DatasetValidator:
 
         return len(issues) == 0, issues
 
-    def validate_node_references(self, examples: List[Dict[str, Any]]) -> Tuple[int, List[str]]:
+    def validate_node_references(self, examples: list[dict[str, Any]]) -> tuple[int, list[str]]:
         """
         Validate that all node references exist in the graph.
 
@@ -126,7 +126,7 @@ class DatasetValidator:
         logger.info(f"Validated {valid_count} references, {len(invalid_refs)} invalid")
         return valid_count, invalid_refs
 
-    def check_duplicates(self, examples: List[Dict[str, Any]]) -> List[str]:
+    def check_duplicates(self, examples: list[dict[str, Any]]) -> list[str]:
         """
         Check for duplicate examples.
 
@@ -137,8 +137,8 @@ class DatasetValidator:
             List of duplicate IDs
         """
         logger.info("Checking for duplicates")
-        seen_ids: Set[str] = set()
-        seen_prompts: Set[str] = set()
+        seen_ids: set[str] = set()
+        seen_prompts: set[str] = set()
         duplicates = []
 
         for example in examples:
@@ -157,7 +157,7 @@ class DatasetValidator:
         logger.info(f"Found {len(duplicates)} duplicates")
         return duplicates
 
-    def get_distribution(self, examples: List[Dict[str, Any]]) -> Dict[str, int]:
+    def get_distribution(self, examples: list[dict[str, Any]]) -> dict[str, int]:
         """
         Get distribution of examples by type.
 
@@ -167,14 +167,14 @@ class DatasetValidator:
         Returns:
             Dictionary mapping type to count
         """
-        distribution: Dict[str, int] = {}
+        distribution: dict[str, int] = {}
         for example in examples:
             example_type = example.get("type", "unknown")
             distribution[example_type] = distribution.get(example_type, 0) + 1
 
         return distribution
 
-    def validate_dataset(self, examples: List[Dict[str, Any]]) -> Tuple[bool, Dict[str, Any]]:
+    def validate_dataset(self, examples: list[dict[str, Any]]) -> tuple[bool, dict[str, Any]]:
         """
         Validate entire dataset.
 
@@ -186,7 +186,7 @@ class DatasetValidator:
         """
         logger.info(f"Validating dataset with {len(examples)} examples")
 
-        report: Dict[str, Any] = {
+        report: dict[str, Any] = {
             "total_examples": len(examples),
             "valid_examples": 0,
             "invalid_examples": 0,
@@ -249,7 +249,7 @@ class DatasetValidator:
 
 def validate_jsonl_file(
     jsonl_path: Path, db_path: Path, min_tokens: int = 50, max_tokens: int = 500
-) -> Tuple[bool, Dict[str, Any]]:
+) -> tuple[bool, dict[str, Any]]:
     """
     Validate a JSONL dataset file.
 

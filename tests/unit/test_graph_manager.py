@@ -2,7 +2,7 @@
 
 import pytest
 
-from nanodex.brain.graph_manager import GraphManager, EDGE_RELATIONSHIPS, NODE_TYPES
+from nanodex.brain.graph_manager import GraphManager
 
 
 def test_graph_manager_init(temp_dir):

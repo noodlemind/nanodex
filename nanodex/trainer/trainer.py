@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import torch
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
@@ -15,7 +15,7 @@ from transformers import (
 )
 
 from nanodex.config import TrainingConfig
-from nanodex.trainer.data_loader import InstructionDataset, create_dataloaders
+from nanodex.trainer.data_loader import InstructionDataset
 
 logger = logging.getLogger(__name__)
 
@@ -218,7 +218,7 @@ class LoRATrainer:
             optim=self.config.training.optim,
             group_by_length=self.config.training.group_by_length,
             report_to=self.config.training.report_to,
-            evaluation_strategy="steps" if self.dataset.get_val_dataset() else "no",
+            eval_strategy="steps" if self.dataset.get_val_dataset() else "no",
             load_best_model_at_end=True if self.dataset.get_val_dataset() else False,
             metric_for_best_model="eval_loss" if self.dataset.get_val_dataset() else None,
         )
@@ -238,7 +238,7 @@ class LoRATrainer:
 
         logger.info("Training complete!")
 
-    def save(self, output_dir: Optional[Path] = None) -> None:
+    def save(self, output_dir: Path | None = None) -> None:
         """
         Save trained adapter.
 

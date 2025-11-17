@@ -313,12 +313,14 @@ class GraphBuilder:
                 self.total_edges += 1
 
             # Commit transaction for this file
-            self.graph_manager.conn.commit()
+            if self.graph_manager.conn:
+                self.graph_manager.conn.commit()
             self.processed_files += 1
         except Exception as e:
             # Rollback on any error during file processing
             logger.error(f"Failed to process {file_path}, rolling back: {e}")
-            self.graph_manager.conn.rollback()
+            if self.graph_manager.conn:
+                self.graph_manager.conn.rollback()
             self.skipped_files += 1
             return
         if self.processed_files % 10 == 0:

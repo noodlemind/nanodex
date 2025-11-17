@@ -3,10 +3,10 @@
 import hashlib
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import tree_sitter_languages as tsl
-from tree_sitter import Language, Parser, Node
+from tree_sitter import Node, Parser
 
 logger = logging.getLogger(__name__)
 
@@ -58,17 +58,17 @@ class TreeSitterParser:
         """Get path to language-specific query file."""
         return Path(__file__).parent / "queries" / f"{self.language}_queries.scm"
 
-    def _load_query(self) -> Optional[Any]:
+    def _load_query(self) -> Any | None:
         """Load Tree-sitter query for symbol extraction."""
         try:
-            with open(self.query_path, "r") as f:
+            with open(self.query_path) as f:
                 query_source = f.read()
             return self.ts_language.query(query_source)
         except Exception as e:
             logger.warning(f"Failed to load query for {self.language}: {e}")
             return None
 
-    def parse(self, source_code: bytes, file_path: Optional[Path] = None) -> Optional[Node]:
+    def parse(self, source_code: bytes, file_path: Path | None = None) -> Node | None:
         """
         Parse source code into an AST.
 
@@ -92,7 +92,7 @@ class TreeSitterParser:
 
     def extract_symbols(
         self, source_code: bytes, file_path: Path
-    ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         """
         Extract symbols and relationships from source code.
 
@@ -109,8 +109,8 @@ class TreeSitterParser:
         if not root:
             return [], []
 
-        nodes: List[Dict[str, Any]] = []
-        edges: List[Dict[str, Any]] = []
+        nodes: list[dict[str, Any]] = []
+        edges: list[dict[str, Any]] = []
 
         # Add file node
         file_id = self._generate_id(str(file_path))
@@ -140,15 +140,15 @@ class TreeSitterParser:
 
     def _process_captures(
         self,
-        captures: List[Tuple[Node, str]],
+        captures: list[tuple[Node, str]],
         source_code: bytes,
         file_path: Path,
         file_id: str,
-        nodes: List[Dict[str, Any]],
-        edges: List[Dict[str, Any]],
+        nodes: list[dict[str, Any]],
+        edges: list[dict[str, Any]],
     ) -> None:
         """Process Tree-sitter query captures into nodes and edges."""
-        processed_nodes: Dict[str, Dict[str, Any]] = {}
+        processed_nodes: dict[str, dict[str, Any]] = {}
 
         for node, capture_name in captures:
             text = node.text.decode("utf-8", errors="ignore")
@@ -228,7 +228,7 @@ class TreeSitterParser:
         # Add all processed nodes
         nodes.extend(processed_nodes.values())
 
-    def _extract_name(self, node: Node, capture_type: str, captures: List[Tuple[Node, str]]) -> str:
+    def _extract_name(self, node: Node, capture_type: str, captures: list[tuple[Node, str]]) -> str:
         """Extract name from a specific capture type."""
         for child_node, child_capture in captures:
             if child_capture == capture_type and self._is_descendant(child_node, node):
@@ -237,7 +237,7 @@ class TreeSitterParser:
 
     def _is_descendant(self, potential_child: Node, potential_parent: Node) -> bool:
         """Check if a node is a descendant of another node."""
-        current: Optional[Node] = potential_child
+        current: Node | None = potential_child
         while current:
             if current == potential_parent:
                 return True
@@ -245,8 +245,8 @@ class TreeSitterParser:
         return False
 
     def _find_containing_function(
-        self, node: Node, processed_nodes: Dict[str, Dict[str, Any]]
-    ) -> Optional[str]:
+        self, node: Node, processed_nodes: dict[str, dict[str, Any]]
+    ) -> str | None:
         """Find the ID of the function containing this node."""
         current = node.parent
         while current:
@@ -267,7 +267,7 @@ class TreeSitterParser:
         return hashlib.sha256(identifier.encode()).hexdigest()[:16]
 
 
-def get_file_language(file_path: Path) -> Optional[str]:
+def get_file_language(file_path: Path) -> str | None:
     """
     Determine programming language from file extension.
 

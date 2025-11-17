@@ -10,7 +10,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from nanodex.brain.graph_manager import GraphManager
-from nanodex.config import BrainConfig, DatasetConfig, load_config
+from nanodex.config import DatasetConfig, load_config
 from nanodex.dataset.qa_generator import QAGenerator
 from nanodex.dataset.validators import DatasetValidator
 

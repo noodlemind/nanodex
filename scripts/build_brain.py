@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from nanodex.brain.graph_manager import GraphManager
 from nanodex.brain.node_typer import NodeTyper
 from nanodex.brain.summarizer import Summarizer
-from nanodex.config import BrainConfig, ExtractorConfig, load_config
+from nanodex.config import BrainConfig, load_config
 
 
 def setup_logging(verbose: bool = False) -> None:
