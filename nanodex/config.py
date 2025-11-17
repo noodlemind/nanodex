@@ -1,0 +1,212 @@
+"""Configuration management for nanodex pipeline."""
+
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import yaml
+from pydantic import BaseModel, Field, field_validator
+
+
+class ExtractorConfig(BaseModel):
+    """Configuration for the extractor stage."""
+
+    languages: List[str] = Field(
+        default=["python", "java", "typescript", "cpp"],
+        description="Programming languages to extract from",
+    )
+    use_scip: bool = Field(default=False, description="Enable SCIP indexers for semantic edges")
+    exclude: List[str] = Field(
+        default=["**/vendor/**", "**/node_modules/**", "**/.git/**"],
+        description="Glob patterns to exclude from extraction",
+    )
+    out_graph: Path = Field(
+        default=Path("data/brain/graph.sqlite"), description="Output path for graph database"
+    )
+    max_file_size_mb: int = Field(
+        default=5, description="Maximum file size in MB to process", ge=1
+    )
+
+    @field_validator("languages")
+    @classmethod
+    def validate_languages(cls, v: List[str]) -> List[str]:
+        """Validate supported languages."""
+        supported = {"python", "java", "typescript", "javascript", "cpp", "c", "rust", "go"}
+        for lang in v:
+            if lang not in supported:
+                raise ValueError(f"Unsupported language: {lang}. Supported: {supported}")
+        return v
+
+
+class BrainConfig(BaseModel):
+    """Configuration for the brain stage."""
+
+    node_types: List[str] = Field(
+        default=["module", "capability", "concept", "error", "recipe"],
+        description="Semantic node types for classification",
+    )
+    summary_style: str = Field(
+        default="concise", description="Summary generation style: concise, detailed, technical"
+    )
+    summary_max_tokens: int = Field(
+        default=200, description="Maximum tokens per summary", ge=50, le=500
+    )
+    out_dir: Path = Field(
+        default=Path("data/brain/nodes"), description="Output directory for node summaries"
+    )
+    use_embeddings: bool = Field(default=False, description="Generate vector embeddings")
+    embedding_model: Optional[str] = Field(
+        default=None, description="Model for embeddings (e.g., sentence-transformers/all-MiniLM-L6-v2)"
+    )
+
+    @field_validator("node_types")
+    @classmethod
+    def validate_node_types(cls, v: List[str]) -> List[str]:
+        """Validate node types."""
+        allowed = {"module", "capability", "concept", "error", "recipe"}
+        for node_type in v:
+            if node_type not in allowed:
+                raise ValueError(f"Invalid node type: {node_type}. Allowed: {allowed}")
+        return v
+
+
+class DatasetConfig(BaseModel):
+    """Configuration for the dataset generation stage."""
+
+    qa_categories: Dict[str, int] = Field(
+        default={
+            "discovery": 250,
+            "explain": 250,
+            "howto": 250,
+            "diagnostics": 250,
+        },
+        description="Number of Q&A pairs per category",
+    )
+    negatives_per_example: int = Field(
+        default=2, description="Number of negative examples per positive", ge=0, le=5
+    )
+    out_file: Path = Field(
+        default=Path("data/dataset/train.jsonl"), description="Output JSONL file path"
+    )
+    min_response_tokens: int = Field(
+        default=50, description="Minimum response length in tokens", ge=10
+    )
+    max_response_tokens: int = Field(
+        default=500, description="Maximum response length in tokens", le=2000
+    )
+
+    @field_validator("qa_categories")
+    @classmethod
+    def validate_categories(cls, v: Dict[str, int]) -> Dict[str, int]:
+        """Validate Q&A categories."""
+        allowed = {"discovery", "explain", "howto", "diagnostics"}
+        for category in v.keys():
+            if category not in allowed:
+                raise ValueError(f"Invalid category: {category}. Allowed: {allowed}")
+        return v
+
+
+class TrainingConfig(BaseModel):
+    """Configuration for LoRA/QLoRA training."""
+
+    base_model: str = Field(
+        default="Qwen/Qwen2.5-Coder-7B", description="Base model identifier"
+    )
+    bits: int = Field(default=4, description="Quantization bits: 4, 8, or 16", ge=4, le=16)
+    bnb_4bit_quant_type: str = Field(
+        default="nf4", description="BitsAndBytes quantization type"
+    )
+    bnb_4bit_use_double_quant: bool = Field(
+        default=True, description="Use double quantization"
+    )
+    bnb_4bit_compute_dtype: str = Field(
+        default="bfloat16", description="Compute dtype for 4-bit training"
+    )
+
+    lora_rank: int = Field(default=16, description="LoRA rank", ge=8, le=64)
+    lora_alpha: int = Field(default=32, description="LoRA alpha", ge=16, le=64)
+    lora_dropout: float = Field(default=0.05, description="LoRA dropout", ge=0.0, le=0.2)
+    target_modules: List[str] = Field(
+        default=[
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj",
+        ],
+        description="Target modules for LoRA",
+    )
+
+    learning_rate: float = Field(default=2e-4, description="Learning rate", ge=1e-5, le=1e-3)
+    batch_size: int = Field(default=4, description="Training batch size", ge=1, le=32)
+    gradient_accumulation_steps: int = Field(
+        default=16, description="Gradient accumulation steps", ge=1
+    )
+    max_steps: int = Field(default=3000, description="Maximum training steps", ge=100)
+    max_seq_len: int = Field(default=2048, description="Maximum sequence length", ge=512)
+    warmup_steps: int = Field(default=100, description="Warmup steps", ge=0)
+    eval_interval: int = Field(default=500, description="Evaluation interval", ge=50)
+    save_steps: int = Field(default=500, description="Save checkpoint interval", ge=50)
+
+    dataset_path: Path = Field(
+        default=Path("data/dataset/train.jsonl"), description="Training dataset path"
+    )
+    output_dir: Path = Field(
+        default=Path("models/project-nanodex-lora"), description="Output directory for adapter"
+    )
+    optim: str = Field(default="paged_adamw_32bit", description="Optimizer")
+
+
+class InferenceConfig(BaseModel):
+    """Configuration for inference serving."""
+
+    base_model: str = Field(
+        default="Qwen/Qwen2.5-Coder-7B", description="Base model identifier"
+    )
+    adapter_path: Optional[Path] = Field(
+        default=Path("models/project-nanodex-lora"), description="LoRA adapter path"
+    )
+    max_lora_rank: int = Field(default=32, description="Maximum LoRA rank", ge=8, le=64)
+    host: str = Field(default="0.0.0.0", description="Server host")
+    port: int = Field(default=8000, description="Server port", ge=1024, le=65535)
+    max_tokens: int = Field(default=512, description="Max tokens per response", ge=64, le=4096)
+    temperature: float = Field(default=0.3, description="Sampling temperature", ge=0.0, le=2.0)
+
+
+def load_config(config_path: Path, config_class: type[BaseModel]) -> BaseModel:
+    """
+    Load and validate configuration from YAML file.
+
+    Args:
+        config_path: Path to YAML configuration file
+        config_class: Pydantic model class for validation
+
+    Returns:
+        Validated configuration object
+
+    Raises:
+        FileNotFoundError: If config file doesn't exist
+        ValueError: If config validation fails
+    """
+    if not config_path.exists():
+        raise FileNotFoundError(f"Configuration file not found: {config_path}")
+
+    with open(config_path, "r") as f:
+        config_dict = yaml.safe_load(f)
+
+    return config_class(**config_dict)
+
+
+def save_config(config: BaseModel, output_path: Path) -> None:
+    """
+    Save configuration to YAML file.
+
+    Args:
+        config: Pydantic configuration object
+        output_path: Path to save YAML file
+    """
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(output_path, "w") as f:
+        yaml.dump(config.model_dump(), f, default_flow_style=False, sort_keys=False)
