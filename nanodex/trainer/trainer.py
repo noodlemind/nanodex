@@ -52,7 +52,7 @@ TRUSTED_MODEL_REPOS = {
 
 def detect_device() -> tuple[str, bool]:
     """
-    Auto-detect best available device, similar to NanoChat.
+    Auto-detect best available device.
 
     Returns:
         Tuple of (device_string, can_use_quantization)
@@ -91,7 +91,7 @@ class LoRATrainer:
         self.tokenizer: Any = None
         self.dataset: Any = None
 
-        # Auto-detect device (inspired by NanoChat)
+        # Auto-detect device
         self.device, self.can_use_quantization = detect_device()
         logger.info(f"Device: {self.device}, Quantization: {self.can_use_quantization}")
 

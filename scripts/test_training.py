@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 def main():
     """Test training initialization."""
     logger.info("=" * 60)
-    logger.info("NanoDex Training Test (NanoChat-inspired)")
+    logger.info("NanoDex Training Test")
     logger.info("=" * 60)
 
     # Load config

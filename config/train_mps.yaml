@@ -1,6 +1,5 @@
 # MPS/CPU Training Configuration (Apple Silicon / Any GPU / CPU)
 # Simple LoRA training without quantization - works everywhere
-# Inspired by NanoGPT: minimal, clean, portable
 
 # Model configuration
 base_model: "Qwen/Qwen2.5-Coder-1.5B"  # Smaller model for faster training
