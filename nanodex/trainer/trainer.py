@@ -1,15 +1,22 @@
-"""LoRA/QLoRA trainer implementation."""
+"""LoRA/QLoRA trainer implementation.
+
+Auto-detects hardware and chooses best training approach:
+- CUDA GPU: QLoRA with 4-bit quantization (bitsandbytes)
+- MPS (Apple Silicon): Vanilla LoRA with FP32
+- CPU: Vanilla LoRA with FP32
+
+Inspired by Karpathy's NanoChat minimal approach.
+"""
 
 import logging
 from pathlib import Path
 from typing import Any
 
 import torch
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from peft import LoraConfig, get_peft_model
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
-    BitsAndBytesConfig,
     Trainer,
     TrainingArguments,
 )
@@ -18,6 +25,16 @@ from nanodex.config import TrainingConfig
 from nanodex.trainer.data_loader import InstructionDataset
 
 logger = logging.getLogger(__name__)
+
+# Conditional imports for CUDA-only dependencies
+try:
+    from peft import prepare_model_for_kbit_training
+    from transformers import BitsAndBytesConfig
+
+    CUDA_AVAILABLE = True
+except ImportError:
+    CUDA_AVAILABLE = False
+    logger.warning("bitsandbytes not available - QLoRA disabled, using vanilla LoRA")
 
 # Trusted model repositories (for security)
 # Only these models can be loaded with trust_remote_code=True
@@ -33,8 +50,34 @@ TRUSTED_MODEL_REPOS = {
 }
 
 
+def detect_device() -> tuple[str, bool]:
+    """
+    Auto-detect best available device, similar to NanoChat.
+
+    Returns:
+        Tuple of (device_string, can_use_quantization)
+        - CUDA: ("cuda", True) - Use QLoRA with 4-bit quantization
+        - MPS: ("mps", False) - Use vanilla LoRA
+        - CPU: ("cpu", False) - Use vanilla LoRA
+    """
+    if torch.cuda.is_available():
+        device = "cuda"
+        can_quantize = CUDA_AVAILABLE  # bitsandbytes available
+        logger.info(f"🚀 Detected CUDA GPU - Using QLoRA with 4-bit quantization")
+    elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
+        device = "mps"
+        can_quantize = False
+        logger.info(f"🍎 Detected Apple Silicon (MPS) - Using vanilla LoRA")
+    else:
+        device = "cpu"
+        can_quantize = False
+        logger.info(f"💻 Using CPU - Using vanilla LoRA")
+
+    return device, can_quantize
+
+
 class LoRATrainer:
-    """Trainer for LoRA/QLoRA fine-tuning."""
+    """Trainer for LoRA/QLoRA fine-tuning with automatic hardware detection."""
 
     def __init__(self, config: TrainingConfig):
         """
@@ -47,6 +90,10 @@ class LoRATrainer:
         self.model: Any = None
         self.tokenizer: Any = None
         self.dataset: Any = None
+
+        # Auto-detect device (inspired by NanoChat)
+        self.device, self.can_use_quantization = detect_device()
+        logger.info(f"Device: {self.device}, Quantization: {self.can_use_quantization}")
 
     def setup(self) -> None:
         """Setup model, tokenizer, and datasets."""
@@ -108,21 +155,43 @@ class LoRATrainer:
         logger.info(f"Tokenizer loaded: {len(self.tokenizer)} tokens")
 
     def _load_model(self) -> None:
-        """Load base model with optional quantization."""
+        """Load base model with automatic quantization based on device."""
         logger.info(f"Loading model: {self.config.base_model}")
 
-        # Configure quantization for QLoRA
+        # Only use quantization if on CUDA and bitsandbytes is available
+        use_quantization = (
+            self.can_use_quantization
+            and self.config.quantization
+            and self.config.quantization.load_in_4bit
+        )
+
         bnb_config = None
-        if self.config.quantization:
-            logger.info("Configuring 4-bit quantization")
+        if use_quantization:
+            logger.info("✨ Configuring 4-bit quantization (QLoRA)")
             bnb_config = BitsAndBytesConfig(
-                load_in_4bit=self.config.quantization.load_in_4bit,
+                load_in_4bit=True,
                 bnb_4bit_quant_type=self.config.quantization.bnb_4bit_quant_type,
                 bnb_4bit_compute_dtype=self._get_compute_dtype(
                     self.config.quantization.bnb_4bit_compute_dtype
                 ),
                 bnb_4bit_use_double_quant=self.config.quantization.bnb_4bit_use_double_quant,
             )
+        else:
+            logger.info("📦 Loading in full precision (vanilla LoRA)")
+
+        # Determine device_map based on device
+        if self.device == "cuda":
+            device_map = "auto"  # Let Accelerate handle GPU placement
+        else:
+            device_map = None  # Manual placement for MPS/CPU
+
+        # Determine dtype based on device
+        if use_quantization:
+            dtype = self._get_compute_dtype(self.config.quantization.bnb_4bit_compute_dtype)
+        elif self.device == "mps":
+            dtype = torch.float32  # MPS works best with FP32
+        else:
+            dtype = torch.float32  # CPU uses FP32
 
         # Load model
         # trust_remote_code=True is required for some models (e.g., Qwen)
@@ -130,18 +199,20 @@ class LoRATrainer:
         self.model = AutoModelForCausalLM.from_pretrained(
             self.config.base_model,
             quantization_config=bnb_config,
-            device_map="auto",
+            device_map=device_map,
             trust_remote_code=True,  # Safe: model validated against TRUSTED_MODEL_REPOS
-            torch_dtype=self._get_compute_dtype(
-                self.config.quantization.bnb_4bit_compute_dtype
-                if self.config.quantization
-                else "bfloat16"
-            ),
+            torch_dtype=dtype,
         )
 
-        # Prepare model for k-bit training (for QLoRA)
-        if self.config.quantization:
+        # Move to device if not using auto device_map
+        if device_map is None:
+            self.model = self.model.to(self.device)
+            logger.info(f"Model moved to {self.device}")
+
+        # Prepare model for k-bit training (only for QLoRA on CUDA)
+        if use_quantization and CUDA_AVAILABLE:
             self.model = prepare_model_for_kbit_training(self.model)
+            logger.info("Model prepared for k-bit training")
 
         logger.info(f"Model loaded: {self.model.config.model_type}")
 
