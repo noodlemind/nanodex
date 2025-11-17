@@ -1,0 +1,16 @@
+qa_categories:
+  discovery: 250    # "Does X support Y?", "What capabilities are in X?"
+  explain: 250      # "How does X work?", "What is the purpose of Y?"
+  howto: 250        # "How do I accomplish Z?", "Show example of W"
+  diagnostics: 250  # "I'm getting error E, what to check?", "What causes E?"
+
+negatives_per_example: 2  # Number of negative examples per positive
+
+out_file: "data/dataset/train.jsonl"
+
+min_response_tokens: 20  # Minimum response length in tokens
+max_response_tokens: 500  # Maximum response length in tokens
+
+# Quality filters
+min_summary_length: 10  # Minimum characters in node summary
+require_references: true  # Require valid node references

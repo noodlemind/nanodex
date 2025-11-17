@@ -1,0 +1,16 @@
+node_types:
+  - module
+  - capability
+  - concept
+  - error
+  - recipe
+
+summary_style: concise  # Options: concise, detailed, technical
+
+summary_max_tokens: 200
+
+out_dir: "data/brain/nodes"
+
+use_embeddings: false
+
+embedding_model: null  # e.g., "sentence-transformers/all-MiniLM-L6-v2"

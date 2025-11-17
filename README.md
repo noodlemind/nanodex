@@ -38,11 +38,27 @@ nanodex builds a compact **knowledge graph** from source, distills concise **fac
 
 ### 1) Install
 
+**Option A: Using uv (recommended - 10-100x faster)**
+
+```bash
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Clone and install
+git clone <this-repo> nanodex && cd nanodex
+uv venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+uv pip install -r requirements.txt
+uv pip install -r requirements-dev.txt  # for development
+```
+
+**Option B: Using pip**
+
 ```bash
 git clone <this-repo> nanodex && cd nanodex
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-make grammars   # optional: build Tree-sitter grammars
+pip install -r requirements-dev.txt  # for development
 ```
 
 ### 2) Point to a Codebase

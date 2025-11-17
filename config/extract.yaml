@@ -1,0 +1,21 @@
+languages:
+  - python
+  - java
+  - typescript
+  - cpp
+
+use_scip: false
+
+exclude:
+  - "**/vendor/**"
+  - "**/node_modules/**"
+  - "**/.git/**"
+  - "**/build/**"
+  - "**/dist/**"
+  - "**/__pycache__/**"
+  - "**/test/**"
+  - "**/tests/**"
+
+out_graph: "data/brain/graph.sqlite"
+
+max_file_size_mb: 5

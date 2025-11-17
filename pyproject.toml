@@ -1,0 +1,111 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nanodex"
+version = "0.1.0"
+description = "Compile codebases into portable domain experts via knowledge graphs and LLM fine-tuning"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "nanodex contributors"}
+]
+keywords = ["llm", "fine-tuning", "code-analysis", "knowledge-graph", "lora"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "tree-sitter==0.21.3",  # Pinned due to compatibility with tree-sitter-languages
+    "tree-sitter-languages>=1.10.0",
+    "pydantic>=2.0.0",
+    "pyyaml>=6.0",
+    "click>=8.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "black>=24.0.0",
+    "ruff>=0.6.0",
+    "mypy>=1.11.0",
+    "types-PyYAML>=6.0",
+    "types-requests>=2.31.0",
+    "pre-commit>=4.0.0",
+]
+
+training = [
+    "torch>=2.1.0",
+    "transformers>=4.36.0",
+    "peft>=0.7.0",
+    "bitsandbytes>=0.41.0",
+    "datasets>=2.15.0",
+    "accelerate>=0.25.0",
+    "trl>=0.7.0",
+    "sentencepiece>=0.1.99",
+    "tensorboard>=2.15.0",
+]
+
+inference = [
+    "vllm>=0.5.0",
+    "openai>=1.0.0",
+]
+
+[project.scripts]
+nanodex = "nanodex.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nanodex*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+# Ignore missing imports for ML libraries (heavy dependencies)
+[[tool.mypy.overrides]]
+module = [
+    "torch.*",
+    "transformers.*",
+    "peft.*",
+    "datasets.*",
+    "sentence_transformers.*",
+    "numpy.*",
+    "tree_sitter_languages.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: marks tests as slow",
+    "gpu: marks tests requiring GPU",
+    "integration: marks tests as integration tests",
+]
+addopts = "--cov=nanodex --cov-report=html --cov-report=term-missing"
