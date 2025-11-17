@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import torch
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
@@ -31,9 +31,9 @@ class LoRATrainer:
             config: Training configuration
         """
         self.config = config
-        self.model = None
-        self.tokenizer = None
-        self.dataset = None
+        self.model: Any = None
+        self.tokenizer: Any = None
+        self.dataset: Any = None
 
     def setup(self) -> None:
         """Setup model, tokenizer, and datasets."""

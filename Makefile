@@ -41,12 +41,23 @@ REPO ?= .
 CONFIG ?= config/extract.yaml
 DB ?= data/brain/graph.sqlite
 
-# Setup virtual environment
+# Detect if uv is available
+UV := $(shell command -v uv 2> /dev/null)
+
+# Setup virtual environment (uses uv if available, otherwise pip)
 setup:
+ifdef UV
+	@echo "Using uv (fast mode)"
+	uv venv
+	uv pip install -r requirements.txt
+	uv pip install -r requirements-dev.txt
+else
+	@echo "Using pip (uv not found - consider installing: https://github.com/astral-sh/uv)"
 	$(PYTHON) -m venv $(VENV)
 	$(BIN)/pip install --upgrade pip
 	$(BIN)/pip install -r requirements.txt
 	$(BIN)/pip install -r requirements-dev.txt
+endif
 	@echo ""
 	@echo "Setup complete! Activate with: source $(VENV)/bin/activate"
 

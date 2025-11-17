@@ -109,8 +109,8 @@ class TreeSitterParser:
         if not root:
             return [], []
 
-        nodes = []
-        edges = []
+        nodes: List[Dict[str, Any]] = []
+        edges: List[Dict[str, Any]] = []
 
         # Add file node
         file_id = self._generate_id(str(file_path))
@@ -237,7 +237,7 @@ class TreeSitterParser:
 
     def _is_descendant(self, potential_child: Node, potential_parent: Node) -> bool:
         """Check if a node is a descendant of another node."""
-        current = potential_child
+        current: Optional[Node] = potential_child
         while current:
             if current == potential_parent:
                 return True

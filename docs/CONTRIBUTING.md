@@ -9,22 +9,68 @@
 
 ### Installation
 
+**Recommended: Using uv (10-100x faster)**
+
 ```bash
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
 # Clone and setup
 git clone https://github.com/yourusername/nanodex.git
 cd nanodex
-python -m venv .venv
+uv venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# Install dependencies
+uv pip install -r requirements.txt
+uv pip install -r requirements-dev.txt
+
+# Install pre-commit hooks
+pre-commit install
+
+# Verify installation
+make test
+```
+
+**Alternative: Using pip**
+
+```bash
+git clone https://github.com/yourusername/nanodex.git
+cd nanodex
+python -m venv .venv
+source .venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
+
+# Install pre-commit hooks
+pre-commit install
 
 # Verify installation
 make test
 ```
 
 ## Code Quality Standards
+
+### Pre-commit Hooks (Recommended)
+
+We use pre-commit hooks to automatically check code quality before each commit.
+
+```bash
+# Install hooks (one-time setup)
+pre-commit install
+
+# Hooks will run automatically on git commit
+# To run manually on all files:
+pre-commit run --all-files
+```
+
+The pre-commit hooks will automatically:
+- Format code with Black
+- Lint with Ruff (and auto-fix issues)
+- Type-check with MyPy
+- Check for trailing whitespace, EOF newlines, YAML syntax, etc.
 
 ### Formatting with Black
 

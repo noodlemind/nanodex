@@ -3,7 +3,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 from datasets import Dataset, load_dataset
@@ -70,7 +70,7 @@ class InstructionDataset:
         """Tokenize dataset examples."""
         logger.info("Tokenizing dataset...")
 
-        def tokenize_function(examples: Dict) -> Dict:
+        def tokenize_function(examples: Dict) -> Dict[str, Any]:
             """Tokenize a batch of examples."""
             # Format instruction examples
             texts = []
@@ -91,7 +91,7 @@ class InstructionDataset:
             # Create labels (same as input_ids for causal LM)
             tokenized["labels"] = tokenized["input_ids"].copy()
 
-            return tokenized
+            return tokenized  # type: ignore[no-any-return]
 
         # Apply tokenization
         tokenized_dataset = dataset.map(

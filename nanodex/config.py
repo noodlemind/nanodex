@@ -1,10 +1,12 @@
 """Configuration management for nanodex pipeline."""
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypeVar
 
 import yaml
 from pydantic import BaseModel, Field, field_validator
+
+T = TypeVar("T", bound=BaseModel)
 
 
 class ExtractorConfig(BaseModel):
@@ -217,7 +219,7 @@ class InferenceConfig(BaseModel):
     temperature: float = Field(default=0.3, description="Sampling temperature", ge=0.0, le=2.0)
 
 
-def load_config(config_path: Path, config_class: type[BaseModel]) -> BaseModel:
+def load_config(config_path: Path, config_class: type[T]) -> T:
     """
     Load and validate configuration from YAML file.
 

@@ -3,7 +3,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 from nanodex.brain.graph_manager import GraphManager
 
@@ -149,7 +149,7 @@ class NodeTyper:
 
         return True
 
-    def get_classification_stats(self) -> Dict[str, any]:
+    def get_classification_stats(self) -> Dict[str, Any]:
         """
         Get detailed classification statistics.
 

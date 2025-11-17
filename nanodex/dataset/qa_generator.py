@@ -56,7 +56,7 @@ class QAGenerator:
             List of Q&A dictionaries
         """
         logger.info(f"Generating {count} discovery questions")
-        qa_pairs = []
+        qa_pairs: List[Dict[str, Any]] = []
 
         # Get all capability nodes
         if not self.gm.conn:
@@ -123,7 +123,7 @@ class QAGenerator:
             List of Q&A dictionaries
         """
         logger.info(f"Generating {count} explain questions")
-        qa_pairs = []
+        qa_pairs: List[Dict[str, Any]] = []
 
         # Get high-value nodes (concepts, capabilities with many connections)
         if not self.gm.conn:
@@ -209,7 +209,7 @@ class QAGenerator:
             List of Q&A dictionaries
         """
         logger.info(f"Generating {count} howto questions")
-        qa_pairs = []
+        qa_pairs: List[Dict[str, Any]] = []
 
         # Get recipe nodes (examples, mains, tests)
         if not self.gm.conn:
@@ -291,7 +291,7 @@ class QAGenerator:
             List of Q&A dictionaries
         """
         logger.info(f"Generating {count} diagnostic questions")
-        qa_pairs = []
+        qa_pairs: List[Dict[str, Any]] = []
 
         # Get error nodes
         if not self.gm.conn:
@@ -378,7 +378,7 @@ class QAGenerator:
             List of negative Q&A dictionaries
         """
         logger.info(f"Generating negative examples ({negatives_per_positive} per positive)")
-        negatives = []
+        negatives: List[Dict[str, Any]] = []
 
         # Get all nodes for creating false answers
         if not self.gm.conn:
