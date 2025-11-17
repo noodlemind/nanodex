@@ -26,8 +26,7 @@ class QueryClient:
         """
         self.endpoint = endpoint.rstrip("/")
         self.system_prompt = (
-            system_prompt
-            or "You are a helpful code assistant specialized in this codebase."
+            system_prompt or "You are a helpful code assistant specialized in this codebase."
         )
 
     def query(

@@ -69,9 +69,7 @@ class NodeTyper:
 
         return type_counts
 
-    def _infer_semantic_type(
-        self, current_type: str, name: str, properties: Dict
-    ) -> str:
+    def _infer_semantic_type(self, current_type: str, name: str, properties: Dict) -> str:
         """
         Infer semantic type based on node characteristics.
 
@@ -134,8 +132,10 @@ class NodeTyper:
             "run_",
             "execute_",
         ]
-        return any(name_lower.startswith(pattern) or name_lower == pattern.rstrip("_")
-                   for pattern in recipe_patterns)
+        return any(
+            name_lower.startswith(pattern) or name_lower == pattern.rstrip("_")
+            for pattern in recipe_patterns
+        )
 
     def _is_capability_function(self, name: str) -> bool:
         """Check if a function is a public capability."""
@@ -168,7 +168,9 @@ class NodeTyper:
             FROM nodes
             WHERE type IN ({})
             GROUP BY type
-            """.format(",".join("?" * len(SEMANTIC_TYPES))),
+            """.format(
+                ",".join("?" * len(SEMANTIC_TYPES))
+            ),
             tuple(SEMANTIC_TYPES),
         )
 

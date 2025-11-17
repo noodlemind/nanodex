@@ -53,9 +53,7 @@ class InstructionDataset:
             split = dataset.train_test_split(test_size=self.validation_split, seed=42)
             train_dataset = split["train"]
             val_dataset = split["test"]
-            logger.info(
-                f"Split into {len(train_dataset)} train, {len(val_dataset)} validation"
-            )
+            logger.info(f"Split into {len(train_dataset)} train, {len(val_dataset)} validation")
         else:
             train_dataset = dataset
             val_dataset = None

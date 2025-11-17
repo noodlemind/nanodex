@@ -104,30 +104,36 @@ def sample_repo(temp_dir: Path) -> Path:
     repo_path.mkdir()
 
     # Create some Python files
-    (repo_path / "main.py").write_text("""
+    (repo_path / "main.py").write_text(
+        """
 def main():
     print("Hello from main!")
 
 if __name__ == "__main__":
     main()
-""")
+"""
+    )
 
-    (repo_path / "utils.py").write_text("""
+    (repo_path / "utils.py").write_text(
+        """
 def add(a, b):
     return a + b
 
 def multiply(a, b):
     return a * b
-""")
+"""
+    )
 
     # Create a subdirectory
     (repo_path / "lib").mkdir()
-    (repo_path / "lib" / "helper.py").write_text("""
+    (repo_path / "lib" / "helper.py").write_text(
+        """
 from utils import add
 
 def helper_add(x, y):
     return add(x, y)
-""")
+"""
+    )
 
     return repo_path
 

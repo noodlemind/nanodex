@@ -93,19 +93,21 @@ class QAGenerator:
             # Generate answer using summary
             answer = f"Yes, there is a '{name}' function. {summary_text}"
 
-            qa_pairs.append({
-                "id": f"discovery_{len(qa_pairs):04d}",
-                "type": "discovery",
-                "prompt": question,
-                "response": answer,
-                "refs": [node_id],
-                "metadata": {
-                    "node_name": name,
-                    "node_type": "capability",
-                    "file": path,
-                    "language": lang,
-                },
-            })
+            qa_pairs.append(
+                {
+                    "id": f"discovery_{len(qa_pairs):04d}",
+                    "type": "discovery",
+                    "prompt": question,
+                    "response": answer,
+                    "refs": [node_id],
+                    "metadata": {
+                        "node_name": name,
+                        "node_type": "capability",
+                        "file": path,
+                        "language": lang,
+                    },
+                }
+            )
 
         logger.info(f"Generated {len(qa_pairs)} discovery questions")
         return qa_pairs
@@ -178,18 +180,20 @@ class QAGenerator:
 
             answer = " ".join(answer_parts)
 
-            qa_pairs.append({
-                "id": f"explain_{len(qa_pairs):04d}",
-                "type": "explain",
-                "prompt": question,
-                "response": answer,
-                "refs": [node_id],
-                "metadata": {
-                    "node_name": name,
-                    "node_type": node_type,
-                    "file": path,
-                },
-            })
+            qa_pairs.append(
+                {
+                    "id": f"explain_{len(qa_pairs):04d}",
+                    "type": "explain",
+                    "prompt": question,
+                    "response": answer,
+                    "refs": [node_id],
+                    "metadata": {
+                        "node_name": name,
+                        "node_type": node_type,
+                        "file": path,
+                    },
+                }
+            )
 
         logger.info(f"Generated {len(qa_pairs)} explain questions")
         return qa_pairs
@@ -259,17 +263,19 @@ class QAGenerator:
 
             answer = " ".join(answer_parts)
 
-            qa_pairs.append({
-                "id": f"howto_{len(qa_pairs):04d}",
-                "type": "howto",
-                "prompt": question,
-                "response": answer,
-                "refs": [node_id],
-                "metadata": {
-                    "node_name": name,
-                    "file": path,
-                },
-            })
+            qa_pairs.append(
+                {
+                    "id": f"howto_{len(qa_pairs):04d}",
+                    "type": "howto",
+                    "prompt": question,
+                    "response": answer,
+                    "refs": [node_id],
+                    "metadata": {
+                        "node_name": name,
+                        "file": path,
+                    },
+                }
+            )
 
         logger.info(f"Generated {len(qa_pairs)} howto questions")
         return qa_pairs
@@ -335,25 +341,25 @@ class QAGenerator:
             answer_parts = [summary_text]
 
             if throwers:
-                answer_parts.append(
-                    f"This error can be raised by: {', '.join(throwers)}."
-                )
+                answer_parts.append(f"This error can be raised by: {', '.join(throwers)}.")
 
             answer_parts.append(f"Check the implementation in {path}.")
 
             answer = " ".join(answer_parts)
 
-            qa_pairs.append({
-                "id": f"diagnostic_{len(qa_pairs):04d}",
-                "type": "diagnostics",
-                "prompt": question,
-                "response": answer,
-                "refs": [node_id],
-                "metadata": {
-                    "error_name": name,
-                    "file": path,
-                },
-            })
+            qa_pairs.append(
+                {
+                    "id": f"diagnostic_{len(qa_pairs):04d}",
+                    "type": "diagnostics",
+                    "prompt": question,
+                    "response": answer,
+                    "refs": [node_id],
+                    "metadata": {
+                        "error_name": name,
+                        "file": path,
+                    },
+                }
+            )
 
         logger.info(f"Generated {len(qa_pairs)} diagnostic questions")
         return qa_pairs
@@ -371,9 +377,7 @@ class QAGenerator:
         Returns:
             List of negative Q&A dictionaries
         """
-        logger.info(
-            f"Generating negative examples ({negatives_per_positive} per positive)"
-        )
+        logger.info(f"Generating negative examples ({negatives_per_positive} per positive)")
         negatives = []
 
         # Get all nodes for creating false answers
@@ -395,12 +399,10 @@ class QAGenerator:
                     f"No, the codebase does not have that specific functionality. "
                     f"However, you might be interested in '{wrong_node['name']}' which is a {wrong_node['type']} "
                     f"located in {wrong_node['path']}. {wrong_summary[:100] if wrong_summary else ''}",
-
                     f"That functionality is not available in the current codebase. "
                     f"The closest match is '{wrong_node['name']}' in {wrong_node['path']}, "
                     f"but it serves a different purpose. {wrong_summary[:100] if wrong_summary else ''} "
                     f"Please check the documentation for alternative approaches.",
-
                     f"I could not find that feature in the codebase. "
                     f"You may want to look at '{wrong_node['name']}' instead, which is available "
                     f"in {wrong_node['path']}. {wrong_summary[:100] if wrong_summary else ''} "

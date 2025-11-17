@@ -146,13 +146,13 @@ class Summarizer:
         summaries = {
             "module": f"Module '{name}' in {context.get('file', 'unknown file')}.",
             "capability": f"Function '{name}' provides functionality. "
-                         f"Located in {context.get('file', 'unknown')}.",
+            f"Located in {context.get('file', 'unknown')}.",
             "concept": f"'{name}' is a {node_type} representing a core concept. "
-                      f"Defined in {context.get('file', 'unknown')}.",
+            f"Defined in {context.get('file', 'unknown')}.",
             "error": f"Error type '{name}' for handling exceptional conditions. "
-                    f"Defined in {context.get('file', 'unknown')}.",
+            f"Defined in {context.get('file', 'unknown')}.",
             "recipe": f"'{name}' demonstrates usage or provides an entry point. "
-                     f"Located in {context.get('file', 'unknown')}.",
+            f"Located in {context.get('file', 'unknown')}.",
             "function": f"Function '{name}' in {context.get('file', 'unknown')}.",
             "class": f"Class '{name}' in {context.get('file', 'unknown')}.",
             "file": f"Source file '{name}' in {context.get('language', 'unknown')}.",

@@ -141,9 +141,7 @@ def test_generate_negative_examples(qa_generator):
         }
     ]
 
-    negatives = qa_generator.generate_negative_examples(
-        positive_examples, negatives_per_positive=2
-    )
+    negatives = qa_generator.generate_negative_examples(positive_examples, negatives_per_positive=2)
 
     assert len(negatives) == 2
     for neg in negatives:

@@ -43,9 +43,7 @@ class InferenceServer:
         logger.info("")
         logger.info("Or use Docker:")
         logger.info(f"  docker run --gpus all -v ~/.cache/huggingface:/root/.cache/huggingface \\")
-        logger.info(
-            f"    -p {self.config.port}:{self.config.port} vllm/vllm-openai:latest \\"
-        )
+        logger.info(f"    -p {self.config.port}:{self.config.port} vllm/vllm-openai:latest \\")
         logger.info(f"    --model {self.config.base_model} \\")
         logger.info(f"    --enable-lora \\")
         logger.info(f"    --lora-modules nanodex={self.config.adapter_path} \\")

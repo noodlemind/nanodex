@@ -90,8 +90,14 @@ def test_generate_node_summary(sample_graph_db, brain_config):
     summarizer = Summarizer(gm, brain_config)
 
     # Add a test node
-    gm.add_node("test_func", "function", "process_data", path="/test.py", lang="python",
-                properties={"start_line": 10, "end_line": 20})
+    gm.add_node(
+        "test_func",
+        "function",
+        "process_data",
+        path="/test.py",
+        lang="python",
+        properties={"start_line": 10, "end_line": 20},
+    )
 
     # Get the node
     cursor = gm.conn.execute("SELECT * FROM nodes WHERE id = ?", ("test_func",))
@@ -192,8 +198,14 @@ def test_summary_different_styles(sample_graph_db, temp_dir):
     gm = sample_graph_db
 
     # Add a test node
-    gm.add_node("style_test", "function", "test_func", path="/test.py", lang="python",
-                properties={"start_line": 10})
+    gm.add_node(
+        "style_test",
+        "function",
+        "test_func",
+        path="/test.py",
+        lang="python",
+        properties={"start_line": 10},
+    )
 
     # Test concise style
     config_concise = BrainConfig(summary_style="concise", out_dir=temp_dir / "concise")

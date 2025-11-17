@@ -105,9 +105,7 @@ class GraphManager:
             raise RuntimeError("Database not connected")
 
         if node_type not in NODE_TYPES:
-            raise ValueError(
-                f"Invalid node type: {node_type}. Allowed: {NODE_TYPES}"
-            )
+            raise ValueError(f"Invalid node type: {node_type}. Allowed: {NODE_TYPES}")
 
         props_json = json.dumps(properties or {})
 
@@ -145,9 +143,7 @@ class GraphManager:
             raise RuntimeError("Database not connected")
 
         if relationship not in EDGE_RELATIONSHIPS:
-            raise ValueError(
-                f"Invalid relationship: {relationship}. Allowed: {EDGE_RELATIONSHIPS}"
-            )
+            raise ValueError(f"Invalid relationship: {relationship}. Allowed: {EDGE_RELATIONSHIPS}")
 
         # Verify nodes exist
         cursor = self.conn.execute(
@@ -268,20 +264,24 @@ class GraphManager:
 
         results = []
         for row in cursor.fetchall():
-            results.append({
-                "id": row["id"],
-                "type": row["type"],
-                "name": row["name"],
-                "path": row["path"],
-                "lang": row["lang"],
-                "properties": json.loads(row["properties"]),
-                "edge": {
-                    "relationship": row["relationship"],
-                    "weight": row["weight"],
-                    "properties": json.loads(row["edge_properties"]) if row["edge_properties"] else {},
-                    "direction": row["edge_direction"],
-                },
-            })
+            results.append(
+                {
+                    "id": row["id"],
+                    "type": row["type"],
+                    "name": row["name"],
+                    "path": row["path"],
+                    "lang": row["lang"],
+                    "properties": json.loads(row["properties"]),
+                    "edge": {
+                        "relationship": row["relationship"],
+                        "weight": row["weight"],
+                        "properties": (
+                            json.loads(row["edge_properties"]) if row["edge_properties"] else {}
+                        ),
+                        "direction": row["edge_direction"],
+                    },
+                }
+            )
 
         return results
 
@@ -349,7 +349,11 @@ class GraphManager:
 
         cursor = self.conn.execute("SELECT * FROM edge_relationship_distribution")
         edge_dist = [
-            {"relationship": row["relationship"], "count": row["count"], "percentage": row["percentage"]}
+            {
+                "relationship": row["relationship"],
+                "count": row["count"],
+                "percentage": row["percentage"],
+            }
             for row in cursor.fetchall()
         ]
 
@@ -397,12 +401,14 @@ class GraphManager:
             issues.append(f"Invalid edge relationships found: {invalid_relationships}")
 
         # Check for orphaned edges (should not happen with foreign keys, but good to verify)
-        cursor = self.conn.execute("""
+        cursor = self.conn.execute(
+            """
             SELECT COUNT(*) as orphaned_count
             FROM edges e
             WHERE NOT EXISTS (SELECT 1 FROM nodes WHERE id = e.source_id)
                OR NOT EXISTS (SELECT 1 FROM nodes WHERE id = e.target_id)
-        """)
+        """
+        )
         orphaned_count = cursor.fetchone()["orphaned_count"]
         if orphaned_count > 0:
             issues.append(f"Orphaned edges found: {orphaned_count}")

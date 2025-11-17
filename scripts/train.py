@@ -18,9 +18,7 @@ logger = logging.getLogger(__name__)
 def main():
     """Main training entry point."""
     parser = argparse.ArgumentParser(description="Train LoRA/QLoRA adapter")
-    parser.add_argument(
-        "--config", type=Path, required=True, help="Path to training config YAML"
-    )
+    parser.add_argument("--config", type=Path, required=True, help="Path to training config YAML")
     parser.add_argument(
         "--output-dir",
         type=Path,

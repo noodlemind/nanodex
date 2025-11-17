@@ -22,9 +22,7 @@ class ExtractorConfig(BaseModel):
     out_graph: Path = Field(
         default=Path("data/brain/graph.sqlite"), description="Output path for graph database"
     )
-    max_file_size_mb: int = Field(
-        default=5, description="Maximum file size in MB to process", ge=1
-    )
+    max_file_size_mb: int = Field(default=5, description="Maximum file size in MB to process", ge=1)
 
     @field_validator("languages")
     @classmethod
@@ -55,7 +53,8 @@ class BrainConfig(BaseModel):
     )
     use_embeddings: bool = Field(default=False, description="Generate vector embeddings")
     embedding_model: Optional[str] = Field(
-        default=None, description="Model for embeddings (e.g., sentence-transformers/all-MiniLM-L6-v2)"
+        default=None,
+        description="Model for embeddings (e.g., sentence-transformers/all-MiniLM-L6-v2)",
     )
 
     @field_validator("node_types")
@@ -112,12 +111,8 @@ class QuantizationConfig(BaseModel):
     bnb_4bit_compute_dtype: str = Field(
         default="bfloat16", description="Compute dtype for 4-bit training"
     )
-    bnb_4bit_quant_type: str = Field(
-        default="nf4", description="BitsAndBytes quantization type"
-    )
-    bnb_4bit_use_double_quant: bool = Field(
-        default=True, description="Use double quantization"
-    )
+    bnb_4bit_quant_type: str = Field(default="nf4", description="BitsAndBytes quantization type")
+    bnb_4bit_use_double_quant: bool = Field(default=True, description="Use double quantization")
 
 
 class LoRAConfig(BaseModel):
@@ -184,9 +179,7 @@ class GenerationConfig(BaseModel):
 class TrainingConfig(BaseModel):
     """Configuration for LoRA/QLoRA training."""
 
-    base_model: str = Field(
-        default="Qwen/Qwen2.5-Coder-7B", description="Base model identifier"
-    )
+    base_model: str = Field(default="Qwen/Qwen2.5-Coder-7B", description="Base model identifier")
     model_max_length: int = Field(
         default=2048, description="Maximum sequence length", ge=512, le=4096
     )
@@ -213,9 +206,7 @@ class TrainingConfig(BaseModel):
 class InferenceConfig(BaseModel):
     """Configuration for inference serving."""
 
-    base_model: str = Field(
-        default="Qwen/Qwen2.5-Coder-7B", description="Base model identifier"
-    )
+    base_model: str = Field(default="Qwen/Qwen2.5-Coder-7B", description="Base model identifier")
     adapter_path: Optional[Path] = Field(
         default=Path("models/project-nanodex-lora"), description="LoRA adapter path"
     )

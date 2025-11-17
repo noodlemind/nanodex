@@ -114,14 +114,16 @@ class TreeSitterParser:
 
         # Add file node
         file_id = self._generate_id(str(file_path))
-        nodes.append({
-            "id": file_id,
-            "type": "file",
-            "name": file_path.name,
-            "path": str(file_path),
-            "lang": self.language,
-            "properties": {"lines": source_code.count(b"\n") + 1},
-        })
+        nodes.append(
+            {
+                "id": file_id,
+                "type": "file",
+                "name": file_path.name,
+                "path": str(file_path),
+                "lang": self.language,
+                "properties": {"lines": source_code.count(b"\n") + 1},
+            }
+        )
 
         if not self.query:
             logger.warning(f"No query available for {self.language}, skipping symbol extraction")
@@ -165,11 +167,13 @@ class TreeSitterParser:
                         "lang": self.language,
                         "properties": {"start_line": start_line, "end_line": end_line},
                     }
-                    edges.append({
-                        "source": func_id,
-                        "target": file_id,
-                        "relationship": "defined_in",
-                    })
+                    edges.append(
+                        {
+                            "source": func_id,
+                            "target": file_id,
+                            "relationship": "defined_in",
+                        }
+                    )
 
             # Process class definitions
             elif capture_name == "class.def":
@@ -183,22 +187,26 @@ class TreeSitterParser:
                         "lang": self.language,
                         "properties": {"start_line": start_line, "end_line": end_line},
                     }
-                    edges.append({
-                        "source": class_id,
-                        "target": file_id,
-                        "relationship": "defined_in",
-                    })
+                    edges.append(
+                        {
+                            "source": class_id,
+                            "target": file_id,
+                            "relationship": "defined_in",
+                        }
+                    )
 
             # Process import statements
             elif capture_name in ("import.stmt", "import.from"):
                 import_name = text.strip()
                 import_id = self._generate_id(f"import:{import_name}")
-                edges.append({
-                    "source": file_id,
-                    "target": import_id,
-                    "relationship": "imports",
-                    "properties": {"import_line": start_line},
-                })
+                edges.append(
+                    {
+                        "source": file_id,
+                        "target": import_id,
+                        "relationship": "imports",
+                        "properties": {"import_line": start_line},
+                    }
+                )
 
             # Process function calls
             elif capture_name == "call.expr":
@@ -208,12 +216,14 @@ class TreeSitterParser:
                     caller_id = self._find_containing_function(node, processed_nodes)
                     if caller_id:
                         callee_id = self._generate_id(f"call:{target_name}")
-                        edges.append({
-                            "source": caller_id,
-                            "target": callee_id,
-                            "relationship": "calls",
-                            "properties": {"call_line": start_line},
-                        })
+                        edges.append(
+                            {
+                                "source": caller_id,
+                                "target": callee_id,
+                                "relationship": "calls",
+                                "properties": {"call_line": start_line},
+                            }
+                        )
 
         # Add all processed nodes
         nodes.extend(processed_nodes.values())

@@ -93,9 +93,7 @@ class DatasetValidator:
 
         return len(issues) == 0, issues
 
-    def validate_node_references(
-        self, examples: List[Dict[str, Any]]
-    ) -> Tuple[int, List[str]]:
+    def validate_node_references(self, examples: List[Dict[str, Any]]) -> Tuple[int, List[str]]:
         """
         Validate that all node references exist in the graph.
 
@@ -125,9 +123,7 @@ class DatasetValidator:
                 else:
                     valid_count += 1
 
-        logger.info(
-            f"Validated {valid_count} references, {len(invalid_refs)} invalid"
-        )
+        logger.info(f"Validated {valid_count} references, {len(invalid_refs)} invalid")
         return valid_count, invalid_refs
 
     def check_duplicates(self, examples: List[Dict[str, Any]]) -> List[str]:
@@ -178,9 +174,7 @@ class DatasetValidator:
 
         return distribution
 
-    def validate_dataset(
-        self, examples: List[Dict[str, Any]]
-    ) -> Tuple[bool, Dict[str, Any]]:
+    def validate_dataset(self, examples: List[Dict[str, Any]]) -> Tuple[bool, Dict[str, Any]]:
         """
         Validate entire dataset.
 
@@ -215,9 +209,7 @@ class DatasetValidator:
         report["valid_references"] = valid_refs
         report["invalid_references"] = len(invalid_refs)
         if invalid_refs:
-            report["issues"].extend(
-                [f"Invalid node reference: {ref}" for ref in invalid_refs[:10]]
-            )
+            report["issues"].extend([f"Invalid node reference: {ref}" for ref in invalid_refs[:10]])
 
         # Check duplicates
         duplicates = self.check_duplicates(examples)

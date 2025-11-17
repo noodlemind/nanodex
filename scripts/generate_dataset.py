@@ -122,9 +122,7 @@ def main() -> int:
                         logger.warning(f"  - {issue}")
 
                     if report["invalid_examples"] > 0:
-                        logger.error(
-                            f"Dataset has {report['invalid_examples']} invalid examples"
-                        )
+                        logger.error(f"Dataset has {report['invalid_examples']} invalid examples")
                         logger.info("Fix issues or use --skip-validation to proceed anyway")
                         return 1
 
