@@ -1,4 +1,4 @@
-.PHONY: help setup clean extract graph-inspect test lint format type-check
+.PHONY: help setup clean extract graph-inspect brain brain-embed test lint format type-check
 
 # Default target
 help:
@@ -9,6 +9,8 @@ help:
 	@echo "  clean         - Remove generated files and caches"
 	@echo "  extract       - Extract knowledge graph from repository"
 	@echo "  graph-inspect - Inspect graph database statistics"
+	@echo "  brain         - Classify nodes and generate summaries"
+	@echo "  brain-embed   - Generate embeddings for summaries (optional)"
 	@echo "  test          - Run tests with coverage"
 	@echo "  lint          - Run linting with ruff"
 	@echo "  format        - Format code with black"
@@ -18,6 +20,8 @@ help:
 	@echo "  make setup"
 	@echo "  make extract REPO=/path/to/repo CONFIG=config/extract.yaml"
 	@echo "  make graph-inspect DB=data/brain/graph.sqlite"
+	@echo "  make brain CONFIG=config/brain.yaml"
+	@echo "  make brain-embed MODEL=sentence-transformers/all-MiniLM-L6-v2"
 
 # Variables
 PYTHON := python3
@@ -56,6 +60,14 @@ extract:
 # Inspect graph statistics
 graph-inspect:
 	$(BIN)/python scripts/inspect_graph.py --db $(DB) --check-integrity
+
+# Build brain: classify nodes and generate summaries
+brain:
+	$(BIN)/python scripts/build_brain.py --config $(CONFIG) --db $(DB)
+
+# Generate embeddings for summaries (optional)
+brain-embed:
+	$(BIN)/python scripts/embed_summaries.py --config $(CONFIG) $(if $(MODEL),--model $(MODEL),)
 
 # Run tests
 test:
