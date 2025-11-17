@@ -1,4 +1,4 @@
-.PHONY: help setup clean extract graph-inspect brain brain-embed test lint format type-check
+.PHONY: help setup clean extract graph-inspect brain brain-embed dataset test lint format type-check
 
 # Default target
 help:
@@ -11,6 +11,7 @@ help:
 	@echo "  graph-inspect - Inspect graph database statistics"
 	@echo "  brain         - Classify nodes and generate summaries"
 	@echo "  brain-embed   - Generate embeddings for summaries (optional)"
+	@echo "  dataset       - Generate training Q&A dataset"
 	@echo "  test          - Run tests with coverage"
 	@echo "  lint          - Run linting with ruff"
 	@echo "  format        - Format code with black"
@@ -22,6 +23,7 @@ help:
 	@echo "  make graph-inspect DB=data/brain/graph.sqlite"
 	@echo "  make brain CONFIG=config/brain.yaml"
 	@echo "  make brain-embed MODEL=sentence-transformers/all-MiniLM-L6-v2"
+	@echo "  make dataset CONFIG=config/dataset.yaml"
 
 # Variables
 PYTHON := python3
@@ -68,6 +70,10 @@ brain:
 # Generate embeddings for summaries (optional)
 brain-embed:
 	$(BIN)/python scripts/embed_summaries.py --config $(CONFIG) $(if $(MODEL),--model $(MODEL),)
+
+# Generate training dataset
+dataset:
+	$(BIN)/python scripts/generate_dataset.py --config $(CONFIG) --db $(DB)
 
 # Run tests
 test:
