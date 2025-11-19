@@ -14,6 +14,18 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
+# Trusted model repositories (for security)
+TRUSTED_MODEL_REPOS = {
+    "Qwen/Qwen2.5-Coder-7B",
+    "Qwen/Qwen2.5-Coder-14B",
+    "Qwen/Qwen2.5-Coder-1.5B",
+    "Qwen/Qwen2.5-Coder-32B",
+    "codellama/CodeLlama-7b-hf",
+    "codellama/CodeLlama-13b-hf",
+    "bigcode/starcoder2-7b",
+    "bigcode/starcoder2-15b",
+}
+
 
 def detect_device() -> str:
     """Detect best available device."""
@@ -29,6 +41,17 @@ def load_model(model_name: str, adapter_path: Path | None, device: str):
     """Load model and tokenizer."""
     logger.info(f"Loading model: {model_name}")
     logger.info(f"Device: {device}")
+
+    # Validate model security
+    if model_name not in TRUSTED_MODEL_REPOS:
+        logger.warning(
+            f"Model '{model_name}' is not in the trusted repositories list. "
+            f"Loading untrusted models can execute arbitrary code."
+        )
+        raise ValueError(
+            f"Untrusted model repository: {model_name}. "
+            f"Only trusted models are allowed for security."
+        )
 
     # Load tokenizer
     tokenizer = AutoTokenizer.from_pretrained(
