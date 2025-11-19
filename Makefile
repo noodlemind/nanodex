@@ -106,9 +106,13 @@ train-lora:
 serve:
 	$(BIN)/python scripts/serve.py --config $(if $(CONFIG),$(CONFIG),config/inference.yaml) $(if $(ADAPTER),--adapter $(ADAPTER),) $(if $(PORT),--port $(PORT),)
 
-# Query inference server
+# Query inference server (vLLM - requires CUDA GPU)
 query:
 	$(BIN)/python scripts/query.py --endpoint $(if $(ENDPOINT),$(ENDPOINT),http://localhost:8000) $(if $(QUESTION),--question "$(QUESTION)",--interactive) $(if $(MAX_TOKENS),--max-tokens $(MAX_TOKENS),) $(if $(TEMPERATURE),--temperature $(TEMPERATURE),)
+
+# Query locally (no server required - works on CPU/MPS/CUDA)
+query-local:
+	$(BIN)/python scripts/query_local.py --model $(if $(MODEL),$(MODEL),Qwen/Qwen2.5-Coder-1.5B) $(if $(ADAPTER),--adapter $(ADAPTER),) $(if $(QUESTION),--question "$(QUESTION)",--interactive) $(if $(MAX_TOKENS),--max-tokens $(MAX_TOKENS),) $(if $(TEMPERATURE),--temperature $(TEMPERATURE),)
 
 # Run tests
 test:
