@@ -1,7 +1,6 @@
 """Unit tests for Summarizer."""
 
 import json
-from pathlib import Path
 
 import pytest
 
@@ -168,7 +167,7 @@ def test_summary_caching(sample_graph_db, brain_config):
     gm.add_node("cached_node", "function", "cached_func", path="/test.py")
 
     # Generate summaries first time
-    count1 = summarizer.generate_all_summaries()
+    summarizer.generate_all_summaries()
 
     # Generate again - should use cache
     count2 = summarizer.generate_all_summaries()

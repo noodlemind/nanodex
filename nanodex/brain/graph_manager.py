@@ -3,7 +3,7 @@
 import json
 import sqlite3
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any
 
 # Allowed edge relationship types
 EDGE_RELATIONSHIPS = {
@@ -43,7 +43,7 @@ class GraphManager:
         """
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        self.conn: Optional[sqlite3.Connection] = None
+        self.conn: sqlite3.Connection | None = None
 
     def connect(self) -> None:
         """Establish database connection and initialize schema."""
@@ -84,7 +84,7 @@ class GraphManager:
             raise RuntimeError("Database not connected")
 
         schema_path = Path(__file__).parent.parent / "extractor" / "schema.sql"
-        with open(schema_path, "r") as f:
+        with open(schema_path) as f:
             schema_sql = f.read()
 
         self.conn.executescript(schema_sql)
@@ -95,9 +95,9 @@ class GraphManager:
         node_id: str,
         node_type: str,
         name: str,
-        path: Optional[str] = None,
-        lang: Optional[str] = None,
-        properties: Optional[Dict[str, Any]] = None,
+        path: str | None = None,
+        lang: str | None = None,
+        properties: dict[str, Any] | None = None,
     ) -> None:
         """
         Add a node to the graph.
@@ -136,7 +136,7 @@ class GraphManager:
         target_id: str,
         relationship: str,
         weight: float = 1.0,
-        properties: Optional[Dict[str, Any]] = None,
+        properties: dict[str, Any] | None = None,
     ) -> None:
         """
         Add an edge between two nodes.
@@ -179,7 +179,7 @@ class GraphManager:
         )
         # Note: Commit is caller's responsibility for batch operations
 
-    def get_node(self, node_id: str) -> Optional[Dict[str, Any]]:
+    def get_node(self, node_id: str) -> dict[str, Any] | None:
         """
         Retrieve a node by ID.
 
@@ -208,8 +208,8 @@ class GraphManager:
         }
 
     def get_neighbors(
-        self, node_id: str, relationship: Optional[str] = None, direction: str = "outgoing"
-    ) -> List[Dict[str, Any]]:
+        self, node_id: str, relationship: str | None = None, direction: str = "outgoing"
+    ) -> list[dict[str, Any]]:
         """
         Get neighboring nodes.
 
@@ -232,7 +232,7 @@ class GraphManager:
 
         # Build WHERE clause conditions and params
         where_conditions = []
-        where_params: List[Any] = []
+        where_params: list[Any] = []
 
         if direction == "outgoing":
             where_conditions.append("e.source_id = ?")
@@ -299,7 +299,7 @@ class GraphManager:
 
     def traverse_path(
         self, start_id: str, relationship: str, max_depth: int = 3
-    ) -> List[List[str]]:
+    ) -> list[list[str]]:
         """
         Traverse graph paths from a starting node.
 
@@ -317,10 +317,10 @@ class GraphManager:
         if relationship not in EDGE_RELATIONSHIPS:
             raise ValueError(f"Invalid relationship: {relationship}")
 
-        paths: List[List[str]] = []
-        visited: Set[str] = set()
+        paths: list[list[str]] = []
+        visited: set[str] = set()
 
-        def dfs(node_id: str, path: List[str], depth: int) -> None:
+        def dfs(node_id: str, path: list[str], depth: int) -> None:
             if depth > max_depth or node_id in visited:
                 return
 
@@ -340,7 +340,7 @@ class GraphManager:
         dfs(start_id, [], 0)
         return paths
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """
         Get graph statistics.
 
@@ -378,7 +378,7 @@ class GraphManager:
             "edge_distribution": edge_dist,
         }
 
-    def validate_integrity(self) -> Dict[str, Any]:
+    def validate_integrity(self) -> dict[str, Any]:
         """
         Validate graph integrity.
 

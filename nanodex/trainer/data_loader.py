@@ -1,11 +1,9 @@
 """Data loader for instruction tuning datasets."""
 
-import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
-import torch
 from datasets import Dataset, load_dataset
 from torch.utils.data import DataLoader
 from transformers import PreTrainedTokenizer
@@ -40,7 +38,7 @@ class InstructionDataset:
         # Load and process dataset
         self.train_dataset, self.val_dataset = self._load_and_split()
 
-    def _load_and_split(self) -> Tuple[Dataset, Dataset]:
+    def _load_and_split(self) -> tuple[Dataset, Dataset]:
         """Load JSONL dataset and split into train/val."""
         logger.info(f"Loading dataset from {self.dataset_path}")
 
@@ -70,7 +68,7 @@ class InstructionDataset:
         """Tokenize dataset examples."""
         logger.info("Tokenizing dataset...")
 
-        def tokenize_function(examples: Dict) -> Dict[str, Any]:
+        def tokenize_function(examples: dict) -> dict[str, Any]:
             """Tokenize a batch of examples."""
             # Format instruction examples
             texts = []
@@ -103,7 +101,7 @@ class InstructionDataset:
 
         return tokenized_dataset
 
-    def _format_messages(self, messages: List[Dict[str, str]]) -> str:
+    def _format_messages(self, messages: list[dict[str, str]]) -> str:
         """
         Format messages into instruction template.
 
@@ -132,7 +130,7 @@ class InstructionDataset:
         """Get training dataset."""
         return self.train_dataset
 
-    def get_val_dataset(self) -> Optional[Dataset]:
+    def get_val_dataset(self) -> Dataset | None:
         """Get validation dataset."""
         return self.val_dataset
 
@@ -141,7 +139,7 @@ def create_dataloaders(
     dataset: InstructionDataset,
     batch_size: int = 4,
     num_workers: int = 0,
-) -> Tuple[DataLoader, Optional[DataLoader]]:
+) -> tuple[DataLoader, DataLoader | None]:
     """
     Create train and validation dataloaders.
 

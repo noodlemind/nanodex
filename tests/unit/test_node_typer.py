@@ -1,6 +1,5 @@
 """Unit tests for NodeTyper."""
 
-import pytest
 
 from nanodex.brain.node_typer import NodeTyper
 

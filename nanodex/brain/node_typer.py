@@ -3,7 +3,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from nanodex.brain.graph_manager import GraphManager
 
@@ -25,7 +25,7 @@ class NodeTyper:
         """
         self.gm = graph_manager
 
-    def classify_all_nodes(self) -> Dict[str, int]:
+    def classify_all_nodes(self) -> dict[str, int]:
         """
         Classify all nodes in the graph into semantic types.
 
@@ -41,7 +41,7 @@ class NodeTyper:
         cursor = self.gm.conn.execute("SELECT id, type, name, properties FROM nodes")
         nodes = cursor.fetchall()
 
-        type_counts: Dict[str, int] = {t: 0 for t in SEMANTIC_TYPES}
+        type_counts: dict[str, int] = {t: 0 for t in SEMANTIC_TYPES}
         classified = 0
 
         for row in nodes:
@@ -69,7 +69,7 @@ class NodeTyper:
 
         return type_counts
 
-    def _infer_semantic_type(self, current_type: str, name: str, properties: Dict) -> str:
+    def _infer_semantic_type(self, current_type: str, name: str, properties: dict) -> str:
         """
         Infer semantic type based on node characteristics.
 
@@ -149,7 +149,7 @@ class NodeTyper:
 
         return True
 
-    def get_classification_stats(self) -> Dict[str, Any]:
+    def get_classification_stats(self) -> dict[str, Any]:
         """
         Get detailed classification statistics.
 
@@ -192,7 +192,7 @@ class NodeTyper:
         return stats
 
 
-def classify_graph_nodes(db_path: Path) -> Dict[str, int]:
+def classify_graph_nodes(db_path: Path) -> dict[str, int]:
     """
     Classify nodes in a graph database.
 

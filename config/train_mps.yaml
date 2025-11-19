@@ -1,0 +1,71 @@
+# MPS/CPU Training Configuration (Apple Silicon / Any GPU / CPU)
+# Simple LoRA training without quantization - works everywhere
+
+# Model configuration
+base_model: "Qwen/Qwen2.5-Coder-1.5B"  # Smaller model for faster training
+model_max_length: 1024  # Reduced for faster processing
+
+# Dataset configuration
+dataset_path: "data/dataset/train.jsonl"
+validation_split: 0.1
+
+# NO quantization - works on MPS/CPU/CUDA
+quantization:
+  load_in_4bit: false
+  bnb_4bit_compute_dtype: "float32"
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_use_double_quant: false
+
+# LoRA configuration (same as before)
+lora:
+  r: 8  # Smaller rank for faster training
+  lora_alpha: 16
+  lora_dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+# Training hyperparameters - optimized for quick iteration
+training:
+  output_dir: "models/nanodex-mps-lora"
+  num_train_epochs: 1  # Single epoch for testing
+  per_device_train_batch_size: 2  # Smaller batch for memory
+  per_device_eval_batch_size: 2
+  gradient_accumulation_steps: 4
+  learning_rate: 2.0e-4
+  weight_decay: 0.01
+  warmup_ratio: 0.03
+  lr_scheduler_type: "cosine"
+  logging_steps: 5  # More frequent logging
+  save_steps: 50
+  eval_steps: 50
+  save_total_limit: 2
+  fp16: false  # No fp16 on MPS
+  bf16: false  # No bf16 on MPS
+  max_grad_norm: 1.0
+  optim: "adamw_torch"  # Standard PyTorch optimizer
+  group_by_length: true
+  report_to: "none"  # No wandb/tensorboard for simplicity
+
+# Generation parameters
+generation:
+  max_new_tokens: 256
+  temperature: 0.7
+  top_p: 0.9
+  do_sample: true
+
+# Instruction format
+instruction_template: |
+  <|im_start|>system
+  You are a helpful code assistant specialized in this codebase.<|im_end|>
+  <|im_start|>user
+  {prompt}<|im_end|>
+  <|im_start|>assistant
+  {response}<|im_end|>

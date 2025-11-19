@@ -3,7 +3,10 @@
 
 import argparse
 import logging
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from nanodex.config import InferenceConfig, load_config
 from nanodex.inference.server import print_server_instructions

@@ -4,7 +4,7 @@ import json
 import logging
 import random
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from nanodex.brain.graph_manager import GraphManager
 
@@ -27,7 +27,7 @@ class QAGenerator:
         """
         self.gm = graph_manager
         self.summary_dir = Path(summary_dir)
-        self.summaries_cache: Dict[str, Dict] = {}
+        self.summaries_cache: dict[str, dict] = {}
         self._load_summaries()
 
     def _load_summaries(self) -> None:
@@ -45,7 +45,7 @@ class QAGenerator:
 
         logger.info(f"Loaded {count} summaries")
 
-    def generate_discovery_questions(self, count: int) -> List[Dict[str, Any]]:
+    def generate_discovery_questions(self, count: int) -> list[dict[str, Any]]:
         """
         Generate discovery questions: "Does X support Y?", "What capabilities are in X?"
 
@@ -56,7 +56,7 @@ class QAGenerator:
             List of Q&A dictionaries
         """
         logger.info(f"Generating {count} discovery questions")
-        qa_pairs: List[Dict[str, Any]] = []
+        qa_pairs: list[dict[str, Any]] = []
 
         # Get all capability nodes
         if not self.gm.conn:
@@ -112,7 +112,7 @@ class QAGenerator:
         logger.info(f"Generated {len(qa_pairs)} discovery questions")
         return qa_pairs
 
-    def generate_explain_questions(self, count: int) -> List[Dict[str, Any]]:
+    def generate_explain_questions(self, count: int) -> list[dict[str, Any]]:
         """
         Generate explain questions: "How does X work?", "What is the purpose of Y?"
 
@@ -123,7 +123,7 @@ class QAGenerator:
             List of Q&A dictionaries
         """
         logger.info(f"Generating {count} explain questions")
-        qa_pairs: List[Dict[str, Any]] = []
+        qa_pairs: list[dict[str, Any]] = []
 
         # Get high-value nodes (concepts, capabilities with many connections)
         if not self.gm.conn:
@@ -198,7 +198,7 @@ class QAGenerator:
         logger.info(f"Generated {len(qa_pairs)} explain questions")
         return qa_pairs
 
-    def generate_howto_questions(self, count: int) -> List[Dict[str, Any]]:
+    def generate_howto_questions(self, count: int) -> list[dict[str, Any]]:
         """
         Generate howto questions: "How do I accomplish Z?", "Show example of W"
 
@@ -209,7 +209,7 @@ class QAGenerator:
             List of Q&A dictionaries
         """
         logger.info(f"Generating {count} howto questions")
-        qa_pairs: List[Dict[str, Any]] = []
+        qa_pairs: list[dict[str, Any]] = []
 
         # Get recipe nodes (examples, mains, tests)
         if not self.gm.conn:
@@ -280,7 +280,7 @@ class QAGenerator:
         logger.info(f"Generated {len(qa_pairs)} howto questions")
         return qa_pairs
 
-    def generate_diagnostic_questions(self, count: int) -> List[Dict[str, Any]]:
+    def generate_diagnostic_questions(self, count: int) -> list[dict[str, Any]]:
         """
         Generate diagnostic questions: "I'm getting error E, what to check?"
 
@@ -291,7 +291,7 @@ class QAGenerator:
             List of Q&A dictionaries
         """
         logger.info(f"Generating {count} diagnostic questions")
-        qa_pairs: List[Dict[str, Any]] = []
+        qa_pairs: list[dict[str, Any]] = []
 
         # Get error nodes
         if not self.gm.conn:
@@ -365,8 +365,8 @@ class QAGenerator:
         return qa_pairs
 
     def generate_negative_examples(
-        self, positive_examples: List[Dict[str, Any]], negatives_per_positive: int = 2
-    ) -> List[Dict[str, Any]]:
+        self, positive_examples: list[dict[str, Any]], negatives_per_positive: int = 2
+    ) -> list[dict[str, Any]]:
         """
         Generate negative examples for contrastive learning.
 
@@ -378,7 +378,7 @@ class QAGenerator:
             List of negative Q&A dictionaries
         """
         logger.info(f"Generating negative examples ({negatives_per_positive} per positive)")
-        negatives: List[Dict[str, Any]] = []
+        negatives: list[dict[str, Any]] = []
 
         # Get all nodes for creating false answers
         if not self.gm.conn:
@@ -428,8 +428,8 @@ class QAGenerator:
         return negatives
 
     def generate_all_qa(
-        self, counts: Dict[str, int], negatives_per_positive: int = 2
-    ) -> List[Dict[str, Any]]:
+        self, counts: dict[str, int], negatives_per_positive: int = 2
+    ) -> list[dict[str, Any]]:
         """
         Generate all Q&A pairs across all categories.
 

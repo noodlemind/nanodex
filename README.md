@@ -108,6 +108,21 @@ make train-lora  BASE=Qwen/Qwen2.5-Coder-7B \
 
 ### 7) Serve & Query
 
+**Option A: Local Inference (Recommended for development)**
+
+Works on any hardware (CPU/MPS/CUDA) without server setup:
+
+```bash
+# Interactive mode
+make query-local ADAPTER=models/project-nanodex-lora --interactive
+
+# Single query
+make query-local ADAPTER=models/project-nanodex-lora \
+  QUESTION="How does the GraphBuilder work in this codebase?"
+```
+
+**Option B: Production Server (vLLM - requires CUDA GPU)**
+
 ```bash
 # serve base+adapter with vLLM
 make serve BASE=Qwen/Qwen2.5-Coder-7B ADAPTER=models/project-nanodex-lora
@@ -220,8 +235,9 @@ brain-embed     # optional: embed summaries
 dataset         # graph -> dataset/train.jsonl
 train-lora      # FP16 LoRA fine-tune
 train-qlora     # 4-bit QLoRA fine-tune
-serve           # run vLLM with base+adapter
-query           # simple local query
+serve           # run vLLM with base+adapter (CUDA GPU)
+query           # query vLLM server
+query-local     # local inference without server (CPU/MPS/CUDA)
 ```
 
 ---

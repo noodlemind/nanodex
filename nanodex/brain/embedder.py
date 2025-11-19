@@ -3,7 +3,6 @@
 import json
 import logging
 from pathlib import Path
-from typing import List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +10,7 @@ logger = logging.getLogger(__name__)
 class Embedder:
     """Generate embeddings for node summaries (optional feature)."""
 
-    def __init__(self, model_name: Optional[str] = None):
+    def __init__(self, model_name: str | None = None):
         """
         Initialize embedder.
 
@@ -106,7 +105,7 @@ class Embedder:
 
     def search_similar(
         self, query: str, summary_dir: Path, top_k: int = 5
-    ) -> List[tuple[str, float]]:
+    ) -> list[tuple[str, float]]:
         """
         Search for similar nodes using embedding similarity.
 
@@ -148,14 +147,14 @@ class Embedder:
         similarities.sort(key=lambda x: x[1], reverse=True)
         return similarities[:top_k]
 
-    def _cosine_similarity(self, a: List[float], b: List[float]) -> float:
+    def _cosine_similarity(self, a: list[float], b: list[float]) -> float:
         """Compute cosine similarity between two vectors."""
         import numpy as np
 
-        a = np.array(a)
-        b = np.array(b)
+        a_arr = np.array(a)
+        b_arr = np.array(b)
 
-        return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+        return float(np.dot(a_arr, b_arr) / (np.linalg.norm(a_arr) * np.linalg.norm(b_arr)))
 
 
 def embed_all_summaries(summary_dir: Path, model_name: str) -> int:

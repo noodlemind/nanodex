@@ -1,6 +1,5 @@
 """Unit tests for query client."""
 
-import pytest
 
 from nanodex.inference.client import QueryClient
 
@@ -34,8 +33,6 @@ def test_query_client_endpoint_normalization():
 def test_query_client_batch():
     """Test batch querying (without actual server)."""
     client = QueryClient()
-
-    questions = ["Question 1?", "Question 2?"]
 
     # This will fail without a server, but tests the method exists
     # and accepts the right parameters
