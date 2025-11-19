@@ -1,0 +1,66 @@
+# Quick Training Configuration - for demo/testing
+# Trains on small dataset in ~20-30 minutes on MPS
+
+# Model configuration
+base_model: "Qwen/Qwen2.5-Coder-1.5B"
+model_max_length: 512  # Shorter sequences
+
+# Dataset configuration
+dataset_path: "data/dataset/train_small.jsonl"  # Small subset
+validation_split: 0.1
+
+# NO quantization - works on MPS/CPU/CUDA
+quantization:
+  load_in_4bit: false
+  bnb_4bit_compute_dtype: "float32"
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_use_double_quant: false
+
+# LoRA configuration
+lora:
+  r: 8  # Minimum allowed rank
+  lora_alpha: 16  # Minimum allowed alpha
+  lora_dropout: 0.05
+  target_modules:
+    - q_proj
+    - v_proj  # Only Q and V for speed
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+# Training hyperparameters - optimized for speed
+training:
+  output_dir: "models/nanodex-quick-demo"
+  num_train_epochs: 1  # Single epoch
+  per_device_train_batch_size: 4  # Larger batch
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 2  # Fewer accumulation steps
+  learning_rate: 3.0e-4  # Higher LR for faster convergence
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  lr_scheduler_type: "cosine"
+  logging_steps: 2
+  save_steps: 100
+  eval_steps: 100
+  save_total_limit: 1  # Keep only best checkpoint
+  fp16: false
+  bf16: false
+  max_grad_norm: 1.0
+  optim: "adamw_torch"
+  group_by_length: true
+  report_to: "none"
+
+# Generation parameters
+generation:
+  max_new_tokens: 256
+  temperature: 0.7
+  top_p: 0.9
+  do_sample: true
+
+# Instruction format
+instruction_template: |
+  <|im_start|>system
+  You are a helpful code assistant specialized in this codebase.<|im_end|>
+  <|im_start|>user
+  {prompt}<|im_end|>
+  <|im_start|>assistant
+  {response}<|im_end|>
